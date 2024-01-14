@@ -7,25 +7,26 @@ public class Main
         Clock clock = new Clock();
         Border border = new Border(20);
         Infiltrator infiltrator = new Infiltrator(5,0);
+        float probability = 0.2f;
 
-        while(!infiltrator.hasCrossed)
+        while(!infiltrator.getInfiltrationStatus())
         {
-            border.updateAllSensors(probability)
+            border.updateAllSensors(probability);
             clock.incrementClockTime(1);
             int posToMove = infiltrator.studySurrounding(border);
 
             if(posToMove != 0)
             {
-                infiltrator.isMoving == true;
+                infiltrator.changeMotionStatus(true);
                 infiltrator.moveInfiltrator(posToMove);
                 clock.incrementClockTime(9);
-                infiltrator.isMoving == false;
+                infiltrator.changeMotionStatus(false);
 
                 if(infiltrator.posY == border.width)
-                    infiltrator.hasCrossed == true;
+                    infiltrator.infiltrationSuccess(true);
             }
         }
 
-        System.out.println(clock.time);
+        System.out.println(clock.getTime());
     }
 }

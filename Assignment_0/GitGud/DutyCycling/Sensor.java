@@ -2,9 +2,9 @@ package DutyCycling;
 import java.util.*;
 
 public class Sensor {
-    boolean isOn;
+    public boolean isOn;
 
-    public void flipACoin(int probability)
+    public void flipACoin(float probability)
     {
         int sample = (int) Math.random();
         if(sample <= probability)

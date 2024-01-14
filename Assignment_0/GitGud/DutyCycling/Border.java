@@ -2,9 +2,9 @@ package DutyCycling;
 // import SensorPKG.Sensor;
 
 public class Border {
-    int length = 1000; //Can change later
-    int width;
-    Sensor[][] arrayOfSensors;
+    public int length = 1000; //Can change later
+    public int width;
+    public Sensor[][] arrayOfSensors;
 
     public Border(int width)
     {
@@ -16,7 +16,7 @@ public class Border {
 
     }
 
-    public void updateAllSensors(int probability)
+    public void updateAllSensors(float probability)
     {
         for(int i = 0; i < this.width; i++)
             for(int j = 0; j < this.length; j++)

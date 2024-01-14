@@ -2,8 +2,8 @@ package DutyCycling;
 // import BorderPKG.Border;
 
 public class Infiltrator {
-    private int posX;
-    private int posY;
+    public int posX;
+    public int posY;
     private boolean isMoving;
     private boolean hasCrossed;
 
@@ -11,6 +11,26 @@ public class Infiltrator {
     {
         this.posX = startPosX;
         this.posY = startPosY;
+    }
+
+    public boolean getMotionStatus()
+    {
+        return this.isMoving;
+    }
+
+    public boolean getInfiltrationStatus()
+    {
+        return this.hasCrossed;
+    }
+
+    public void changeMotionStatus(boolean status)
+    {
+        this.isMoving = status;
+    }
+
+    public void infiltrationSuccess(boolean hasCrossed)
+    {
+        this.hasCrossed = hasCrossed;
     }
 
     public int studySurrounding(Border border)
