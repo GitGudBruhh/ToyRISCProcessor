@@ -16,16 +16,6 @@ public class Border {
 
     }
 
-    public int getLength()
-    {
-        return this.length;
-    }
-
-    public int getWidth()
-    {
-        return this.width;
-    }
-
     public void updateAllSensors(int probability)
     {
         for(int i = 0; i < this.width; i++)

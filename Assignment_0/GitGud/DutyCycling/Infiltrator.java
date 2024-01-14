@@ -13,27 +13,6 @@ public class Infiltrator {
         this.posY = startPosY;
     }
 
-    public int getPosX()
-    {
-        return this.posX;
-    }
-
-    public int getPosY()
-    {
-        return this.posY;
-    }
-
-
-    public boolean getInfiltrationStatus()
-    {
-        return this.hasCrossed;
-    }
-
-    public void infiltrationSuccess(boolean hasCrossed)
-    {
-        this.hasCrossed = hasCrossed;
-    }
-
     public int studySurrounding(Border border)
     {
         if(border.arrayOfSensors[this.posX][this.posY].isOn)
@@ -52,11 +31,6 @@ public class Infiltrator {
                 return 9;
 
         return 0;
-    }
-
-    public void changeMotionStatus(boolean status)
-    {
-        this.isMoving = status;
     }
 
     public void moveInfiltrator(int pos)
