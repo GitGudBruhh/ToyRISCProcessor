@@ -14,8 +14,6 @@ public class Border {
             for(int j = 0; j < this.width; j++)
             {
                 this.arrayOfSensors[i][j] = new Sensor();
-                // System.out.println(i);
-                // System.out.println(j);
             }
         }
 

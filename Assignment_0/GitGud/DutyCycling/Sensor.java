@@ -11,7 +11,5 @@ public class Sensor {
             this.isOn = true;
         else
             this.isOn = false;
-
-        System.out.println("a");
     }
 }
