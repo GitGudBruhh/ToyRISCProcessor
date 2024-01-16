@@ -4,17 +4,18 @@ import DutyCycling.*;
 public class Main
 {
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
         if(args.length < 3)
         {
             System.out.println("Usage: java Main border_width sensor_probability output_file");
             return;
         }
+
         int width = Integer.parseInt(args[0]);
         double probability = Double.parseDouble(args[1]);
 
-        int numberOfSimulations = 20;
+        int numberOfSimulations = 100;
         int totalTime = 0;
 
         for(int i = 0; i < numberOfSimulations; i++)
@@ -22,11 +23,34 @@ public class Main
             totalTime += simulate(width, probability);
         }
 
-        int avgSuccessTime = totalTime/numberOfSimulations;
-        System.out.println(width, probability, avgSuccessTime);
+        double avgSuccessTime = ((double) totalTime)/numberOfSimulations;
+        // System.out.print(totalTime,avgSuccessTime,numberOfSimulations);
+        System.out.println(totalTime);
+        System.out.println(avgSuccessTime);
+
+        FileOutputStream out = null;
+
+        try
+        {
+            out = new FileOutputStream(args[2], true);
+
+            // FileOutputStream fos = new FileOutputStream(fileName, true);
+            out.write((Integer.toString(width)).getBytes());
+            out.write(",".getBytes());
+            out.write((Double.toString(probability)).getBytes());
+            out.write(",".getBytes());
+            out.write((Double.toString(avgSuccessTime)).getBytes());
+            out.write("\n".getBytes());
+            out.close();
+        }
+        finally
+        {
+            if(out != null)
+                out.close();
+        }
     }
 
-    public static int simulate(int width, double probability)
+    private static int simulate(int width, double probability)
     {
         Clock clock = new Clock();
         Border border = new Border(20);
@@ -58,7 +82,7 @@ public class Main
             clock.incrementClockTime(9);
         }
 
-        System.out.println(clock.getTime());
+        // System.out.println(clock.getTime());
         return clock.getTime();
     }
 }
