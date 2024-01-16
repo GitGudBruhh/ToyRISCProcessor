@@ -4,12 +4,14 @@ import java.util.*;
 public class Sensor {
     public boolean isOn;
 
-    public void flipACoin(float probability)
+    public void flipACoin(double probability)
     {
-        int sample = (int) Math.random();
+        double sample = Math.random();
         if(sample <= probability)
             this.isOn = true;
         else
             this.isOn = false;
+
+        System.out.println("a");
     }
 }

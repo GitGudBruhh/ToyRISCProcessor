@@ -9,17 +9,22 @@ public class Border {
     public Border(int width)
     {
         this.width = width;
-        for(int i=0;i<length;i++){
-            for(int j = 0; j < width; j++)
+        this.arrayOfSensors = new Sensor[length][width];
+        for(int i = 0; i < this.length; i++){
+            for(int j = 0; j < this.width; j++)
+            {
                 this.arrayOfSensors[i][j] = new Sensor();
+                // System.out.println(i);
+                // System.out.println(j);
+            }
         }
 
     }
 
-    public void updateAllSensors(float probability)
+    public void updateAllSensors(double probability)
     {
-        for(int i = 0; i < this.width; i++)
-            for(int j = 0; j < this.length; j++)
+        for(int i = 0; i < this.length; i++)
+            for(int j = 0; j < this.width; j++)
                 arrayOfSensors[i][j].flipACoin(probability);
     }
 }
