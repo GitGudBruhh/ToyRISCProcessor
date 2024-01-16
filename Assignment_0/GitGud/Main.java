@@ -15,7 +15,7 @@ public class Main
         int width = Integer.parseInt(args[0]);
         double probability = Double.parseDouble(args[1]);
 
-        int numberOfSimulations = 100;
+        int numberOfSimulations = 1;
         int totalTime = 0;
 
         for(int i = 0; i < numberOfSimulations; i++)
@@ -25,8 +25,8 @@ public class Main
 
         double avgSuccessTime = ((double) totalTime)/numberOfSimulations;
         // System.out.print(totalTime,avgSuccessTime,numberOfSimulations);
-        System.out.println(totalTime);
-        System.out.println(avgSuccessTime);
+        // System.out.println(totalTime);
+        // System.out.println(avgSuccessTime);
 
         FileOutputStream out = null;
 
@@ -54,7 +54,7 @@ public class Main
     {
         Clock clock = new Clock();
         Border border = new Border(20);
-        Infiltrator infiltrator = new Infiltrator(500,0);
+        Infiltrator infiltrator = new Infiltrator(100,0);
         // double probability = 0.2;
 
         while(!infiltrator.getInfiltrationStatus())

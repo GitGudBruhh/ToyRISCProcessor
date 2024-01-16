@@ -2,7 +2,7 @@ package DutyCycling;
 // import SensorPKG.Sensor;
 
 public class Border {
-    public int length = 1000; //Can change later
+    public int length = 200; //Can change later
     public int width;
     public Sensor[][] arrayOfSensors;
 
