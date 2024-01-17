@@ -75,13 +75,15 @@ The main objective of this problem is to determine the time taken by the infiltr
 
 \section{Solution }\label{sec:discussion}
 \begin{itemize}
-\item We define a \texttt{Clock} class where methods related to time, such as \texttt{getTime} and \texttt{incrementClockTime}, are defined to start the clock.
+\item We define a \texttt{Clock} class where methods related to time, such as \texttt{getTime()} and \texttt{incrementClockTime()}, are defined to start the clock.
 
-\item Next, we define a \texttt{Border} class that includes the definitions of \texttt{Border} and \texttt{Sensor} within a 2D array.
 
-\item Then, we define a \texttt{Sensor} class where a method is defined to handle the sensor's behavior when the coin shows heads, and otherwise, it turns off.
+\item Then, we define a \texttt{Sensor} class where a method \texttt{flipACoin()} is defined to handle the sensor's behavior. It mimics tossing a biased coin (with some probability), and turning the sensor on or off based on the bias of the coin.
 
-\item Following that, we define an \texttt{Infiltrator} class where numerous methods are defined. The infiltrator always starts from the point (0,0).
+
+\item Next, we define a \texttt{Border} class that includes the \texttt{Sensor} within a 2D array.
+
+\item Following that, we define an \texttt{Infiltrator} class where numerous methods are defined. The infiltrator always starts from the point (\texttt{mid},0), where \texttt{mid} is the X-value of the center of the finite border in the simulation. Ideally, this tries to mimic an infinitely long border.
 
     \begin{itemize}
         \item \texttt{getMotionStatus()}
@@ -95,28 +97,33 @@ The main objective of this problem is to determine the time taken by the infiltr
 \end{itemize}
 
 
-\section{Plot}\label{sec:Plot}
-\begin{figure}
+\section{Plots}\label{sec:Plot}
+\begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{image.png}
-    \caption{This is an example image.}
+    \includegraphics[width=0.5\textwidth]{TvP.png}
+    \caption{Average Time taken to cross border vs Probability of sensor turning on}
     \label{fig:example}
 \end{figure}
-\begin{figure}
+\begin{figure}[!hbpt]
     \centering
-    \includegraphics[width=0.5\textwidth]{image1.png}
-    \caption{This is an example image.}
+    \includegraphics[width=0.5\textwidth]{TvW.png}
+    \caption{Average Time taken to cross border vs Width of border}
     \label{fig:example}
 \end{figure}
-\begin{figure}
+\pagebreak
+\begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{image1.png}
-    \caption{This is an example image.}
+    \includegraphics[width=0.5\textwidth]{TvWxP.png}
+    \caption{A 3D Plot of Time, Width and Probability}
     \label{fig:example}
 \end{figure}
 
 \section{Observation}\label{sec:fObservation}
-Observation from the graph
+The following observations can be made from the data collected:
+\begin{itemize}
+	\item The time taken to cross the border increases drastically as the probability of the sensor turning on reaches the 80\% threshold.
+	\item The time taken to cross the border increases linearly with the border width for a fixed probability of the sensor turning on. This is as expected because the average time taken for the infiltrator to make one move does not depend on his position, and rather depends on the probability of the sensors around him turning on/off (kept constant here).
+\end{itemize}
 
 
 \end{document}

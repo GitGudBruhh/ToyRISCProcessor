@@ -1,4 +1,3 @@
-
 Assignment_0/GitGud/DutyCycling/Border.class
 Assignment_0/GitGud/DutyCycling/Clock.class
 Assignment_0/GitGud/DutyCycling/Infiltrator.class
@@ -6,3 +5,5 @@ Assignment_0/GitGud/DutyCycling/Sensor.class
 Assignment_0/GitGud/Main.class
 Assignment_0/GitGud/output.csv
 Assignment_0/GitGud/output.txt
+pyvenv/
+Assignment_0/src/.ipynb_checkpoints/Untitled-checkpoint.ipynb
