@@ -1,12 +1,15 @@
 	.data
 a:
-	10
+	15
 	.text
 main:
-	load %x0 %x3 $a
-	divi %x3 %x4 2
-	beq %x31 %x0 3
-	addi %x0 1 %x10
+	load %x0, $a, %x3
+	divi %x3, 2, $x4
+	beq %x0, %x31, $even
+	bne %x0, %x31, $odd
+even:
+	subi %x0, 1, %x10
 	end
-	subi %x0 1 %x10
+odd:
+	addi %x0, 1, %x10
 	end
