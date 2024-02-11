@@ -50,8 +50,8 @@ public class Simulator {
 		//============================================================
 				int dataArrayListSize = ParsedProgram.data.size();
 
+				Integer currentData;
 				for(int idx = 0; idx < dataArrayListSize; idx++) {
-					Integer currentData;
 					currentData = ParsedProgram.data.get(idx); //Returns one line of data as Integer
 
 					bytesToWrite = ByteBuffer.allocate(4).putInt(currentData.intValue()).array();
@@ -64,52 +64,61 @@ public class Simulator {
 		//============================================================
 				int codeArrayListSize = ParsedProgram.code.size();
 
+				Instruction currentInstruction;
+
+				Operand currentSourceOpnd1;
+				Operand currentSourceOpnd2;
+				Operand currentDestOpnd1;
+
+				Operand.OperandType opndTypeRs1;
+				Operand.OperandType opndTypeRs2;
+				Operand.OperandType opndTypeRd;
+
 				for(int idx = 0; idx < codeArrayListSize; idx++) {
-					Instruction currentInstruction;
 					currentInstruction = ParsedProgram.code.get(idx); //Returns one line of data as Instruction
 
+					//Get all source operands (returns null if unused)
+					currentSourceOpnd1 = currentInstruction.getSourceOperand1();
+					currentSourceOpnd2 = currentInstruction.getSourceOperand2();
+					currentDestOpnd = currentInstruction.getDestinationOperand();
+
+					//Copy instruction type {add, addi, sub, ...}
 					Instruction.OperationType currentOperationType = currentInstruction.getOperationType();
-					Operand currentSourceOpnd1 = currentInstruction.getSourceOperand1();
-					Operand currentSourceOpnd2 = currentInstruction.getSourceOperand2();
-					Operand currentDestOpnd = currentInstruction.getDestinationOperand();
 
-					Operand.OperandType opndTypeRs1;
-					Operand.OperandType opndTypeRs2;
-					Operand.OperandType opndTypeRd;
-
+					//Copy operand types {Register, Immediate, Label}
 					opndTypeRs1 = (currentSourceOpnd1 == null) ? null : currentSourceOpnd1.getOperandType();
 					opndTypeRs2 = (currentSourceOpnd2 == null) ? null : currentSourceOpnd2.getOperandType();
 					opndTypeRd = (currentDestOpnd == null) ? null : currentDestOpnd.getOperandType();
 
-					//For any arithmetic operation, imm values/label are kept in sourceOpnd2
-					//Opcodes: 0 -> 21 (Odd no.s)
+					/*
+					For any arithmetic operation, imm values/label are kept in sourceOpnd2
+					Opcodes: 0 -> 21 (Odd no.s)
 
-					//For loads and stores, imm values/label
-					//imm values are kept in sourceOpnd2
-					//Opcodes: 22, 23
+					For loads and stores, imm values/label
+					imm values are kept in sourceOpnd2
+					Opcodes: 22, 23
 
-					//In jmp statements, either imm/label = 0, or rd = 0.
-					//The non zero value is kept in destOpnd
-					//Opcode: 24
+					In jmp statements, either imm/label = 0, or rd = 0.
+					The non zero value is kept in destOpnd
+					Opcode: 24
 
-					//In conditional branches, sourceOpnd1 is compared to sourceOpnd2; immediate/label
-					//is in	destOpnd.
-					//Opcodes: 25 -> 28
+					In conditional branches, sourceOpnd1 is compared to sourceOpnd2; immediate/label
+					is in destOpnd.
+					Opcodes: 25 -> 28
 
-					//In end instruction, rd and imm are unused
-					//Opcode: 29
+					In end instruction, rd and imm are unused
+					Opcode: 29
 
-					//So, imm values (as labels), can be in destOpnd, sourceOpnd2, but never sourceOpnd1
+					So, imm values (as labels), can be in destOpnd, sourceOpnd2, but never sourceOpnd1
+					*/
 
 					int currentInstructionAsInt = 0;
 
 					//Convert operation to opcode(int) and shift left
 					currentInstructionAsInt += (currentOperationType.ordinal() << 27);
 
-					//currentInstructionAsInt += currentSourceOpnd1.getValue() << 22;
-					//currentInstructionAsInt += currentSourceOpnd2.getValue() << 17;
-
-					//RI type (jmp & end)
+					/*Convert source and destination operands to int and shift left*/
+					//RI (jmp & end)
 					if(currentSourceOpnd1 == null) {
 
 						//jmp
@@ -146,9 +155,47 @@ public class Simulator {
 						Integer valAtLabel;
 
 						//Label to addrOfLabel to valAtLabel
-						if(opndTypeRs2 == Operand.OperandType.Label) {
+						// if(opndTypeRs2 == Operand.OperandType.Label) {
+						// 	addrOfLabel = ParsedProgram.symtab.get(currentSourceOpnd2.getLabelValue());
+						// 	valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
+						// }
+
+						//R3
+						if(
+						opndTypeRs1 == Operand.OperandType.Register &&
+						opndTypeRs2 == Operand.OperandType.Register &&
+						opndTypeRd == Operand.OperandType.Register) {
+
+							currentInstructionAsInt += (currentSourceOpnd1.getValue() << 22);
+							currentInstructionAsInt += (currentSourceOpnd2.getValue() << 17);
+							currentInstructionAsInt += (currentDestOpnd.getValue() << 12);
+						}
+
+						//R2I Arithmetic/LoadStore - Immediate
+						if(
+						opndTypeRs1 == Operand.OperandType.Register &&
+						opndTypeRs2 == Operand.OperandType.Immediate &&
+						opndTypeRd == Operand.OperandType.Register) {
+
+							currentInstructionAsInt += (currentSourceOpnd1.getValue() << 22);
+							currentInstructionAsInt += currentSourceOpnd2.getValue();
+							currentInstructionAsInt += (currentDestOpnd.getValue() << 12);
+						}
+
+
+						//R2I Arithmetic/LoadStore - Label
+						if(
+						opndTypeRs1 == Operand.OperandType.Register &&
+						opndTypeRs2 == Operand.OperandType.Label &&
+						opndTypeRd == Operand.OperandType.Register) {
+
+							currentInstructionAsInt += (currentSourceOpnd1.getValue() << 22);
+
 							addrOfLabel = ParsedProgram.symtab.get(currentSourceOpnd2.getLabelValue());
 							valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
+							currentInstructionAsInt += (valAtLabel.intValue() << 17);
+
+							currentInstructionAsInt += (currentDestOpnd.getValue() << 12);
 						}
 
 					}
