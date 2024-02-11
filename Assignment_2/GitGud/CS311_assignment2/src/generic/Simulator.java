@@ -19,6 +19,8 @@ public class Simulator {
 		ParsedProgram.parseCodeSection(assemblyProgramFile, firstCodeAddress);
 		ParsedProgram.printState();
 	}
+
+	// private static boolean isImmediate()
 	
 	public static void assemble(String objectProgramFile)
 	{
@@ -69,12 +71,27 @@ public class Simulator {
 				Instruction currentInstruction;
 				currentInstruction = ParsedProgram.code.get(idx); //Returns one line of data as Instruction
 
+				OperationType currentOperationType = currentInstruction.getOperationType();
+				Operand currentSourceOpnd1 = currentInstruction.getSourceOperand1();
+				Operand currentSourceOpnd2 = currentInstruction.getSourceOperand2();
+				Operand currentDestOpnd = currentInstruction.getDestinationOperand();
+
+				int currentInstructionAsInt = 0;
+
+				//Convert operation to opcode(int) and shift left
+				currentInstructionAsInt += currentOperationType.ordinal() << 27;
+
+				//Checkout jmp, outlier
+				if(currentSourceOpnd1.getOperandType().ordinal() == 0 && currentSourceOpnd1.ge)
+				currentInstructionAsInt += currentSourceOpnd1 << 22;
+				/*
+				For any operand no. <= 21, all odd ones are immediate type, all even are register type.
+				*/
 
 
-				bytesToWrite = ByteBuffer.allocate(4).putInt(currentData.intValue()).array();
+				bytesToWrite = ByteBuffer.allocate(4).putInt(currentInstructionAsInt.intValue()).array();
 					oStreamObjProgFile.write(bytesToWrite);
 			}
-
 
 		//============================================================
 		//5. close the file
