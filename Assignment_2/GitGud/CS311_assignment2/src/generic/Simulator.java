@@ -68,7 +68,7 @@ public class Simulator {
 
 				Operand currentSourceOpnd1;
 				Operand currentSourceOpnd2;
-				Operand currentDestOpnd1;
+				Operand currentDestOpnd;
 
 				Operand.OperandType opndTypeRs1;
 				Operand.OperandType opndTypeRs2;
@@ -191,9 +191,18 @@ public class Simulator {
 
 							currentInstructionAsInt += (currentSourceOpnd1.getValue() << 22);
 
-							addrOfLabel = ParsedProgram.symtab.get(currentSourceOpnd2.getLabelValue());
-							valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
-							currentInstructionAsInt += valAtLabel.intValue();
+							//Arithmetic
+							if(currentOperationType.ordinal() <= 21) {
+								addrOfLabel = ParsedProgram.symtab.get(currentSourceOpnd2.getLabelValue());
+								valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
+								currentInstructionAsInt += valAtLabel.intValue();
+							}
+
+							//LoadStore
+							else {
+								addrOfLabel = ParsedProgram.symtab.get(currentSourceOpnd2.getLabelValue());
+								currentInstructionAsInt += addrOfLabel.intValue();
+							}
 
 							currentInstructionAsInt += (currentDestOpnd.getValue() << 17);
 						}
@@ -220,8 +229,7 @@ public class Simulator {
 							currentInstructionAsInt += (currentSourceOpnd2.getValue() << 17);
 
 							addrOfLabel = ParsedProgram.symtab.get(currentDestOpnd.getLabelValue());
-							valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
-							currentInstructionAsInt += valAtLabel.intValue();;
+							currentInstructionAsInt += addrOfLabel.intValue();;
 						}
 
 					}
