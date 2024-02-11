@@ -1,11 +1,6 @@
 package generic;
-
-// import java.io.FileInputStream;
-// import java.io.FileOutputStream;
 import java.io.*;
 import java.nio.*;
-import generic.Operand.OperandType;
-
 
 public class Simulator {
 		
@@ -148,7 +143,7 @@ public class Simulator {
 
 						//end
 						// else if(currentInstruction.getOperationType() == Instruction.OperationType.end) {
-						// 	currentInstructionAsInt += 0;
+						// 	do nothing here...
 						// }
 					}
 
@@ -157,12 +152,6 @@ public class Simulator {
 
 						Integer addrOfLabel;
 						Integer valAtLabel;
-
-						//Label to addrOfLabel to valAtLabel
-						// if(opndTypeRs2 == Operand.OperandType.Label) {
-						// 	addrOfLabel = ParsedProgram.symtab.get(currentSourceOpnd2.getLabelValue());
-						// 	valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
-						// }
 
 						//R3
 						if(
@@ -251,7 +240,7 @@ public class Simulator {
 				oStreamObjProgFile.close();
 			}
 			catch (IOException e) {
-				System.out.print("File Write Exception");
+				System.out.print(e.toString());
 			}
 		}
 		catch(FileNotFoundException e) {
