@@ -179,7 +179,7 @@ public class Simulator {
 
 							currentInstructionAsInt += (currentSourceOpnd1.getValue() << 22);
 							currentInstructionAsInt += currentSourceOpnd2.getValue();
-							currentInstructionAsInt += (currentDestOpnd.getValue() << 12);
+							currentInstructionAsInt += (currentDestOpnd.getValue() << 17);
 						}
 
 
@@ -193,9 +193,35 @@ public class Simulator {
 
 							addrOfLabel = ParsedProgram.symtab.get(currentSourceOpnd2.getLabelValue());
 							valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
-							currentInstructionAsInt += (valAtLabel.intValue() << 17);
+							currentInstructionAsInt += valAtLabel.intValue();
 
-							currentInstructionAsInt += (currentDestOpnd.getValue() << 12);
+							currentInstructionAsInt += (currentDestOpnd.getValue() << 17);
+						}
+
+						//R2I Conditional Branches - Immediate
+						if(
+						opndTypeRs1 == Operand.OperandType.Register &&
+						opndTypeRs2 == Operand.OperandType.Register &&
+						opndTypeRd == Operand.OperandType.Immediate) {
+
+							currentInstructionAsInt += (currentSourceOpnd1.getValue() << 22);
+							currentInstructionAsInt += (currentSourceOpnd2.getValue() << 17);
+							currentInstructionAsInt += currentDestOpnd.getValue();
+						}
+
+						//R2I Conditional Branches - Label
+						if(
+						opndTypeRs1 == Operand.OperandType.Register &&
+						opndTypeRs2 == Operand.OperandType.Register &&
+						opndTypeRd == Operand.OperandType.Label) {
+
+							currentInstructionAsInt += (currentSourceOpnd1.getValue() << 22);
+
+							currentInstructionAsInt += (currentSourceOpnd2.getValue() << 17);
+
+							addrOfLabel = ParsedProgram.symtab.get(currentDestOpnd.getLabelValue());
+							valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
+							currentInstructionAsInt += valAtLabel.intValue();;
 						}
 
 					}
