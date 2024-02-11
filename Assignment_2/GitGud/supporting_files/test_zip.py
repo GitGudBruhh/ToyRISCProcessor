@@ -11,8 +11,8 @@ from threading import Timer
 zip_file = sys.argv[1]
 
 l = len(zip_file.split("/"))
-print "Students :\t" + zip_file.split("/")[l-1].split("_")[0] + " and " + zip_file.split("/")[l-1].split("_")[1].split(".")[0]
-print ""
+print("Students :\t" + zip_file.split("/")[l-1].split("_")[0] + " and " + zip_file.split("/")[l-1].split("_")[1].split(".")[0])
+print("")
 
 submissions_temp_dir = "./submissions/" 
 
@@ -39,7 +39,7 @@ finally:
 stdout_file.close()
 
 if not os.path.exists("jars/assembler.jar"):
-	print "compilation failed. jar file not created"
+	print("compilation failed. jar file not created")
 	sys.exit(0)
 
 test_cases_dir = "../test_cases"
@@ -63,14 +63,14 @@ for testcase in os.listdir(test_cases_dir):
 		if os.path.exists("./" + testcase.split(".")[0] + ".observedoutput"):
 			if filecmp.cmp(test_cases_dir + "/" + testcase.split(".")[0] + ".out", "./" + testcase.split(".")[0] + ".observedoutput") == True:
 				scored_marks = scored_marks + 1
-				print testcase + " : PASS!"
+				print(testcase + " : PASS!")
 			else:
-				print testcase + " : fail - incorrect object file contents"
+				print(testcase + " : fail - incorrect object file contents")
 		else:
-			print testcase + " : fail - file not created"
+			print(testcase + " : fail - file not created")
 
 os.chdir("..")
 
 shutil.rmtree(submissions_temp_dir)
 
-print "\ntotal score = " + str(scored_marks) + " out of " + str(total_marks)
+print("\ntotal score = " + str(scored_marks) + " out of " + str(total_marks))

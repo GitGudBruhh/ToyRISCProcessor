@@ -19,8 +19,6 @@ public class Simulator {
 		ParsedProgram.parseCodeSection(assemblyProgramFile, firstCodeAddress);
 		ParsedProgram.printState();
 	}
-
-	// private static boolean isImmediate()
 	
 	public static void assemble(String objectProgramFile)
 	{
@@ -122,13 +120,19 @@ public class Simulator {
 					if(currentSourceOpnd1 == null) {
 
 						//jmp
+						/*
+						NOTE:
+						The Parser keeps the used value (immediate/label vs rd) automatically in
+						destinationOperand. So we do not need to check the type of any other variable
+						*/
 						if(currentInstruction.getOperationType() == Instruction.OperationType.jmp) {
 
 							//Label
 							if(opndTypeRd == Operand.OperandType.Label) {
 								Integer addrOfLabel = ParsedProgram.symtab.get(currentDestOpnd.getLabelValue());
-								Integer valAtLabel = ParsedProgram.data.get(addrOfLabel.intValue());
-								currentInstructionAsInt += valAtLabel.intValue();
+								int signedOffset = addrOfLabel.intValue() - currentInstruction.getProgramCounter();
+								int signedTruncatedOffset = signedOffset & ((1 << 22) - 1);
+								currentInstructionAsInt += signedTruncatedOffset;
 							}
 
 							//Immediate
@@ -229,11 +233,12 @@ public class Simulator {
 							currentInstructionAsInt += (currentSourceOpnd2.getValue() << 17);
 
 							addrOfLabel = ParsedProgram.symtab.get(currentDestOpnd.getLabelValue());
-							currentInstructionAsInt += addrOfLabel.intValue();;
+							int signedOffset = addrOfLabel.intValue() - currentInstruction.getProgramCounter();
+							int signedTruncatedOffset = signedOffset & ((1 << 17) - 1);
+							currentInstructionAsInt += signedTruncatedOffset;
 						}
 
 					}
-
 
 					bytesToWrite = ByteBuffer.allocate(4).putInt(currentInstructionAsInt).array();
 					oStreamObjProgFile.write(bytesToWrite);
