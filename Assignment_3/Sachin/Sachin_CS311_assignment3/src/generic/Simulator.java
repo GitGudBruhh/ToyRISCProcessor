@@ -35,13 +35,9 @@ public class Simulator {
 		while(simulationComplete == false)
 		{
 			processor.getIFUnit().performIF();
-			Clock.incrementClock();
 			processor.getOFUnit().performOF();
-			Clock.incrementClock();
 			processor.getEXUnit().performEX();
-			Clock.incrementClock();
 			processor.getMAUnit().performMA();
-			Clock.incrementClock();
 			processor.getRWUnit().performRW();
 			Clock.incrementClock();
 		}

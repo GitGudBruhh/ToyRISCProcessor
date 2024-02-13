@@ -10,10 +10,10 @@ from threading import Timer
 zip_file = sys.argv[1]
 
 l = len(zip_file.split("/"))
-print "Students :"
+print("Students :")
 for i in range(0, len(zip_file.split("/")[l-1].split("_"))):
-	print zip_file.split("/")[l-1].split("_")[i].split(".")[0]
-print ""
+	print(zip_file.split("/")[l-1].split("_")[i].split(".")[0])
+print("")
 
 submissions_temp_dir = "./submissions/" 
 
@@ -40,7 +40,7 @@ finally:
 stdout_file.close()
 
 if not os.path.exists("jars/simulator.jar"):
-	print "compilation failed. jar file not created"
+	print("compilation failed. jar file not created")
 	sys.exit(0)
 
 test_cases_dir = "../test_cases"
@@ -79,14 +79,14 @@ for testcase in os.listdir(test_cases_dir):
 			observedoutput_file.close()
 			if correct == True:
 				scored_marks = scored_marks + 1
-				print testcase + " : PASS!"
+				print(testcase + " : PASS!")
 			else:
-				print testcase + " : fail - incorrect hash"
+				print(testcase + " : fail - incorrect hash")
 		else:
-			print testcase + " : fail - standard output file not created"
+			print(testcase + " : fail - standard output file not created")
 
 os.chdir("..")
 
 shutil.rmtree(submissions_temp_dir)
 
-print "\ntotal score = " + str(scored_marks) + " out of " + str(total_marks)
+print("\ntotal score = " + str(scored_marks) + " out of " + str(total_marks))
