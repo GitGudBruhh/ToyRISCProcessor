@@ -52,7 +52,7 @@ public class MA_RW_LatchType {
 	}
 
 
-	public int getAluResult() {
+	public long getAluResult() {
 		return this.aluResult;
 	}
 

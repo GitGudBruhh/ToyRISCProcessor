@@ -58,10 +58,10 @@ public class OF_EX_LatchType {
 	}
 
 	public int getA() {
-		return this.B;
+		return this.A;
 	}
 
-	public void setB(int A) {
+	public void setA(int A) {
 		this.A = A;
 	}
 

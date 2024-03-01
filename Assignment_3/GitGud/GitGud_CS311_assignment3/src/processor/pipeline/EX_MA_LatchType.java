@@ -39,7 +39,7 @@ public class EX_MA_LatchType {
 		this.pc = pc;
 	}
 
-	public int getAluResult() {
+	public long getAluResult() {
 		return this.aluResult;
 	}
 

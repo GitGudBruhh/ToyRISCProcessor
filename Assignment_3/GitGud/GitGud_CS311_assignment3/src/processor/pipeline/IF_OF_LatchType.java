@@ -7,8 +7,7 @@ public class IF_OF_LatchType {
 	//added pc
 	int pc;
 	
-	public IF_OF_LatchType()
-	{
+	public IF_OF_LatchType() {
 		OF_enable = false;
 	}
 
@@ -32,7 +31,7 @@ public class IF_OF_LatchType {
 		return this.pc;
 	}
 
-	public int setPc(int pc) {
+	public void setPc(int pc) {
 		this.pc = pc;
 	}
 }
