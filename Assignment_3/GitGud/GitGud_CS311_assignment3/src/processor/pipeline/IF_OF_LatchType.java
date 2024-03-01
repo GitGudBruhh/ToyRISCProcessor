@@ -4,6 +4,8 @@ public class IF_OF_LatchType {
 	
 	boolean OF_enable;
 	int instruction;
+	//added pc
+	int pc;
 	
 	public IF_OF_LatchType()
 	{
@@ -26,4 +28,11 @@ public class IF_OF_LatchType {
 		this.instruction = instruction;
 	}
 
+	public int getPc() {
+		return this.pc;
+	}
+
+	public int setPc(int pc) {
+		this.pc = pc;
+	}
 }
