@@ -16,9 +16,152 @@ public class Execute {
 		this.EX_IF_Latch = eX_IF_Latch;
 	}
 	
-	public void performEX()
-	{
+	public void performEX() {
 		//TODO
-	}
+		int currentPC = OF_EX_Latch.getPc();
+		int branchTarget = OF_EX_Latch.getBranchTarget();
+		int B = OF_EX_Latch.getB();
+		int A = OF_EX_Latch.getA();
+		int op2 = OF_EX_Latch.getOp2();
+		int instruction = OF_EX_Latch.getInstruction();
+		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
 
+		int branchPC = currentPC + 1;
+		long aluResult = 0;
+		int aluResultLogical;
+
+		if (
+		controlSignals.getControlSignal(ControlSignals.OperationSignals.JMP.ordinal()) ||
+		controlSignals.getControlSignal(ControlSignals.OperationSignals.BEQ.ordinal()) ||
+		controlSignals.getControlSignal(ControlSignals.OperationSignals.BNE.ordinal()) ||
+		controlSignals.getControlSignal(ControlSignals.OperationSignals.BLT.ordinal()) ||
+		controlSignals.getControlSignal(ControlSignals.OperationSignals.BGT.ordinal())
+		) {
+			branchPC = currentPC + branchTarget;
+		}
+
+		int opcode = instruction >>> 27;
+
+		switch(opcode) {
+            case 0:
+                aluResult = (long) A + (long) B;
+                break;
+            case 1:
+                aluResult = (long) A + (long) B;
+                break;
+            case 2:
+                aluResult = (long) A - (long) B;
+                break;
+            case 3:
+                aluResult = (long) A - (long) B;
+                break;
+            case 4:
+                aluResult = (long) A * (long) B;
+                break;
+            case 5:
+                aluResult = (long) A * (long) B;
+                break;
+            case 6:
+                aluResult = (long) A / (long) B;
+                break;
+            case 7:
+                aluResult = (long) A / (long) B;
+                break;
+            case 8:
+                aluResultLogical = A & B;
+                aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
+                break;
+            case 9:
+                aluResultLogical = A & B;
+                aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
+                break;
+            case 10:
+                aluResultLogical = A | B;
+                aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
+                break;
+            case 11:
+                aluResultLogical = A | B;
+                aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
+                break;
+            case 12:
+                aluResultLogical = (A & (~B)) | (B & (~A));
+                aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
+                break;
+            case 13:
+                aluResultLogical = (A & (~B)) | (B & (~A));
+                aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
+                break;
+            case 14:
+                aluResult = (A < B) ? 1 : 0;
+                break;
+            case 15:
+                aluResult = (A < B) ? 1 : 0;
+                break;
+            case 16:
+                aluResult = ((long) A << (long) B);
+                break;
+            case 17:
+                aluResult = ((long) A << (long) B);
+                break;
+            case 18:
+                aluResult = ((long) A >>> (long) B);
+                break;
+            case 19:
+                aluResult = ((long) A >>> (long) B);
+                break;
+            case 20:
+                aluResult = ((long) A >> (long) B);
+                break;
+            case 21:
+                aluResult = ((long) A >> (long) B);
+                break;
+            case 22:
+                aluResult = ((long) A + (long) B); //load
+                break;
+            case 23:
+                aluResult = ((long) A + (long) B); //store
+                break;
+            case 24:
+				branchPC = currentPC + branchTarget;
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+                break;
+            case 25:
+				branchPC = currentPC + branchTarget;
+				if (A == B)
+					controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+				break;
+            case 26:
+				branchPC = currentPC + branchTarget;
+				if (A != B)
+					controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+					break;
+            case 27:
+				branchPC = currentPC + branchTarget;
+				if (A < B)
+					controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+					break;
+            case 28:
+				branchPC = currentPC + branchTarget;
+				if (A > B)
+					controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+					break;
+            case 29:
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.END.ordinal(), true);
+                break;
+            default:
+                return;
+		}
+
+		EX_IF_Latch.setBranchPC(branchPC);
+		EX_IF_Latch.setControlSignals(controlSignals);
+
+		EX_MA_Latch.setPc(currentPC);
+		EX_MA_Latch.setAluResult(aluResult);
+		EX_MA_Latch.setOp2(op2);
+		EX_MA_Latch.setInstruction(instruction);
+		EX_MA_Latch.setControlSignals(controlSignals);
+
+		OF_EX_Latch.setEX_enable(false);
+		EX_MA_Latch.setMA_enable(true);
+	}
 }

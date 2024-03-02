@@ -20,113 +20,115 @@ public class ControlUnit {
     RW: isLd, isJmp (isCall replace), !! isWb (passback) !!
     */
 
-    public ControlSignals getControlSignals(int instruction) {
+    public ControlSignals createControlSignals(int instruction) {
         int opcode = this.extractOperationFromInstruction(instruction);
 
         ControlSignals controlSignals = new ControlSignals();
 
         if(opcode <= 22) {
-            controlSignals.setControlSignal(ControlSignals.OperationSignals.Wb.ordinal(), true);
+            controlSignals.setControlSignal(ControlSignals.OperationSignals.WB.ordinal(), true);
         }
 
         if(
         (opcode <= 21 && (opcode % 2) == 1) ||
         (opcode >= 22 && opcode <= 28)
         ) {
-            controlSignals.setControlSignal(ControlSignals.OperationSignals.Immediate.ordinal(), true);
+            controlSignals.setControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal(), true);
         }
 
         switch(opcode) {
             case 0:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Add.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.ADD.ordinal(), true);
                 break;
             case 1:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Add.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.ADD.ordinal(), true);
                 break;
             case 2:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Sub.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SUB.ordinal(), true);
                 break;
             case 3:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Sub.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SUB.ordinal(), true);
                 break;
             case 4:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Mul.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.MUL.ordinal(), true);
                 break;
             case 5:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Mul.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.MUL.ordinal(), true);
                 break;
             case 6:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Div.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.DIV.ordinal(), true);
                 break;
             case 7:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Div.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.DIV.ordinal(), true);
                 break;
             case 8:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.And.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.AND.ordinal(), true);
                 break;
             case 9:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.And.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.AND.ordinal(), true);
                 break;
             case 10:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Or.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.OR.ordinal(), true);
                 break;
             case 11:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Or.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.OR.ordinal(), true);
                 break;
             case 12:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Xor.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.XOR.ordinal(), true);
                 break;
             case 13:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Xor.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.XOR.ordinal(), true);
                 break;
             case 14:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Slt.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SLT.ordinal(), true);
                 break;
             case 15:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Slt.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SLT.ordinal(), true);
                 break;
             case 16:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Sll.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SLL.ordinal(), true);
                 break;
             case 17:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Sll.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SLL.ordinal(), true);
                 break;
             case 18:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Srl.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SRL.ordinal(), true);
                 break;
             case 19:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Srl.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SRL.ordinal(), true);
                 break;
             case 20:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Sra.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SRA.ordinal(), true);
                 break;
             case 21:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Sra.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.SRA.ordinal(), true);
                 break;
             case 22:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Load.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.LOAD.ordinal(), true);
                 break;
             case 23:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Store.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.STORE.ordinal(), true);
                 break;
             case 24:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Jmp.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.JMP.ordinal(), true);
                 break;
             case 25:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Beq.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.BEQ.ordinal(), true);
                 break;
             case 26:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Bne.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.BNE.ordinal(), true);
                 break;
             case 27:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Blt.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.BLT.ordinal(), true);
                 break;
             case 28:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.Bgt.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.BGT.ordinal(), true);
                 break;
             case 29:
-                controlSignals.setControlSignal(ControlSignals.OperationSignals.End.ordinal(), true);
+                controlSignals.setControlSignal(ControlSignals.OperationSignals.END.ordinal(), true);
                 break;
+            default:
+                return controlSignals;
         }
 
         return controlSignals;

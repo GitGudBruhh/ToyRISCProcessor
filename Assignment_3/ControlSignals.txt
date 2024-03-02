@@ -23,7 +23,7 @@
 21  srai - isSra, isImmediate, isWb
 22  load - isLoad, isImmediate, isWb
 23  store - isStore, isImmediate
-24  jmp - isJmp, isImmediate
+24  jmp - isJmp, isImmediate, isBranchTaken
 25  beq - isBeq, isImmediate
 26  bne - isBne, isImmediate
 27  blt - isBlt, isImmediate

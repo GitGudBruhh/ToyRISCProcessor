@@ -17,6 +17,11 @@ public class MemoryAccess {
 	public void performMA()
 	{
 		//TODO
+		int currentPC = EX_MA_Latch.getPc();
+		long aluResult = EX_MA_Latch.getAluResult();
+		int op2 = EX_MA_Latch.getOp2();
+		int instruction = EX_MA_Latch.getInstruction();
+		ControlSignals controlSignals = EX_MA_Latch.getControlSignals();
 	}
 
 }

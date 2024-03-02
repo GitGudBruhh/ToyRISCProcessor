@@ -2,7 +2,7 @@ package processor.pipeline;
 
 public class ControlSignals {
 
-    public enum OperationSignals {Add, Sub, Mul, Div, And, Or, Xor, Slt ,Sll, Srl, Sra, Load, Store, Jmp, Beq, Bne, Blt, Bgt, End, Immediate, Wb, BranchTaken}
+    public enum OperationSignals {ADD, SUB, MUL, DIV, AND, OR, XOR, SLT, SLL, SRL, SRA, LOAD, STORE, JMP, BEQ, BNE, BLT, BGT, END, IMMEDIATE, WB, BRANCHTAKEN}
 
     boolean[] arrayOfSignals;
 
