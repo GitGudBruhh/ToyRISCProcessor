@@ -74,6 +74,10 @@ public class Processor {
 		this.mainMemory = mainMemory;
 	}
 
+	public void enableIFUnit() {
+		this.IF_EnableLatch.setIF_enable(true);
+	}
+
 	public InstructionFetch getIFUnit() {
 		return IFUnit;
 	}

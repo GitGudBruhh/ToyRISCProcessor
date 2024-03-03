@@ -76,11 +76,18 @@ public class Simulator {
 	
 	public static void simulate()
 	{
+		System.out.println("AAAAAAAAAAAAAA");
+		processor.printState(0, 30);
+
+		int numberOfInstructionsExecuted = 0;
+		long numberOfCycles = 0;
+
+		processor.enableIFUnit();
 		while(simulationComplete == false)
 		{
 			processor.getIFUnit().performIF();
 			// Clock.incrementClock();
-			processor.getOFUnit().performOF();
+			simulationComplete = processor.getOFUnit().performOF();
 			// Clock.incrementClock();
 			processor.getEXUnit().performEX();
 			// Clock.incrementClock();
@@ -88,10 +95,17 @@ public class Simulator {
 			// Clock.incrementClock();
 			processor.getRWUnit().performRW();
 			Clock.incrementClock();
+
+			numberOfInstructionsExecuted += 1;
+			// System.out.println(numberOfInstructionsExecuted);
 		}
 		
 		// TODO
 		// set statistics
+		numberOfCycles = Clock.getCurrentTime();
+
+		Statistics.setNumberOfInstructions(numberOfInstructionsExecuted);
+		Statistics.setNumberOfCycles((int) numberOfCycles);
 	}
 	
 	public static void setSimulationComplete(boolean value)

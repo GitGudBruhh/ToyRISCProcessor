@@ -8,7 +8,6 @@ public class Statistics {
 	static int numberOfInstructions;
 	static int numberOfCycles;
 	
-
 	public static void printStatistics(String statFile)
 	{
 		try
@@ -29,11 +28,11 @@ public class Statistics {
 	}
 	
 	// TODO write functions to update statistics
-	public void setNumberOfInstructions(int numberOfInstructions) {
+	public static void setNumberOfInstructions(int numberOfInstructions) {
 		Statistics.numberOfInstructions = numberOfInstructions;
 	}
 
-	public void setNumberOfCycles(int numberOfCycles) {
+	public static void setNumberOfCycles(int numberOfCycles) {
 		Statistics.numberOfCycles = numberOfCycles;
 	}
 }

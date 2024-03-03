@@ -23,4 +23,13 @@ public class ControlSignals {
     public boolean[] getAllControlSignals() {
         return this.arrayOfSignals;
     }
+
+    public void display() {
+        for (boolean x : arrayOfSignals) {
+            System.out.print(x);
+            System.out.print(" ");
+        }
+
+        System.out.println();
+    }
 }

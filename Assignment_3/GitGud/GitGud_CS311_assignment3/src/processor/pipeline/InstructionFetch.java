@@ -25,7 +25,20 @@ public class InstructionFetch {
 			int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
 			IF_OF_Latch.setInstruction(newInstruction);
 			IF_OF_Latch.setPc(currentPC);
-			containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
+
+			ControlSignals lastControlSignals = EX_IF_Latch.getControlSignals();
+			RegisterFile regFileSetPC = containingProcessor.getRegisterFile();
+
+			if(lastControlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+				int branchPC = EX_IF_Latch.getBranchPC();
+				regFileSetPC.setProgramCounter(branchPC);
+				System.out.println("IT IS BRANCHING????");
+				System.out.println(branchPC);
+			}
+			else
+				containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
+
+			containingProcessor.setRegisterFile(regFileSetPC);
 			
 			IF_EnableLatch.setIF_enable(false);
 			IF_OF_Latch.setOF_enable(true);
