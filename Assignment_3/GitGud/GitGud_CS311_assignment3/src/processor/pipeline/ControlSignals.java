@@ -25,10 +25,15 @@ public class ControlSignals {
     }
 
     public void display() {
+        for (OperationSignals v : OperationSignals.values()) {
+            System.out.print(v);
+            System.out.print(" " + arrayOfSignals[v.ordinal()] + ", ");
+        }
+/*
         for (boolean x : arrayOfSignals) {
             System.out.print(x);
             System.out.print(" ");
-        }
+        }*/
 
         System.out.println();
     }

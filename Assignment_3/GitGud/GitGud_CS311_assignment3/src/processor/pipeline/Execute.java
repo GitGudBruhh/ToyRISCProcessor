@@ -22,19 +22,18 @@ public class Execute {
 		//TODO
 		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
 
+		System.out.println("BEFORE EX");
+        controlSignals.display();
+
 		if(OF_EX_Latch.isEX_enable()) {
             if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+
                 int currentPC = OF_EX_Latch.getPc();
                 int branchTarget = OF_EX_Latch.getBranchTarget();
                 int B = OF_EX_Latch.getB();
                 int A = OF_EX_Latch.getA();
                 int op2 = OF_EX_Latch.getOp2();
                 int instruction = OF_EX_Latch.getInstruction();
-
-                        System.out.println("INSTRUCTION OPERATION");
-                        System.out.println(instruction >>> 27);
-                        System.out.println("CSIG BEFORE EX");
-                        controlSignals.display();
 
                 long remainder;
 
@@ -168,20 +167,20 @@ public class Execute {
                 }
 
                 EX_IF_Latch.setBranchPC(branchPC);
-                EX_IF_Latch.setControlSignals(controlSignals);
-
+                EX_MA_Latch.setInstruction(instruction);
                 EX_MA_Latch.setPc(currentPC);
                 EX_MA_Latch.setAluResult(aluResult);
                 EX_MA_Latch.setOp2(op2);
-                EX_MA_Latch.setInstruction(instruction);
             }
-            System.out.println("CSIG AFTER EX");
-            controlSignals.display();
-            System.out.println();
 
-            EX_MA_Latch.setControlSignals(controlSignals);
-            OF_EX_Latch.setEX_enable(false);
             EX_MA_Latch.setMA_enable(true);
+            EX_MA_Latch.setControlSignals(controlSignals);
+            EX_IF_Latch.setControlSignals(controlSignals);
+
+            System.out.println("======================================");
+            controlSignals.display();
+            System.out.println("======================================");
+            OF_EX_Latch.setEX_enable(false);
         }
 	}
 }

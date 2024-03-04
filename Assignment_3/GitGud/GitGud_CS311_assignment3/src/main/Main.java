@@ -20,11 +20,7 @@ public class Main {
 		Configuration.parseConfiguratioFile(args[0]);
 		
 		Processor processor = new Processor();
-		
-		//=====================================================
-		// DELTE LATER
-		// processor.printState(0, 30);
-		//=====================================================
+
 		Simulator.setupSimulation(args[2], processor);
 		Simulator.simulate();
 		

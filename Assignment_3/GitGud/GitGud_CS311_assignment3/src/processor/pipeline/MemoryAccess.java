@@ -19,6 +19,9 @@ public class MemoryAccess {
 	{
 		//TODO
 		ControlSignals controlSignals = EX_MA_Latch.getControlSignals();
+		System.out.println("BEFORE MA");
+        controlSignals.display();
+
 		if(EX_MA_Latch.isMA_enable()) {
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 				int currentPC = EX_MA_Latch.getPc();
@@ -47,10 +50,11 @@ public class MemoryAccess {
 				MA_RW_Latch.setAluResult(aluResult);
 				MA_RW_Latch.setInstruction(instruction);
 			}
+
+			MA_RW_Latch.setControlSignals(controlSignals);
+			EX_MA_Latch.setMA_enable(false);
+			MA_RW_Latch.setRW_enable(true);
 		}
-		MA_RW_Latch.setControlSignals(controlSignals);
-		EX_MA_Latch.setMA_enable(false);
-		MA_RW_Latch.setRW_enable(true);
 	}
 
 }

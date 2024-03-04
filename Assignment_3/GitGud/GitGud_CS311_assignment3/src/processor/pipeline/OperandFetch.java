@@ -1,6 +1,7 @@
 package processor.pipeline;
 
 import processor.Processor;
+// import src.generic.Simulator;
 
 public class OperandFetch {
 	Processor containingProcessor;
@@ -16,11 +17,17 @@ public class OperandFetch {
 		this.controlUnit = new ControlUnit();
 	}
 	
-	public boolean performOF()
+	public void performOF()
 	{
 		int instruction = IF_OF_Latch.getInstruction();
 		ControlSignals controlSignals = controlUnit.createControlSignals(instruction);
-		boolean isEnd = false;
+		System.out.println("BEFORE OF");
+		controlSignals.display();
+
+		// if(controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal()))
+		// 	System.out.println("AAAAAA");
+
+		// System.out.println("BRAHBRHAH");
 
 		if(IF_OF_Latch.isOF_enable()) {
 			//TODO
@@ -42,6 +49,8 @@ public class OperandFetch {
 						immx = (instruction << 10) >> 10;
 						branchTarget = currentPC + immx;
 						rd = (instruction << 5) >>> 27;
+						// System.out.println("IMMX");
+						// System.out.println(immx);
 
 						if (branchTarget == 0) {
 							OF_EX_Latch.setBranchTarget(this.containingProcessor.getRegisterFile().getValue(rd));
@@ -55,7 +64,6 @@ public class OperandFetch {
 							OF_EX_Latch.setB(immx);
 							OF_EX_Latch.setOp2(0); //OF NO USE
 						}
-						// controlSignals.setControlSignal(ControlSignals.OperatingSignals.BranchTaken.ordinal(), true);
 					}
 
 					//Conditional Branches, Arithmetic/Logical, and Load/Store Operations - R2I
@@ -64,9 +72,7 @@ public class OperandFetch {
 						rd = (instruction << 10) >>> 27;
 						immx = (instruction << 15) >> 15;
 						branchTarget = currentPC + immx;
-						System.out.println("CURRENTPC and IMMX");
-						System.out.println(currentPC);
-						System.out.println(immx);
+						// System.out.println("IMMX " + immx);
 
 						//Conditional Branches
 						if (
@@ -83,6 +89,8 @@ public class OperandFetch {
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
 							OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rd));
 							OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd));
+							// System.out.println("BRANCHTARGET");
+							// System.out.println(branchTarget);
 
 						}
 
@@ -133,20 +141,13 @@ public class OperandFetch {
 
 				OF_EX_Latch.setPc(currentPC);
 				OF_EX_Latch.setInstruction(instruction);
-				OF_EX_Latch.setControlSignals(controlSignals);
+			}
 
-				IF_OF_Latch.setOF_enable(false);
-				OF_EX_Latch.setEX_enable(true);
-			}
-			else {
-				OF_EX_Latch.setControlSignals(controlSignals);
-				IF_OF_Latch.setOF_enable(false);
-				OF_EX_Latch.setEX_enable(true);
-				isEnd = true;
-			}
+			OF_EX_Latch.setControlSignals(controlSignals);
+			System.out.println("CSIG NOT NULL");
+			OF_EX_Latch.setEX_enable(true);
+			IF_OF_Latch.setOF_enable(false);
 		}
-
-		return isEnd;
 	}
 
 }

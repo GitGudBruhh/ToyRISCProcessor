@@ -31,6 +31,8 @@ public class Processor {
 	Execute EXUnit;
 	MemoryAccess MAUnit;
 	RegisterWrite RWUnit;
+
+	boolean isIdle = true;
 	
 	public Processor()
 	{
@@ -98,4 +100,11 @@ public class Processor {
 		return RWUnit;
 	}
 
+	public boolean isIdle() {
+		return isIdle;
+	}
+
+	public void setIdle(boolean isIdle) {
+		this.isIdle = isIdle;
+	}
 }

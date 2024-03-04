@@ -21,27 +21,98 @@ public class InstructionFetch {
 	{
 		if(IF_EnableLatch.isIF_enable())
 		{
-			int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
-			int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
-			IF_OF_Latch.setInstruction(newInstruction);
-			IF_OF_Latch.setPc(currentPC);
+			// System.out.println("==============================================================================");
+   //
+			// ControlSignals lastControlSignals = EX_IF_Latch.getControlSignals();
+			// if(containingProcessor.isIdle())
+			// 	containingProcessor.setIdle(false);
+   //
+			// System.out.println("BEFORE IF");
+			// lastControlSignals.display();
+   //
+			// RegisterFile regFileCopy = containingProcessor.getRegisterFile();
+			// int currentPC = regFileCopy.getProgramCounter();
+   //
+			// // System.out.println(currentPC);
+   //
+			// if(lastControlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+			// 	containingProcessor.setIdle(true);
+			// 	IF_EnableLatch.setIF_enable(false);
+   //
+			// 	System.out.println("BRANCHPC AAAA: ");
+			// }
+			// else {
+			// 	if(lastControlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+			// 		int branchPC = EX_IF_Latch.getBranchPC();
+			// 		currentPC = branchPC;
+			// 		IF_OF_Latch.setPc(branchPC);
+			// 		regFileCopy.setProgramCounter(branchPC+1);
+			// 	}
+			// 	else {
+			// 		IF_OF_Latch.setPc(currentPC);
+			// 		regFileCopy.setProgramCounter(currentPC + 1);
+			// 	}
+   //
+			// 	containingProcessor.setRegisterFile(regFileCopy);
+			// 	int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
+			// 	IF_OF_Latch.setInstruction(newInstruction);
+			// 	IF_OF_Latch.setOF_enable(true);
+			// 	System.out.println("BAHRBWBQQUUR");
+			// 	IF_EnableLatch.setIF_enable(false);
+			// }
 
-			ControlSignals lastControlSignals = EX_IF_Latch.getControlSignals();
-			RegisterFile regFileSetPC = containingProcessor.getRegisterFile();
+			ControlSignals controlSignals = EX_IF_Latch.getControlSignals();
+			System.out.println("BEFORE IF");
+			controlSignals.display();
 
-			if(lastControlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
-				int branchPC = EX_IF_Latch.getBranchPC();
-				regFileSetPC.setProgramCounter(branchPC);
-				System.out.println("IT IS BRANCHING????");
-				System.out.println(branchPC);
+			RegisterFile regFileCopy = containingProcessor.getRegisterFile();
+			int currentPC = regFileCopy.getProgramCounter();
+
+			if(containingProcessor.isIdle())
+				containingProcessor.setIdle(false);
+
+			if(controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+				int instruction = containingProcessor.getMainMemory().getWord(currentPC);
+				IF_OF_Latch.setInstruction(instruction);
+				IF_OF_Latch.setPc(currentPC);
+
+				regFileCopy.setProgramCounter(currentPC);
+				containingProcessor.setRegisterFile(regFileCopy);
+
+				IF_OF_Latch.setOF_enable(true);
+				IF_EnableLatch.setIF_enable(false);
+
+				containingProcessor.setIdle(true);
+				return;
 			}
-			else
-				containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
+			else {
+				int branchPC = EX_IF_Latch.getBranchPC();
+				System.out.println("BRNACH PC QFWFQWF: " + branchPC);
 
-			containingProcessor.setRegisterFile(regFileSetPC);
-			
-			IF_EnableLatch.setIF_enable(false);
-			IF_OF_Latch.setOF_enable(true);
+				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+					int instruction = containingProcessor.getMainMemory().getWord(branchPC);
+					IF_OF_Latch.setInstruction(instruction);
+					IF_OF_Latch.setPc(branchPC);
+
+					regFileCopy.setProgramCounter(branchPC + 1);
+					containingProcessor.setRegisterFile(regFileCopy);
+
+					IF_OF_Latch.setOF_enable(true);
+					IF_EnableLatch.setIF_enable(false);
+				}
+				else {
+					int instruction = containingProcessor.getMainMemory().getWord(currentPC);
+					IF_OF_Latch.setInstruction(instruction);
+					IF_OF_Latch.setPc(currentPC);
+
+					regFileCopy.setProgramCounter(currentPC + 1);
+					containingProcessor.setRegisterFile(regFileCopy);
+
+					IF_OF_Latch.setOF_enable(true);
+					IF_EnableLatch.setIF_enable(false);
+				}
+			}
+
 		}
 	}
 
