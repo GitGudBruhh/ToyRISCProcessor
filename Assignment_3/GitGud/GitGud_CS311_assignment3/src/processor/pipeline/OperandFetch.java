@@ -144,7 +144,7 @@ public class OperandFetch {
 			}
 
 			OF_EX_Latch.setControlSignals(controlSignals);
-			System.out.println("CSIG NOT NULL");
+			// System.out.println("CSIG NOT NULL");
 			OF_EX_Latch.setEX_enable(true);
 			IF_OF_Latch.setOF_enable(false);
 		}

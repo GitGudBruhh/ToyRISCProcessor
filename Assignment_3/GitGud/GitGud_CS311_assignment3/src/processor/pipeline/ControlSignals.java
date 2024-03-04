@@ -26,8 +26,10 @@ public class ControlSignals {
 
     public void display() {
         for (OperationSignals v : OperationSignals.values()) {
-            System.out.print(v);
-            System.out.print(" " + arrayOfSignals[v.ordinal()] + ", ");
+            if(arrayOfSignals[v.ordinal()]) {
+                System.out.print(v);
+                System.out.print(" " + arrayOfSignals[v.ordinal()] + ", ");
+            }
         }
 /*
         for (boolean x : arrayOfSignals) {

@@ -42,7 +42,6 @@ public class RegisterWrite {
 					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
 						int rd = (instruction << 10) >>> 27;
 						regFileCopy.setValue(rd, ldResult);
-
 					}
 
 					else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
@@ -50,6 +49,8 @@ public class RegisterWrite {
 						regFileCopy.setValue(rd, (int) aluResult);
 						if(isAluResOverflow)
 							regFileCopy.setValue(31, (int) (aluResult >>> 32));
+
+						System.out.println("DURING SET 31: " + regFileCopy.getValue(31));
 						containingProcessor.setRegisterFile(regFileCopy);
 					}
 

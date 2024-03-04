@@ -74,12 +74,16 @@ public class Execute {
                     case 6:
                         aluResult = (long) A / (long) B;
                         remainder = (long) A % (long) B;
-                        aluResult = (remainder << 32) & aluResult;
+                        aluResult = (remainder << 32) | aluResult;
+                        System.out.println("REMAINDER: " + remainder);
                         break;
                     case 7:
                         aluResult = (long) A / (long) B;
+                        System.out.println("QUOTIENT: " + (aluResult));
                         remainder = (long) A % (long) B;
-                        aluResult = (remainder << 32) & aluResult;
+                        aluResult = (remainder << 32) | aluResult;
+                        System.out.println("REMAINDER: " + remainder);
+                        System.out.println("ALURESULT: " + Long.toBinaryString(aluResult));
                         break;
                     case 8:
                         aluResultLogical = A & B;
