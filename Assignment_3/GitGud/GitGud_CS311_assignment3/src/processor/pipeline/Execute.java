@@ -19,12 +19,7 @@ public class Execute {
 	}
 	
 	public void performEX() {
-		//TODO
 		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
-
-		System.out.println("BEFORE EX");
-        controlSignals.display();
-
 		if(OF_EX_Latch.isEX_enable()) {
             if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
@@ -40,6 +35,27 @@ public class Execute {
                 int branchPC = currentPC + 1;
                 long aluResult = 0;
                 int aluResultLogical;
+
+                /*
+                IMPORTANT NOTE:
+                The aluResult is a 64 bit integer, with the most significant 32 bits containing information to be placed in the x31 register
+                (in certain cases).
+
+                If any arithmetic operation result crosses the 4-byte limit, the structure of the long aluResult automatically
+                takes care of the overflow.
+
+                Logical operation results must always be limited to the least significant 32 bits (to be placed in the destination register).
+                Therefore, a bitwise and operation is performed that sets all the most significant 32 bits to 0 (will come in handy in RW).
+
+                For the division operation, the remainder is set in the most significant 32 bits by performing a bitwise or operation.
+
+                In the RW stage, we check for an overflow by comparing the most significant 32 bits with 0000...00 or 1111...11.
+                The 0s check if the aluResult is a non negative integer with magnitude less than 2^32.
+                The 0s check if the aluResult is a negative integer with magnitude less than 2^32.
+
+                However, if the control signals specify that a division operation has taken place, the remainder will be
+                forcefully written onto x31 even if it is equal to zero.
+                */
 
                 if (
                 controlSignals.getControlSignal(ControlSignals.OperationSignals.JMP.ordinal()) ||
@@ -75,15 +91,11 @@ public class Execute {
                         aluResult = (long) A / (long) B;
                         remainder = (long) A % (long) B;
                         aluResult = (remainder << 32) | aluResult;
-                        System.out.println("REMAINDER: " + remainder);
                         break;
                     case 7:
                         aluResult = (long) A / (long) B;
-                        System.out.println("QUOTIENT: " + (aluResult));
                         remainder = (long) A % (long) B;
                         aluResult = (remainder << 32) | aluResult;
-                        System.out.println("REMAINDER: " + remainder);
-                        System.out.println("ALURESULT: " + Long.toBinaryString(aluResult));
                         break;
                     case 8:
                         aluResultLogical = A & B;
@@ -176,14 +188,19 @@ public class Execute {
                 EX_MA_Latch.setAluResult(aluResult);
                 EX_MA_Latch.setOp2(op2);
             }
-
+            /*
+            Emptying the latch when an end instruction passes through.
+            */
+            else {
+                EX_IF_Latch.setBranchPC(0);
+                EX_MA_Latch.setInstruction(0);
+                EX_MA_Latch.setPc(0);
+                EX_MA_Latch.setAluResult(0);
+                EX_MA_Latch.setOp2(0);
+            }
             EX_MA_Latch.setMA_enable(true);
             EX_MA_Latch.setControlSignals(controlSignals);
             EX_IF_Latch.setControlSignals(controlSignals);
-
-            System.out.println("======================================");
-            controlSignals.display();
-            System.out.println("======================================");
             OF_EX_Latch.setEX_enable(false);
         }
 	}

@@ -20,9 +20,9 @@ public class RegisterWrite {
 		//TODO
 		ControlSignals controlSignals = MA_RW_Latch.getControlSignals();
 
-		System.out.println("BEFORE RW");
-        controlSignals.display();
-		System.out.println("==============================================================================");
+		// System.out.println("BEFORE RW");
+		// controlSignals.display();
+		// System.out.println("==============================================================================");
 
 		if(MA_RW_Latch.isRW_enable()) {
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
@@ -47,11 +47,8 @@ public class RegisterWrite {
 					else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
 						int rd = (instruction << 10) >>> 27;
 						regFileCopy.setValue(rd, (int) aluResult);
-						if(isAluResOverflow)
+						if(isAluResOverflow || controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
 							regFileCopy.setValue(31, (int) (aluResult >>> 32));
-
-						System.out.println("DURING SET 31: " + regFileCopy.getValue(31));
-						containingProcessor.setRegisterFile(regFileCopy);
 					}
 
 					else {

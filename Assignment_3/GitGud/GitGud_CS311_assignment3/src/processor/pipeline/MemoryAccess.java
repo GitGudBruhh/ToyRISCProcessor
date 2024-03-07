@@ -19,8 +19,8 @@ public class MemoryAccess {
 	{
 		//TODO
 		ControlSignals controlSignals = EX_MA_Latch.getControlSignals();
-		System.out.println("BEFORE MA");
-        controlSignals.display();
+		// System.out.println("BEFORE MA");
+		// controlSignals.display();
 
 		if(EX_MA_Latch.isMA_enable()) {
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {

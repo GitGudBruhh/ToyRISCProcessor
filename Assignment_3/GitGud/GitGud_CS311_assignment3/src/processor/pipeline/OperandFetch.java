@@ -19,22 +19,19 @@ public class OperandFetch {
 	
 	public void performOF()
 	{
+		/*
+		=========================================================================================
+		Fetch the instruction from the IF_OF latch and create the corresponding control signals.
+		=========================================================================================
+		*/
 		int instruction = IF_OF_Latch.getInstruction();
 		ControlSignals controlSignals = controlUnit.createControlSignals(instruction);
-		System.out.println("BEFORE OF");
-		controlSignals.display();
-
-		// if(controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal()))
-		// 	System.out.println("AAAAAA");
-
-		// System.out.println("BRAHBRHAH");
 
 		if(IF_OF_Latch.isOF_enable()) {
-			//TODO
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+
 				int opcode = instruction >>> 27;
 				int currentPC = IF_OF_Latch.getPc();
-
 
 				int branchTarget;
 				int immx;
@@ -46,15 +43,18 @@ public class OperandFetch {
 				if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
 					//Unconditional Branch - RI (op2 unused)
 					if (controlSignals.getControlSignal(ControlSignals.OperationSignals.JMP.ordinal())) {
+						/*
+						PC <- PC + rd +immx
+						In ToyRISC, either rd or immx is zero for a jmp
+						*/
 						immx = (instruction << 10) >> 10;
-						branchTarget = currentPC + immx;
 						rd = (instruction << 5) >>> 27;
-						// System.out.println("IMMX");
-						// System.out.println(immx);
+						int offsetFromRd = this.containingProcessor.getRegisterFile().getValue(rd);
+						branchTarget = currentPC + offsetFromRd + immx;
 
-						if (branchTarget == 0) {
-							OF_EX_Latch.setBranchTarget(this.containingProcessor.getRegisterFile().getValue(rd));
-							OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rd)); //immx
+						if (offsetFromRd != 0) {
+							OF_EX_Latch.setBranchTarget(branchTarget);
+							OF_EX_Latch.setB(offsetFromRd); //offsetFromRd
 							OF_EX_Latch.setA(0); //OF NO USE
 							OF_EX_Latch.setOp2(0); //OF NO USE
 						}
@@ -62,6 +62,7 @@ public class OperandFetch {
 						else {
 							OF_EX_Latch.setBranchTarget(branchTarget);
 							OF_EX_Latch.setB(immx);
+							OF_EX_Latch.setA(0); //OF NO USE
 							OF_EX_Latch.setOp2(0); //OF NO USE
 						}
 					}
@@ -72,7 +73,6 @@ public class OperandFetch {
 						rd = (instruction << 10) >>> 27;
 						immx = (instruction << 15) >> 15;
 						branchTarget = currentPC + immx;
-						// System.out.println("IMMX " + immx);
 
 						//Conditional Branches
 						if (
@@ -81,20 +81,20 @@ public class OperandFetch {
 						controlSignals.getControlSignal(ControlSignals.OperationSignals.BLT.ordinal()) ||
 						controlSignals.getControlSignal(ControlSignals.OperationSignals.BGT.ordinal())
 						) {
+							// NOTE:
 							// THE MULTIPLEXER DOES NOT FOLLOW THE DIAGRAM IN THE SLIDES EVEN THOUGH
-							// CONDITIONAL BRANCHES ARE OF IMMEDIATE TYPE - (NO SEPERATE COMPARE INSTRUCTION)
+							// CONDITIONAL BRANCHES ARE OF IMMEDIATE TYPE (DUE TO NO SEPERATE CMP INSTRUCTION)
 							// THE VALUE OF B IS FROM RD AND NOT IMMX
 							// ALU COMPARES A AND B
 							OF_EX_Latch.setBranchTarget(branchTarget);
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
 							OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rd));
 							OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd));
-							// System.out.println("BRANCHTARGET");
-							// System.out.println(branchTarget);
 
 						}
 
 						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
+							// NOTE: (PART 1)
 							// RS1 AND RD ARE SWITCHED FOR THE STORE INSTRUCTION, CAREFUL HERE, SIMPLERISC AND TOYRISC
 							// ARE DIFFERENT
 							// rd  <- rs1 + immx
@@ -106,6 +106,7 @@ public class OperandFetch {
 						}
 
 						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
+							// NOTE: (PART 2)
 							// RS1 AND RD ARE SWITCHED FOR THE STORE INSTRUCTION, CAREFUL HERE, SIMPLERISC AND TOYRISC
 							// ARE DIFFERENT
 							// rs1 -> rd + immx
@@ -117,7 +118,7 @@ public class OperandFetch {
 						}
 
 						//Arithmetic/Logical
-						else if (opcode <= 21) {
+						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.ALUSIGNAL.ordinal())) {
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
 							OF_EX_Latch.setB(immx);
@@ -137,14 +138,19 @@ public class OperandFetch {
 					OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rs2));
 					OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd)); //OF NO USE
 				}
-
-
 				OF_EX_Latch.setPc(currentPC);
 				OF_EX_Latch.setInstruction(instruction);
 			}
-
+			/*
+			Emptying the latch when an end instruction passes through.
+			*/
+			else {
+				OF_EX_Latch.setBranchTarget(0);
+				OF_EX_Latch.setA(0);
+				OF_EX_Latch.setB(0);
+				OF_EX_Latch.setOp2(0);
+			}
 			OF_EX_Latch.setControlSignals(controlSignals);
-			// System.out.println("CSIG NOT NULL");
 			OF_EX_Latch.setEX_enable(true);
 			IF_OF_Latch.setOF_enable(false);
 		}

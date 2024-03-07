@@ -78,29 +78,16 @@ public class Simulator {
 	
 	public static void simulate()
 	{
-		// System.out.println("AAAAAAAAAAAAAA");
-		// processor.printState(0, 30);
-
 		int numberOfInstructionsExecuted = 0;
 		long numberOfCycles = 0;
 
 		processor.enableIFUnit();
 		while(simulationComplete == false)
 		{
-			// System.out.println("================================================================================");
-				// System.out.println("CURRENTPC " + currentPC);
-			// processor.printState(0,30);
-
 			processor.getIFUnit().performIF();
 			if(processor.isIdle()) {
 				simulationComplete = true;
 				break;
-			}
-			try {
-				TimeUnit.MILLISECONDS.sleep(5);
-			}
-			catch (InterruptedException ex) {
-				ex.printStackTrace();
 			}
 			// Clock.incrementClock();
 			processor.getOFUnit().performOF();

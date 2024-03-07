@@ -2,13 +2,13 @@ package processor.pipeline;
 
 public class ControlSignals {
 
-    public enum OperationSignals {ADD, SUB, MUL, DIV, AND, OR, XOR, SLT, SLL, SRL, SRA, LOAD, STORE, JMP, BEQ, BNE, BLT, BGT, END, IMMEDIATE, WB, BRANCHTAKEN}
+    public enum OperationSignals {ADD, SUB, MUL, DIV, AND, OR, XOR, SLT, SLL, SRL, SRA, LOAD, STORE, JMP, BEQ, BNE, BLT, BGT, END, ALUSIGNAL, IMMEDIATE, WB, BRANCHTAKEN}
 
     boolean[] arrayOfSignals;
 
     ControlSignals() {
-        this.arrayOfSignals = new boolean[22];
-        for(int i = 0; i < 22; i++)
+        this.arrayOfSignals = new boolean[23];
+        for(int i = 0; i < 23; i++)
             this.arrayOfSignals[i] = false;
     }
 
@@ -31,11 +31,6 @@ public class ControlSignals {
                 System.out.print(" " + arrayOfSignals[v.ordinal()] + ", ");
             }
         }
-/*
-        for (boolean x : arrayOfSignals) {
-            System.out.print(x);
-            System.out.print(" ");
-        }*/
 
         System.out.println();
     }
