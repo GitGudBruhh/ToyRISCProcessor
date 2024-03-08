@@ -39,6 +39,9 @@ public class RegisterWrite {
 				// int opcode = instruction >>> 27;
 
 				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.WB.ordinal())) {
+					if(isAluResOverflow || controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
+						regFileCopy.setValue(31, (int) (aluResult >>> 32));
+
 					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
 						int rd = (instruction << 10) >>> 27;
 						regFileCopy.setValue(rd, ldResult);
@@ -47,8 +50,6 @@ public class RegisterWrite {
 					else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
 						int rd = (instruction << 10) >>> 27;
 						regFileCopy.setValue(rd, (int) aluResult);
-						if(isAluResOverflow || controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
-							regFileCopy.setValue(31, (int) (aluResult >>> 32));
 					}
 
 					else {
