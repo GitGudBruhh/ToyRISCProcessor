@@ -1,0 +1,2 @@
+Number of instructions executed = 222
+Number of cycles taken = 222
