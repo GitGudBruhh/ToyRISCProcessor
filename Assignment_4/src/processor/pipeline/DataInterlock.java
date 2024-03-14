@@ -6,7 +6,7 @@ public class DataInterlock {
 
     DataInterlock() {
         this.lockVector = new boolean[32];
-        for(elem : lockVector)
+        for(boolean elem : lockVector)
             elem = false;
         this.isStalled = false;
     }

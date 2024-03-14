@@ -8,13 +8,15 @@ public class InstructionFetch {
 	IF_EnableLatchType IF_EnableLatch;
 	IF_OF_LatchType IF_OF_Latch;
 	EX_IF_LatchType EX_IF_Latch;
+	MA_RW_LatchType MA_RW_Latch;
 	
-	public InstructionFetch(Processor containingProcessor, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch, EX_IF_LatchType eX_IF_Latch)
+	public InstructionFetch(Processor containingProcessor, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch, EX_IF_LatchType eX_IF_Latch, MA_RW_LatchType mA_RW_Latch)
 	{
 		this.containingProcessor = containingProcessor;
 		this.IF_EnableLatch = iF_EnableLatch;
 		this.IF_OF_Latch = iF_OF_Latch;
 		this.EX_IF_Latch = eX_IF_Latch;
+		this.MA_RW_Latch = mA_RW_Latch;
 	}
 	
 	public void performIF()
@@ -25,6 +27,15 @@ public class InstructionFetch {
 			RegisterFile regFileCopy = containingProcessor.getRegisterFile();
 			int currentPC = regFileCopy.getProgramCounter();
 
+			/*
+			===================================================================================================
+			Stall if control signals have an IGNORE signal
+			===================================================================================================
+			*/
+			if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
+				IF_EnableLatch.setIF_enable(false);
+				return;
+			}
 
 			/*
 			===================================================================================================
@@ -41,7 +52,7 @@ public class InstructionFetch {
 			The simulator takes care of the processor idling by setting simulationComplete to true.
 			===========================================================================================
 			*/
-			if(controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+			if(controlSignals.getOperationSignal(ControlSignals.OperationSignals.END.ordinal())) {
 				/*
 				Emptying the latch when an end instruction passes through.
 				Setting the processor to an idle state.
@@ -50,6 +61,7 @@ public class InstructionFetch {
 				IF_OF_Latch.setPc(0);
 
 				IF_EnableLatch.setIF_enable(false);
+				MA_RW_Latch.setRW_enable(true);
 				containingProcessor.setIdle(true);
 				return;
 			}
@@ -68,7 +80,7 @@ public class InstructionFetch {
 				Set PC to currentPC + 1 for keeping IF ready for the next instruction.
 				=====================================================================================
 				*/
-				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+				if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal())) {
 					int instruction = containingProcessor.getMainMemory().getWord(branchPC);
 					IF_OF_Latch.setInstruction(instruction);
 					IF_OF_Latch.setPc(branchPC);
@@ -76,8 +88,9 @@ public class InstructionFetch {
 					regFileCopy.setProgramCounter(branchPC + 1);
 					containingProcessor.setRegisterFile(regFileCopy);
 
-					IF_OF_Latch.setOF_enable(true);
 					IF_EnableLatch.setIF_enable(false);
+					// IF_OF_Latch.setOF_enable(true);
+					MA_RW_Latch.setRW_enable(true);
 				}
 				else {
 					int instruction = containingProcessor.getMainMemory().getWord(currentPC);
@@ -87,8 +100,9 @@ public class InstructionFetch {
 					regFileCopy.setProgramCounter(currentPC + 1);
 					containingProcessor.setRegisterFile(regFileCopy);
 
-					IF_OF_Latch.setOF_enable(true);
 					IF_EnableLatch.setIF_enable(false);
+					// IF_OF_Latch.setOF_enable(true);
+					MA_RW_Latch.setRW_enable(true);
 				}
 			}
 		}

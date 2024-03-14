@@ -84,6 +84,7 @@ public class Simulator {
 		processor.enableIFUnit();
 		while(simulationComplete == false)
 		{
+			/*
 			processor.getIFUnit().performIF();
 			if(processor.isIdle()) {
 				simulationComplete = true;
@@ -100,6 +101,13 @@ public class Simulator {
 			Clock.incrementClock();
 			numberOfInstructionsExecuted += 1;
 			// System.out.println(numberOfInstructionsExecuted);
+			*/
+
+			processor.getRWUnit().performRW();
+			processor.getMAUnit().performMA();
+			processor.getEXUnit().performEX();
+			processor.getOFUnit().performOF();
+			processor.getIFUnit().performIF();
 		}
 		
 		// TODO

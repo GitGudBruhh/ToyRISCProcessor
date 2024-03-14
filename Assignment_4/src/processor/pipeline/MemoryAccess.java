@@ -7,12 +7,15 @@ public class MemoryAccess {
 	Processor containingProcessor;
 	EX_MA_LatchType EX_MA_Latch;
 	MA_RW_LatchType MA_RW_Latch;
+	OF_EX_LatchType OF_EX_Latch;
+
 	
-	public MemoryAccess(Processor containingProcessor, EX_MA_LatchType eX_MA_Latch, MA_RW_LatchType mA_RW_Latch)
+	public MemoryAccess(Processor containingProcessor, EX_MA_LatchType eX_MA_Latch, MA_RW_LatchType mA_RW_Latch, OF_EX_LatchType oF_EX_Latch)
 	{
 		this.containingProcessor = containingProcessor;
 		this.EX_MA_Latch = eX_MA_Latch;
 		this.MA_RW_Latch = mA_RW_Latch;
+		this.OF_EX_Latch = OF_EX_Latch;
 	}
 	
 	public void performMA()
@@ -22,8 +25,13 @@ public class MemoryAccess {
 		// System.out.println("BEFORE MA");
 		// controlSignals.display();
 
+		if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
+            EX_MA_Latch.setMA_enable(false);
+            return;
+        }
+
 		if(EX_MA_Latch.isMA_enable()) {
-			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+			if(!controlSignals.getOperationSignal(ControlSignals.OperationSignals.END.ordinal())) {
 				int currentPC = EX_MA_Latch.getPc();
 				long aluResult = EX_MA_Latch.getAluResult();
 				int op2 = EX_MA_Latch.getOp2();
@@ -34,11 +42,11 @@ public class MemoryAccess {
 				int memoryData = op2; //memoryDataRegister
 				int ldResult = 0;
 
-				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
+				if(controlSignals.getOperationSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
 					ldResult = containingProcessor.getMainMemory().getWord(memoryAddress);
 				}
 
-				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
+				if(controlSignals.getOperationSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
 					MainMemory newMemory = containingProcessor.getMainMemory();
 					newMemory.setWord(memoryAddress, memoryData);
 					containingProcessor.setMainMemory(newMemory);
@@ -53,7 +61,8 @@ public class MemoryAccess {
 
 			MA_RW_Latch.setControlSignals(controlSignals);
 			EX_MA_Latch.setMA_enable(false);
-			MA_RW_Latch.setRW_enable(true);
+			// MA_RW_Latch.setRW_enable(true);
+			OF_EX_Latch.setEX_enable(true);
 		}
 	}
 

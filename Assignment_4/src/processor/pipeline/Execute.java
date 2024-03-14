@@ -9,19 +9,32 @@ public class Execute {
 	OF_EX_LatchType OF_EX_Latch;
 	EX_MA_LatchType EX_MA_Latch;
 	EX_IF_LatchType EX_IF_Latch;
+	IF_OF_LatchType IF_OF_Latch;
 	
-	public Execute(Processor containingProcessor, OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch, EX_IF_LatchType eX_IF_Latch)
+	public Execute(Processor containingProcessor, OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch, EX_IF_LatchType eX_IF_Latch, IF_OF_LatchType iF_OF_Latch)
 	{
 		this.containingProcessor = containingProcessor;
 		this.OF_EX_Latch = oF_EX_Latch;
 		this.EX_MA_Latch = eX_MA_Latch;
 		this.EX_IF_Latch = eX_IF_Latch;
+		this.IF_OF_Latch = iF_OF_Latch;
 	}
 	
 	public void performEX() {
 		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
+
+		/*
+        ===================================================================================================
+        Stall if control signals have an IGNORE signal
+        ===================================================================================================
+        */
+        if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
+            OF_EX_Latch.setEX_enable(false);
+            return;
+        }
+
 		if(OF_EX_Latch.isEX_enable()) {
-            if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+            if(!controlSignals.getOperationSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
                 int currentPC = OF_EX_Latch.getPc();
                 int branchTarget = OF_EX_Latch.getBranchTarget();
@@ -58,11 +71,11 @@ public class Execute {
                 */
 
                 if (
-                controlSignals.getControlSignal(ControlSignals.OperationSignals.JMP.ordinal()) ||
-                controlSignals.getControlSignal(ControlSignals.OperationSignals.BEQ.ordinal()) ||
-                controlSignals.getControlSignal(ControlSignals.OperationSignals.BNE.ordinal()) ||
-                controlSignals.getControlSignal(ControlSignals.OperationSignals.BLT.ordinal()) ||
-                controlSignals.getControlSignal(ControlSignals.OperationSignals.BGT.ordinal())
+                controlSignals.getOperationSignal(ControlSignals.OperationSignals.JMP.ordinal()) ||
+                controlSignals.getOperationSignal(ControlSignals.OperationSignals.BEQ.ordinal()) ||
+                controlSignals.getOperationSignal(ControlSignals.OperationSignals.BNE.ordinal()) ||
+                controlSignals.getOperationSignal(ControlSignals.OperationSignals.BLT.ordinal()) ||
+                controlSignals.getOperationSignal(ControlSignals.OperationSignals.BGT.ordinal())
                 ) {
                     branchPC = branchTarget;
                 }
@@ -153,30 +166,30 @@ public class Execute {
                         break;
                     case 24:
                         branchPC = branchTarget;
-                        controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+                        controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
                         break;
                     case 25:
                         branchPC = branchTarget;
                         if (A == B)
-                            controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+                            controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
                         break;
                     case 26:
                         branchPC = branchTarget;
                         if (A != B)
-                            controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+                            controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
                         break;
                     case 27:
                         branchPC = branchTarget;
                         if (A < B)
-                            controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+                            controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
                         break;
                     case 28:
                         branchPC = branchTarget;
                         if (A > B)
-                            controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
+                            controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
                             break;
                     case 29:
-                        controlSignals.setControlSignal(ControlSignals.OperationSignals.END.ordinal(), true);
+                        controlSignals.setOperationSignal(ControlSignals.OperationSignals.END.ordinal(), true);
                         break;
                     default:
                         return;
@@ -188,6 +201,7 @@ public class Execute {
                 EX_MA_Latch.setAluResult(aluResult);
                 EX_MA_Latch.setOp2(op2);
             }
+
             /*
             Emptying the latch when an end instruction passes through.
             */
@@ -198,10 +212,11 @@ public class Execute {
                 EX_MA_Latch.setAluResult(0);
                 EX_MA_Latch.setOp2(0);
             }
-            EX_MA_Latch.setMA_enable(true);
             EX_MA_Latch.setControlSignals(controlSignals);
             EX_IF_Latch.setControlSignals(controlSignals);
             OF_EX_Latch.setEX_enable(false);
+            // EX_MA_Latch.setMA_enable(true);
+            IF_OF_Latch.setOF_enable(true);
         }
 	}
 }

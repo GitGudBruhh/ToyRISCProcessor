@@ -7,13 +7,15 @@ public class OperandFetch {
 	Processor containingProcessor;
 	IF_OF_LatchType IF_OF_Latch;
 	OF_EX_LatchType OF_EX_Latch;
+	IF_EnableLatchType IF_EnableLatch;
 	ControlUnit controlUnit;
 	
-	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch)
+	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch, IF_EnableLatchType iF_Enable_Latch)
 	{
 		this.containingProcessor = containingProcessor;
 		this.IF_OF_Latch = iF_OF_Latch;
 		this.OF_EX_Latch = oF_EX_Latch;
+		this.IF_EnableLatch = iF_Enable_Latch;
 		this.controlUnit = new ControlUnit();
 	}
 	
@@ -28,7 +30,18 @@ public class OperandFetch {
 		ControlSignals controlSignals = controlUnit.createControlSignals(instruction);
 
 		if(IF_OF_Latch.isOF_enable()) {
-			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+
+			/*
+			===================================================================================================
+			Stall if control signals have an IGNORE signal
+			===================================================================================================
+			*/
+			if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
+				IF_OF_Latch.setOF_enable(false);
+				return;
+			}
+
+			if(!controlSignals.getOperationSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
 				int opcode = instruction >>> 27;
 				int currentPC = IF_OF_Latch.getPc();
@@ -40,9 +53,9 @@ public class OperandFetch {
 				int rs1;
 
 				//RI and R2I types
-				if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
+				if (controlSignals.getMiscSignal(ControlSignals.MiscSignals.IMMEDIATE.ordinal())) {
 					//Unconditional Branch - RI (op2 unused)
-					if (controlSignals.getControlSignal(ControlSignals.OperationSignals.JMP.ordinal())) {
+					if (controlSignals.getOperationSignal(ControlSignals.OperationSignals.JMP.ordinal())) {
 						/*
 						PC <- PC + rd +immx
 						In ToyRISC, either rd or immx is zero for a jmp
@@ -76,10 +89,10 @@ public class OperandFetch {
 
 						//Conditional Branches
 						if (
-						controlSignals.getControlSignal(ControlSignals.OperationSignals.BEQ.ordinal()) ||
-						controlSignals.getControlSignal(ControlSignals.OperationSignals.BNE.ordinal()) ||
-						controlSignals.getControlSignal(ControlSignals.OperationSignals.BLT.ordinal()) ||
-						controlSignals.getControlSignal(ControlSignals.OperationSignals.BGT.ordinal())
+						controlSignals.getOperationSignal(ControlSignals.OperationSignals.BEQ.ordinal()) ||
+						controlSignals.getOperationSignal(ControlSignals.OperationSignals.BNE.ordinal()) ||
+						controlSignals.getOperationSignal(ControlSignals.OperationSignals.BLT.ordinal()) ||
+						controlSignals.getOperationSignal(ControlSignals.OperationSignals.BGT.ordinal())
 						) {
 							// NOTE:
 							// THE MULTIPLEXER DOES NOT FOLLOW THE DIAGRAM IN THE SLIDES EVEN THOUGH
@@ -93,7 +106,7 @@ public class OperandFetch {
 
 						}
 
-						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
+						else if (controlSignals.getOperationSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
 							// NOTE: (PART 1)
 							// RS1 AND RD ARE SWITCHED FOR THE STORE INSTRUCTION, CAREFUL HERE, SIMPLERISC AND TOYRISC
 							// ARE DIFFERENT
@@ -105,7 +118,7 @@ public class OperandFetch {
 							OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd)); //OF NO USE
 						}
 
-						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
+						else if (controlSignals.getOperationSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
 							// NOTE: (PART 2)
 							// RS1 AND RD ARE SWITCHED FOR THE STORE INSTRUCTION, CAREFUL HERE, SIMPLERISC AND TOYRISC
 							// ARE DIFFERENT
@@ -118,7 +131,7 @@ public class OperandFetch {
 						}
 
 						//Arithmetic/Logical
-						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.ALUSIGNAL.ordinal())) {
+						else if (controlSignals.getMiscSignal(ControlSignals.MiscSignals.ALUSIGNAL.ordinal())) {
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
 							OF_EX_Latch.setB(immx);
@@ -151,8 +164,9 @@ public class OperandFetch {
 				OF_EX_Latch.setOp2(0);
 			}
 			OF_EX_Latch.setControlSignals(controlSignals);
-			OF_EX_Latch.setEX_enable(true);
 			IF_OF_Latch.setOF_enable(false);
+			// OF_EX_Latch.setEX_enable(true);
+			IF_EnableLatch.setIF_enable(true);
 		}
 	}
 
