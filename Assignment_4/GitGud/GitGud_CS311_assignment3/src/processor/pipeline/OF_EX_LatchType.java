@@ -88,7 +88,7 @@ public class OF_EX_LatchType {
 		return this.isIgnore;
 	}
 
-	public void setIgnore(ignore) {
+	public void setIgnore(boolean ignore) {
 		this.isIgnore = ignore;
 	}
 }

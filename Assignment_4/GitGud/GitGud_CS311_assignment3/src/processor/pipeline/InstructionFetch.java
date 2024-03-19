@@ -43,54 +43,56 @@ public class InstructionFetch {
 			The simulator takes care of the processor idling by setting simulationComplete to true.
 			===========================================================================================
 			*/
-			if(controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
-				/*
-				Emptying the latch when an end instruction passes through.
-				Setting the processor to an idle state.
-				*/
-				IF_OF_Latch.setInstruction(0);
-				IF_OF_Latch.setPc(0);
+			if(!containingProcessor.isStalled()) {
+				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+					/*
+					Emptying the latch when an end instruction passes through.
+					Setting the processor to an idle state.
+					*/
+					IF_OF_Latch.setInstruction(0);
+					IF_OF_Latch.setPc(0);
 
-				IF_EnableLatch.setIF_enable(false);
-				containingProcessor.setIdle(true);
-				return;
-			}
-			else {
-				/*
-				Assume a branchPC exists.
-				*/
-				int branchPC = EX_IF_Latch.getBranchPC();
-
-				/*
-				=====================================================================================
-				If the branch is taken, get the instruction from branchPC, push it into the latch.
-				Set PC to branchPC + 1 for keeping IF ready for the next instruction.
-
-				If branch is not taken, get the instruction from currentPC and push it to the latch.
-				Set PC to currentPC + 1 for keeping IF ready for the next instruction.
-				=====================================================================================
-				*/
-				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
-					int instruction = containingProcessor.getMainMemory().getWord(branchPC);
-					IF_OF_Latch.setInstruction(instruction);
-					IF_OF_Latch.setPc(branchPC);
-
-					regFileCopy.setProgramCounter(branchPC + 1);
-					containingProcessor.setRegisterFile(regFileCopy);
-
-					IF_OF_Latch.setOF_enable(true);
 					IF_EnableLatch.setIF_enable(false);
+					containingProcessor.setIdle(true);
+					return;
 				}
 				else {
-					int instruction = containingProcessor.getMainMemory().getWord(currentPC);
-					IF_OF_Latch.setInstruction(instruction);
-					IF_OF_Latch.setPc(currentPC);
+					/*
+					Assume a branchPC exists.
+					*/
+					int branchPC = EX_IF_Latch.getBranchPC();
 
-					regFileCopy.setProgramCounter(currentPC + 1);
-					containingProcessor.setRegisterFile(regFileCopy);
+					/*
+					=====================================================================================
+					If the branch is taken, get the instruction from branchPC, push it into the latch.
+					Set PC to branchPC + 1 for keeping IF ready for the next instruction.
 
-					IF_OF_Latch.setOF_enable(true);
-					IF_EnableLatch.setIF_enable(false);
+					If branch is not taken, get the instruction from currentPC and push it to the latch.
+					Set PC to currentPC + 1 for keeping IF ready for the next instruction.
+					=====================================================================================
+					*/
+					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+						int instruction = containingProcessor.getMainMemory().getWord(branchPC);
+						IF_OF_Latch.setInstruction(instruction);
+						IF_OF_Latch.setPc(branchPC);
+
+						regFileCopy.setProgramCounter(branchPC + 1);
+						containingProcessor.setRegisterFile(regFileCopy);
+
+						IF_OF_Latch.setOF_enable(true);
+						IF_EnableLatch.setIF_enable(false);
+					}
+					else {
+						int instruction = containingProcessor.getMainMemory().getWord(currentPC);
+						IF_OF_Latch.setInstruction(instruction);
+						IF_OF_Latch.setPc(currentPC);
+
+						regFileCopy.setProgramCounter(currentPC + 1);
+						containingProcessor.setRegisterFile(regFileCopy);
+
+						IF_OF_Latch.setOF_enable(true);
+						IF_EnableLatch.setIF_enable(false);
+					}
 				}
 			}
 		}

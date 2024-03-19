@@ -9,7 +9,7 @@ public class Execute {
 	OF_EX_LatchType OF_EX_Latch;
 	EX_MA_LatchType EX_MA_Latch;
 	EX_IF_LatchType EX_IF_Latch;
-	IF_OF_LatchType IF_OF_Latch
+	IF_OF_LatchType IF_OF_Latch;
 	
 	public Execute(Processor containingProcessor, OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch, EX_IF_LatchType eX_IF_Latch, IF_OF_LatchType iF_OF_Latch)
 	{
@@ -17,7 +17,7 @@ public class Execute {
 		this.OF_EX_Latch = oF_EX_Latch;
 		this.EX_MA_Latch = eX_MA_Latch;
 		this.EX_IF_Latch = eX_IF_Latch;
-		this.IF_OF_Latch = iF_OF_Latch
+		this.IF_OF_Latch = iF_OF_Latch;
 	}
 	
 	public void performEX() {

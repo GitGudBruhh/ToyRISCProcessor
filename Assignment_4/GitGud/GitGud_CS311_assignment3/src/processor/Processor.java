@@ -33,8 +33,8 @@ public class Processor {
 	RegisterWrite RWUnit;
 
 	boolean isIdle = true;
-	int regLockVector[32];
-	boolean regWriteCurrentCycle[32];
+	public int[] regLockVector;
+	public boolean[] regWriteCurrentCycle;
 	boolean isStalled;
 	
 	public Processor()
@@ -54,6 +54,9 @@ public class Processor {
 		EXUnit = new Execute(this, OF_EX_Latch, EX_MA_Latch, EX_IF_Latch, IF_OF_Latch);
 		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch, OF_EX_Latch);
 		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch, EX_MA_Latch);
+
+		regLockVector = new int[32];
+		regWriteCurrentCycle = new boolean[32];
 	}
 	
 	public void printState(int memoryStartingAddress, int memoryEndingAddress)
@@ -111,7 +114,11 @@ public class Processor {
 		this.isIdle = isIdle;
 	}
 
-	public void setStalled(stalled) {
-		this.setStalled = stalled;
+	public boolean isStalled() {
+		return this.isStalled;
+	}
+
+	public void setStalled(boolean stalled) {
+		this.isStalled = stalled;
 	}
 }

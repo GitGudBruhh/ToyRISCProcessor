@@ -22,7 +22,7 @@ public class IF_EnableLatchType {
 		return this.isIgnore;
 	}
 
-	public void setIgnore(ignore) {
+	public void setIgnore(boolean ignore) {
 		this.isIgnore = ignore;
 	}
 
