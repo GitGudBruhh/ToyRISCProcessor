@@ -214,6 +214,7 @@ public class Execute {
             EX_MA_Latch.setControlSignals(controlSignals);
             EX_MA_Latch.setIgnore(isIgnore);
             EX_IF_Latch.setControlSignals_buf(controlSignals);
+            EX_IF_Latch.setIgnoreBT_buf(isIgnore);
             OF_EX_Latch.setEX_enable(false);
         }
 	}

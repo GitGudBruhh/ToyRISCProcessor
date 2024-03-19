@@ -3,10 +3,12 @@ package processor.pipeline;
 public class EX_IF_LatchType {
 	
 	//added branchPC, controlSignals (use only isBranchTaken)
-	int branchPC_buf;
 	int branchPC;
+	int branchPC_buf;
 	ControlSignals controlSignals;
 	ControlSignals controlSignals_buf;
+	boolean isIgnoreBT;
+	boolean isIgnoreBT_buf;
 
 	public EX_IF_LatchType()
 	{
@@ -29,6 +31,14 @@ public class EX_IF_LatchType {
 		this.controlSignals = controlSignals;
 	}
 
+	public boolean isIgnoreBT() {
+		return this.isIgnoreBT;
+	}
+
+	public void setIgnore(boolean ignore) {
+		this.isIgnoreBT = ignore;
+	}
+
 	public int getBranchPC_buf() {
 		return this.branchPC_buf;
 	}
@@ -45,8 +55,18 @@ public class EX_IF_LatchType {
 		this.controlSignals_buf = controlSignals;
 	}
 
+
+	public boolean isIgnoreBT_buf() {
+		return this.isIgnoreBT;
+	}
+
+	public void setIgnoreBT_buf(boolean ignore) {
+		this.isIgnoreBT = ignore;
+	}
+
 	public void writeBuffer() {
 		branchPC = branchPC_buf;
 		controlSignals = controlSignals_buf;
+		isIgnoreBT = isIgnoreBT_buf;
 	}
 }

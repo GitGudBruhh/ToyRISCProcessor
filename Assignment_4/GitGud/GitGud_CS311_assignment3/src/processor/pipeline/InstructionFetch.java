@@ -27,6 +27,8 @@ public class InstructionFetch {
 			RegisterFile regFileCopy = containingProcessor.getRegisterFile();
 			int currentPC = regFileCopy.getProgramCounter();
 
+			boolean isIgnoreBT = EX_IF_Latch.isIgnoreBT();
+
 
 			/*
 			===================================================================================================
@@ -71,7 +73,7 @@ public class InstructionFetch {
 					Set PC to currentPC + 1 for keeping IF ready for the next instruction.
 					=====================================================================================
 					*/
-					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal()) && !isIgnoreBT) {
 						int instruction = containingProcessor.getMainMemory().getWord(branchPC);
 						IF_OF_Latch.setInstruction(instruction);
 						IF_OF_Latch.setPc(branchPC);
