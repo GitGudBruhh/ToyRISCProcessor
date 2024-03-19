@@ -21,25 +21,20 @@ public class RegisterWrite {
 	{
 		//TODO
 		ControlSignals controlSignals = MA_RW_Latch.getControlSignals();
+		boolean isIgnore = MA_RW_Latch.isIgnore();
 
-		// System.out.println("BEFORE RW");
-		// controlSignals.display();
-		// System.out.println("==============================================================================");
-
-		if(MA_RW_Latch.isRW_enable()) {
+		if(MA_RW_Latch.isRW_enable() && !isIgnore) {
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 				int pc = MA_RW_Latch.getPc();
 				int ldResult = MA_RW_Latch.getLdResult();
 				long aluResult = MA_RW_Latch.getAluResult();
 				int instruction = MA_RW_Latch.getInstruction();
-				boolean isIgnore = MA_RW_Latch.isIgnore();
 
 				boolean isAluResOverflow = true;
 				RegisterFile regFileCopy = containingProcessor.getRegisterFile();
 
 				if((aluResult >>> 32) == 0 || (aluResult >>> 32) == 0x00000000ffffffffL)
 					isAluResOverflow = false;
-				// int opcode = instruction >>> 27;
 
 				if(!isIgnore) {
 					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.WB.ordinal())) {
@@ -65,6 +60,7 @@ public class RegisterWrite {
 							regFileCopy.setValue(rd, (int) aluResult);
 							containingProcessor.regLockVector[rd] -= 1;
 							containingProcessor.regWriteCurrentCycle[rd] = true;
+
 							if(isAluResOverflow)
 								regFileCopy.setValue(31, (int) (aluResult >>> 32));
 							containingProcessor.setRegisterFile(regFileCopy);
@@ -74,7 +70,10 @@ public class RegisterWrite {
 			}
 		}
 		MA_RW_Latch.setRW_enable(false);
-		// IF_EnableLatch.setIF_enable(true);
 		EX_MA_Latch.setMA_enable(true);
+
+
+		System.out.print("RW: ");
+		System.out.println(isIgnore);
 	}
 }

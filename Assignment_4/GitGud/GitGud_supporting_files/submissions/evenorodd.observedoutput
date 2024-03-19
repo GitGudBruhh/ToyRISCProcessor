@@ -1,0 +1,182 @@
+0
+
+RW: true
+MA: true
+EX: true
+OF: true
+HALTTT
+-1341784064
+1
+IF: false
+1
+
+RW: true
+MA: true
+EX: true
+HALTTT
+952500226
+2
+IF: false
+2
+
+RW: true
+MA: true
+EX: false
+HALTTT
+-935460860
+3
+IF: false
+3
+
+RW: true
+MA: false
+EX: false
+HALTTT
+311730176
+4
+IF: false
+4
+
+RW: false
+MA: false
+EX: false
+HALTTT
+177471489
+5
+IF: false
+5
+
+RW: false
+MA: false
+EX: true
+OF: true
+HALTTT
+-402653184
+6
+IF: false
+6
+
+RW: false
+MA: true
+EX: true
+HALTTT
+311730176
+7
+IF: false
+7
+
+RW: true
+MA: true
+EX: true
+HALTTT
+445906945
+8
+IF: false
+8
+
+RW: true
+MA: true
+EX: false
+HALTTT
+8
+
+RW: true
+MA: false
+EX: false
+IF: false
+
+Register File Contents:
+
+PC	: 7
+
+x0	: 0
+x1	: 65535
+x2	: 65535
+x3	: 0
+x4	: 0
+x5	: 0
+x6	: 0
+x7	: 0
+x8	: 0
+x9	: 0
+x10	: 0
+x11	: 0
+x12	: 0
+x13	: 0
+x14	: 0
+x15	: 0
+x16	: 0
+x17	: 0
+x18	: 0
+x19	: 0
+x20	: 0
+x21	: 0
+x22	: 0
+x23	: 0
+x24	: 0
+x25	: 0
+x26	: 0
+x27	: 0
+x28	: 0
+x29	: 0
+x30	: 0
+x31	: 0
+
+
+
+Main Memory Contents:
+
+0		: 11
+1		: -1341784064
+2		: 952500226
+3		: -935460860
+4		: 311730176
+5		: 177471489
+6		: -402653184
+7		: 311730176
+8		: 445906945
+9		: -402653184
+10		: 0
+11		: 0
+12		: 0
+13		: 0
+14		: 0
+15		: 0
+16		: 0
+17		: 0
+18		: 0
+19		: 0
+20		: 0
+21		: 0
+22		: 0
+23		: 0
+24		: 0
+25		: 0
+26		: 0
+27		: 0
+28		: 0
+29		: 0
+30		: 0
+31		: 0
+32		: 0
+33		: 0
+34		: 0
+35		: 0
+36		: 0
+37		: 0
+38		: 0
+39		: 0
+40		: 0
+41		: 0
+42		: 0
+43		: 0
+44		: 0
+45		: 0
+46		: 0
+47		: 0
+48		: 0
+49		: 0
+50		: 0
+
+
+Hash of the Processor State = -1943251011

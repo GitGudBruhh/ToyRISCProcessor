@@ -37,6 +37,9 @@ public class Processor {
 	public boolean[] regWriteCurrentCycle;
 	boolean branchTakenCurrentCycle;
 	boolean isStalled;
+	boolean flag_IOE_clear;
+
+	boolean[] bubbles;
 	
 	public Processor()
 	{
@@ -58,6 +61,12 @@ public class Processor {
 
 		regLockVector = new int[32];
 		regWriteCurrentCycle = new boolean[32];
+		flag_IOE_clear = false;
+		bubbles = new boolean[5];
+
+		for (boolean v : bubbles) {
+			v = true;
+		}
 	}
 	
 	public void printState(int memoryStartingAddress, int memoryEndingAddress)
@@ -85,6 +94,10 @@ public class Processor {
 
 	public void enableIFUnit() {
 		this.IF_EnableLatch.setIF_enable(true);
+	}
+
+	public void forceDisableIFUnit() {
+		this.IF_EnableLatch.setIF_enable(false);
 	}
 
 	public InstructionFetch getIFUnit() {
@@ -132,11 +145,31 @@ public class Processor {
 	}
 
 	public void afterCycleRun() {
+
 		EX_IF_Latch.writeBuffer();
 
 		for(boolean v : regWriteCurrentCycle)
 			v = false;
 
 		branchTakenCurrentCycle = false;
+
+		if(flag_IOE_clear) {
+			IF_OF_Latch.setIgnore(true);
+			OF_EX_Latch.setIgnore(true);
+			EX_MA_Latch.setIgnore(true);
+		}
+	}
+
+	public void setIOE_clear() {
+		flag_IOE_clear = true;
+	}
+
+	public void setBubble(int stage, int b) {
+		bubbles[stage-1] = b;
+	}
+
+
+	public boolean isBubble(int stage) {
+		return bubbles[stage-1];
 	}
 }
