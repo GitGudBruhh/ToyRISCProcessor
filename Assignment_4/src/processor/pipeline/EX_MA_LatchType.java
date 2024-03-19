@@ -13,6 +13,8 @@ public class EX_MA_LatchType {
 	public EX_MA_LatchType()
 	{
 		MA_enable = false;
+		controlSignals.setMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal(), true);
+
 	}
 
 	public boolean isMA_enable() {

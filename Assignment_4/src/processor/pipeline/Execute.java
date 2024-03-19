@@ -10,14 +10,21 @@ public class Execute {
 	EX_MA_LatchType EX_MA_Latch;
 	EX_IF_LatchType EX_IF_Latch;
 	IF_OF_LatchType IF_OF_Latch;
+	Interlocks interlocks;
 	
-	public Execute(Processor containingProcessor, OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch, EX_IF_LatchType eX_IF_Latch, IF_OF_LatchType iF_OF_Latch)
-	{
+	public Execute(Processor containingProcessor,
+	OF_EX_LatchType oF_EX_Latch,
+	EX_MA_LatchType eX_MA_Latch,
+	EX_IF_LatchType eX_IF_Latch,
+	IF_OF_LatchType iF_OF_Latch,
+	Interlocks interlocks) {
 		this.containingProcessor = containingProcessor;
 		this.OF_EX_Latch = oF_EX_Latch;
 		this.EX_MA_Latch = eX_MA_Latch;
 		this.EX_IF_Latch = eX_IF_Latch;
-		this.IF_OF_Latch = iF_OF_Latch;
+		this.IF_OF_Latch = iF_OF_Latch; // USED ONLY FOR TURNING ON THE STAGE
+        this.interlocks = interlocks;
+
 	}
 	
 	public void performEX() {
@@ -28,10 +35,10 @@ public class Execute {
         Stall if control signals have an IGNORE signal
         ===================================================================================================
         */
-        if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
-            OF_EX_Latch.setEX_enable(false);
-            return;
-        }
+        // if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
+        //     OF_EX_Latch.setEX_enable(false);
+        //     return;
+        // }
 
 		if(OF_EX_Latch.isEX_enable()) {
             if(!controlSignals.getOperationSignal(ControlSignals.OperationSignals.END.ordinal())) {
@@ -167,27 +174,47 @@ public class Execute {
                     case 24:
                         branchPC = branchTarget;
                         controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
+                        ControlInterlock cI_buffer = interlocks.getControlInterlockBuf();
+                        cI_buffer.setBranchTaken(true);
+                        interlocks.setControlInterlockBuf(cI_buffer);
+
                         break;
                     case 25:
                         branchPC = branchTarget;
-                        if (A == B)
+                        if (A == B) {
                             controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
+                            ControlInterlock cI_buffer = interlocks.getControlInterlockBuf();
+                            cI_buffer.setBranchTaken(true);
+                            interlocks.setControlInterlockBuf(cI_buffer);
+                        }
                         break;
                     case 26:
                         branchPC = branchTarget;
-                        if (A != B)
+                        if (A != B) {
                             controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
+                            ControlInterlock cI_buffer = interlocks.getControlInterlockBuf();
+                            cI_buffer.setBranchTaken(true);
+                            interlocks.setControlInterlockBuf(cI_buffer);
+                        }
                         break;
                     case 27:
                         branchPC = branchTarget;
-                        if (A < B)
+                        if (A < B) {
                             controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
+                            ControlInterlock cI_buffer = interlocks.getControlInterlockBuf();
+                            cI_buffer.setBranchTaken(true);
+                            interlocks.setControlInterlockBuf(cI_buffer);
+                        }
                         break;
                     case 28:
                         branchPC = branchTarget;
-                        if (A > B)
+                        if (A > B) {
                             controlSignals.setMiscSignal(ControlSignals.MiscSignals.BRANCHTAKEN.ordinal(), true);
-                            break;
+                            ControlInterlock cI_buffer = interlocks.getControlInterlockBuf();
+                            cI_buffer.setBranchTaken(true);
+                            interlocks.setControlInterlockBuf(cI_buffer);
+                        }
+                        break;
                     case 29:
                         controlSignals.setOperationSignal(ControlSignals.OperationSignals.END.ordinal(), true);
                         break;
@@ -206,14 +233,15 @@ public class Execute {
             Emptying the latch when an end instruction passes through.
             */
             else {
-                EX_IF_Latch.setBranchPC(0);
-                EX_MA_Latch.setInstruction(0);
-                EX_MA_Latch.setPc(0);
-                EX_MA_Latch.setAluResult(0);
-                EX_MA_Latch.setOp2(0);
+                EX_IF_Latch.setBranchPC(null);
+                EX_MA_Latch.setInstruction(null);
+                EX_MA_Latch.setPc(null);
+                EX_MA_Latch.setAluResult(null);
+                EX_MA_Latch.setOp2(null);
             }
+
             EX_MA_Latch.setControlSignals(controlSignals);
-            EX_IF_Latch.setControlSignals(controlSignals);
+            EX_IF_Latch.setControlSignals(controlSignals); //WARNING: USE ONLY BRANCHTAKEN SIGNAL
             OF_EX_Latch.setEX_enable(false);
             // EX_MA_Latch.setMA_enable(true);
             IF_OF_Latch.setOF_enable(true);

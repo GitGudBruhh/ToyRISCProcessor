@@ -6,9 +6,11 @@ public class IF_OF_LatchType {
 	int instruction;
 	//added pc
 	int pc;
+	boolean isIgnore;
 	
 	public IF_OF_LatchType() {
 		OF_enable = false;
+		isIgnore = false;
 	}
 
 	public boolean isOF_enable() {

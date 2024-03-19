@@ -9,34 +9,35 @@ public class InstructionFetch {
 	IF_OF_LatchType IF_OF_Latch;
 	EX_IF_LatchType EX_IF_Latch;
 	MA_RW_LatchType MA_RW_Latch;
+	Interlocks interlocks;
 	
-	public InstructionFetch(Processor containingProcessor, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch, EX_IF_LatchType eX_IF_Latch, MA_RW_LatchType mA_RW_Latch)
-	{
+	public InstructionFetch(Processor containingProcessor,
+	IF_EnableLatchType iF_EnableLatch,
+	IF_OF_LatchType iF_OF_Latch,
+	EX_IF_LatchType eX_IF_Latch,
+	MA_RW_LatchType mA_RW_Latch,
+	Interlocks interlocks) {
 		this.containingProcessor = containingProcessor;
 		this.IF_EnableLatch = iF_EnableLatch;
 		this.IF_OF_Latch = iF_OF_Latch;
 		this.EX_IF_Latch = eX_IF_Latch;
-		this.MA_RW_Latch = mA_RW_Latch;
+		this.MA_RW_Latch = mA_RW_Latch; // USED ONLY FOR TURNING ON THE STAGE
+		this.interlocks = interlocks;
 	}
 	
-	public void performIF()
-	{
+	public void performIF() {
+		ControlSignals controlSignals = EX_IF_Latch.getControlSignals();
+		RegisterFile regFileCopy = containingProcessor.getRegisterFile();
+		int currentPC = regFileCopy.getProgramCounter();
+
+		if(isStallRequired()) {
+			IF_EnableLatch.setIF_enable(false);
+			MA_RW_Latch.setRW_enable(true);
+			return;
+		}
+
 		if(IF_EnableLatch.isIF_enable())
 		{
-			ControlSignals controlSignals = EX_IF_Latch.getControlSignals();
-			RegisterFile regFileCopy = containingProcessor.getRegisterFile();
-			int currentPC = regFileCopy.getProgramCounter();
-
-			/*
-			===================================================================================================
-			Stall if control signals have an IGNORE signal
-			===================================================================================================
-			*/
-			if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
-				IF_EnableLatch.setIF_enable(false);
-				return;
-			}
-
 			/*
 			===================================================================================================
 			An idle processor denotes the start of a program, and an end instruction sets the processor to idle.
@@ -108,4 +109,124 @@ public class InstructionFetch {
 		}
 	}
 
+	/*
+	NOTE:
+	The IF stage has to check for stalls in the current cycle before write
+	(stage stalls buffer), as well as before pulling the instruction from PC
+	(stage stalls).
+	IF, OF stage halt if either stall/stall buffer has 1s.
+
+	a) Proceed as normal
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 0 0 0 0 0
+		Producer	: 1 0 0 0 0
+		isRegLocked	: false (buffer), false
+
+	b) Proceed as normal
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 0 0 0 0 0
+		Producer	: 0 1 0 0 0
+		isRegLocked	: true (buffer), false //true written in current cycle
+
+	In between cycles, regLock <- true
+
+	======================================
+	GAP_0
+
+	c) Halt, OF encountered data interlock
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 1 1 0 0 0
+		Producer	: 0 0 1 0 0
+		isRegLocked	: true, true
+
+	d) Halt, OF still under data interlock
+		Stall		: 1 1 0 0 0
+		Stall Buffer: 1 1 0 0 0
+		Producer	: 0 0 0 1 0
+		isRegLocked	: true (buffer), true
+
+	e) Halt, RW occured in current cycle
+		Stall		: 1 1 0 0 0
+		Stall Buffer: 0 0 0 0 0	//Set stageStallBuffer to false by reading dI_buf
+		Producer	: 0 0 0 0 1
+		isRegLocked	: false (buffer), true
+
+	f) Proceed as normal
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 0 0 0 0 0
+		Producer	: 0 0 0 0 0 ->
+		isRegLocked	: false (buffer), false
+	========================================
+	GAP_1
+
+	c) Proceed as normal
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 0 0 0 0 0
+		Producer	: 0 0 1 0 0
+		isRegLocked	: true, true
+
+	d) Halt, OF encountered data interlock
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 1 1 0 0 0
+		Producer	: 0 0 0 1 0
+		isRegLocked	: true (buffer), true
+
+	e) Halt, RW occured in current cycle
+		Stall		: 1 1 0 0 0
+		Stall Buffer: 0 0 0 0 0	//Set stageStallBuffer to false by reading dI_buf
+		Producer	: 0 0 0 0 1
+		isRegLocked	: false (buffer), true
+
+	f) Proceed as normal
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 0 0 0 0 0
+		Producer	: 0 0 0 0 0 ->
+		isRegLocked	: false (buffer), false
+	========================================
+	GAP_2
+
+	c) Proceed as normal
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 0 0 0 0 0
+		Producer	: 0 0 1 0 0
+		isRegLocked	: true, true
+
+	d) Proceed as normal
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 0 0 0 0 0
+		Producer	: 0 0 0 1 0
+		isRegLocked	: true (buffer), true
+
+	e) Halt, OF encountered data interlock, RW occured in current cycle
+		Stall		: 1 1 0 0 0
+		Stall Buffer: 0 0 0 0 0	//Set stageStallBuffer to false by reading dI_buf
+		Producer	: 0 0 0 0 1
+		isRegLocked	: false (buffer), true
+
+		ERRORED_S	: 0 0 0 0 0
+		ERRORED_SB	: 0 0 0 0 0 //NOTE: THIS WAS PRODUCED BEFORE THE FIX, LEADING TO
+								//NO HALTS CHECK SOLUTION FOR DETAILS OF IMPLEMENTATION
+
+	f) Proceed as normal
+		Stall		: 0 0 0 0 0
+		Stall Buffer: 0 0 0 0 0
+		Producer	: 0 0 0 0 0 ->
+		isRegLocked	: false (buffer), false
+
+	pipelineStallBuffer[] writes to pipelineStalls[] at the end of each cycle
+
+	Simple solution:
+	isRegLocked: true (buffer), true -> Stall Buffer = 1, Stall = prevSB //GAP_2, GAP_1 starts from here
+	isRegLocked: false (buffer), true -> Stall Buffer = 0, Stall = 1	//GAP_0 starts from here
+	isRegLocked: true (buffer), false -> Stall Buffer = 1, Stall = 0
+	isRegLocked: false (buffer), false -> Stall Buffer = 0, Stall = 0 //automatically taken care of
+	*/
+
+	private boolean isStallRequired(Interlocks interlocks) {
+		if(interlocks.getStageStallBuf(Interlocks.Stages.IF.ordinal()) ||
+		interlocks.getStageStall(Interlocks.Stages.IF.ordinal()))
+			return true;
+		else
+			return false;
+	}
 }

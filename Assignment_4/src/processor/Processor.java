@@ -13,6 +13,7 @@ import processor.pipeline.OF_EX_LatchType;
 import processor.pipeline.OperandFetch;
 import processor.pipeline.RegisterFile;
 import processor.pipeline.RegisterWrite;
+import processor.pipeline.Interlocks;
 
 public class Processor {
 	
@@ -32,12 +33,14 @@ public class Processor {
 	MemoryAccess MAUnit;
 	RegisterWrite RWUnit;
 
+	Interlocks interlocks;
 	boolean isIdle = true;
 	
 	public Processor()
 	{
 		registerFile = new RegisterFile();
 		mainMemory = new MainMemory();
+		interlocks = new Interlocks();
 		
 		IF_EnableLatch = new IF_EnableLatchType();
 		IF_OF_Latch = new IF_OF_LatchType();
@@ -46,11 +49,11 @@ public class Processor {
 		EX_IF_Latch = new EX_IF_LatchType();
 		MA_RW_Latch = new MA_RW_LatchType();
 		
-		IFUnit = new InstructionFetch(this, IF_EnableLatch, IF_OF_Latch, EX_IF_Latch, MA_RW_Latch);
-		OFUnit = new OperandFetch(this, IF_OF_Latch, OF_EX_Latch, IF_EnableLatch);
-		EXUnit = new Execute(this, OF_EX_Latch, EX_MA_Latch, EX_IF_Latch, IF_OF_Latch);
-		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch, OF_EX_Latch);
-		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch, EX_MA_Latch);
+		IFUnit = new InstructionFetch(this, IF_EnableLatch, IF_OF_Latch, EX_IF_Latch, MA_RW_Latch, interlocks);
+		OFUnit = new OperandFetch(this, IF_OF_Latch, OF_EX_Latch, IF_EnableLatch, interlocks);
+		EXUnit = new Execute(this, OF_EX_Latch, EX_MA_Latch, EX_IF_Latch, IF_OF_Latch, interlocks);
+		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch, OF_EX_Latch, interlocks);
+		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch, EX_MA_Latch, interlocks);
 	}
 	
 	public void printState(int memoryStartingAddress, int memoryEndingAddress)
@@ -100,11 +103,37 @@ public class Processor {
 		return RWUnit;
 	}
 
+	public Interlocks getInterlocks() {
+		return interlocks;
+	}
+
 	public boolean isIdle() {
 		return isIdle;
 	}
 
 	public void setIdle(boolean isIdle) {
 		this.isIdle = isIdle;
+	}
+
+	public void writeInterlockBuffer() {
+		this.interlocks.writeBufferContents();
+		return;
+	}
+
+	public void setNops() {
+		ControlInterlock cInterlock = this.interlocks.readControlInterlock();
+		DataInterlock dInterlock = this.interlocks.readDataInterlock();
+
+
+		if(cInterlock.isBranchInExTaken()) {
+			// ControlSignals cSignals_OF = IF_OF_Latch.setIgnore(true);
+			ControlSignals cSignals_EX = OF_EX_Latch.getControlSignals();
+
+			cSignals_OF.setMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal());
+			cSignals_IF.setMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal());
+
+			//TODO:
+			// +2 for wrong branch
+		}
 	}
 }

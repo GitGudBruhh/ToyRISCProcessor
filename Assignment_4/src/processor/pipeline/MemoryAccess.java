@@ -8,27 +8,36 @@ public class MemoryAccess {
 	EX_MA_LatchType EX_MA_Latch;
 	MA_RW_LatchType MA_RW_Latch;
 	OF_EX_LatchType OF_EX_Latch;
+	Interlocks interlocks;
 
 	
-	public MemoryAccess(Processor containingProcessor, EX_MA_LatchType eX_MA_Latch, MA_RW_LatchType mA_RW_Latch, OF_EX_LatchType oF_EX_Latch)
-	{
+	public MemoryAccess(Processor containingProcessor,
+	EX_MA_LatchType eX_MA_Latch,
+	MA_RW_LatchType mA_RW_Latch,
+	OF_EX_LatchType oF_EX_Latch,
+	Interlocks interlocks) {
 		this.containingProcessor = containingProcessor;
 		this.EX_MA_Latch = eX_MA_Latch;
 		this.MA_RW_Latch = mA_RW_Latch;
-		this.OF_EX_Latch = OF_EX_Latch;
+		this.OF_EX_Latch = OF_EX_Latch; // USED ONLY FOR TURNING ON THE STAGE
+		this.interlocks = interlocks;
+
 	}
 	
 	public void performMA()
 	{
 		//TODO
 		ControlSignals controlSignals = EX_MA_Latch.getControlSignals();
-		// System.out.println("BEFORE MA");
-		// controlSignals.display();
 
-		if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
-            EX_MA_Latch.setMA_enable(false);
-            return;
-        }
+		/*
+        ===================================================================================================
+        Stall if control signals have an IGNORE signal
+        ===================================================================================================
+        */
+		// if(controlSignals.getMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal())) {
+  //           EX_MA_Latch.setMA_enable(false);
+  //           return;
+  //       }
 
 		if(EX_MA_Latch.isMA_enable()) {
 			if(!controlSignals.getOperationSignal(ControlSignals.OperationSignals.END.ordinal())) {
@@ -65,5 +74,4 @@ public class MemoryAccess {
 			OF_EX_Latch.setEX_enable(true);
 		}
 	}
-
 }

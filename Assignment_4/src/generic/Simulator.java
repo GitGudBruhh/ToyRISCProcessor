@@ -108,6 +108,8 @@ public class Simulator {
 			processor.getEXUnit().performEX();
 			processor.getOFUnit().performOF();
 			processor.getIFUnit().performIF();
+			processor.writeInterlockBuffer();
+			processor.setNopsAndStalls();
 		}
 		
 		// TODO

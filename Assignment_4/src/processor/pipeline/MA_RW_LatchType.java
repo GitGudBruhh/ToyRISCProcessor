@@ -13,6 +13,8 @@ public class MA_RW_LatchType {
 	public MA_RW_LatchType()
 	{
 		RW_enable = false;
+		controlSignals.setMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal(), true);
+
 	}
 
 	public boolean isRW_enable() {

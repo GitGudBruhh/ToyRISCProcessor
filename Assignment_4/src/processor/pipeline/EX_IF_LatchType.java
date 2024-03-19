@@ -9,6 +9,8 @@ public class EX_IF_LatchType {
 	public EX_IF_LatchType()
 	{
 		this.controlSignals = new ControlSignals();
+		// controlSignals.setMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal(), true)
+
 	}
 
 	public int getBranchPC() {

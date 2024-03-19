@@ -15,6 +15,7 @@ public class OF_EX_LatchType {
 	public OF_EX_LatchType()
 	{
 		EX_enable = false;
+		controlSignals.setMiscSignal(ControlSignals.MiscSignals.IGNORE.ordinal(), true);
 	}
 
 	public boolean isEX_enable() {
