@@ -185,7 +185,7 @@ public class Execute {
                         return;
                 }
 
-                EX_IF_Latch.setBranchPC(branchPC);
+                EX_IF_Latch.setBranchPC_buf(branchPC);
                 EX_MA_Latch.setInstruction(instruction);
                 EX_MA_Latch.setPc(currentPC);
                 EX_MA_Latch.setAluResult(aluResult);
@@ -195,7 +195,7 @@ public class Execute {
             Emptying the latch when an end instruction passes through.
             */
             else {
-                EX_IF_Latch.setBranchPC(0);
+                EX_IF_Latch.setBranchPC_buf(0);
                 EX_MA_Latch.setInstruction(0);
                 EX_MA_Latch.setPc(0);
                 EX_MA_Latch.setAluResult(0);
@@ -203,10 +203,17 @@ public class Execute {
             }
             // EX_MA_Latch.setMA_enable(true);
 
+            if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+                containingProcessor.setBranchTakenCurrentCycle(true);
+            }
+            else {
+                containingProcessor.setBranchTakenCurrentCycle(true);
+            }
+
             IF_OF_Latch.setOF_enable(true);
             EX_MA_Latch.setControlSignals(controlSignals);
             EX_MA_Latch.setIgnore(isIgnore);
-            EX_IF_Latch.setControlSignals(controlSignals);
+            EX_IF_Latch.setControlSignals_buf(controlSignals);
             OF_EX_Latch.setEX_enable(false);
         }
 	}

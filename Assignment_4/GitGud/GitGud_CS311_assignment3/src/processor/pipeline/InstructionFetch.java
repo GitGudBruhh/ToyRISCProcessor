@@ -94,6 +94,10 @@ public class InstructionFetch {
 						IF_EnableLatch.setIF_enable(false);
 					}
 				}
+
+				if(containingProcessor.isBranchTakenCurrentCycle()) {
+					IF_OF_Latch.setIgnore(true);
+				}
 			}
 		}
 	}

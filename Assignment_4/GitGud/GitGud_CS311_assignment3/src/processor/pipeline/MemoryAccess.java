@@ -54,7 +54,7 @@ public class MemoryAccess {
 					MA_RW_Latch.setInstruction(instruction);
 				}
 
-			MA_RW_Latch,setIgnore(isIgnore);
+			MA_RW_Latch.setIgnore(isIgnore);
 			MA_RW_Latch.setControlSignals(controlSignals);
 			EX_MA_Latch.setMA_enable(false);
 			// MA_RW_Latch.setRW_enable(true);

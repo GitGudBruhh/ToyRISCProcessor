@@ -60,6 +60,7 @@ public class OperandFetch {
 							OF_EX_Latch.setB(offsetFromRd); //offsetFromRd
 							OF_EX_Latch.setA(0); //OF NO USE
 							OF_EX_Latch.setOp2(0); //OF NO USE
+							OF_EX_Latch.setIgnore(false);
 						}
 
 						else {
@@ -67,6 +68,7 @@ public class OperandFetch {
 							OF_EX_Latch.setB(immx);
 							OF_EX_Latch.setA(0); //OF NO USE
 							OF_EX_Latch.setOp2(0); //OF NO USE
+							OF_EX_Latch.setIgnore(false);
 						}
 					}
 
@@ -210,6 +212,11 @@ public class OperandFetch {
 				OF_EX_Latch.setB(0);
 				OF_EX_Latch.setOp2(0);
 			}
+
+			if(containingProcessor.isBranchTakenCurrentCycle()) {
+				OF_EX_Latch.setIgnore(true);
+			}
+
 			OF_EX_Latch.setControlSignals(controlSignals);
 			// OF_EX_Latch.setEX_enable(true);
 			IF_EnableLatch.setIF_enable(true);

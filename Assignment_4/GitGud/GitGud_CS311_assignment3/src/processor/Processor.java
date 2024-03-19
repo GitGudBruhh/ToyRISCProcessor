@@ -35,6 +35,7 @@ public class Processor {
 	boolean isIdle = true;
 	public int[] regLockVector;
 	public boolean[] regWriteCurrentCycle;
+	boolean branchTakenCurrentCycle;
 	boolean isStalled;
 	
 	public Processor()
@@ -120,5 +121,22 @@ public class Processor {
 
 	public void setStalled(boolean stalled) {
 		this.isStalled = stalled;
+	}
+
+	public boolean isBranchTakenCurrentCycle() {
+		return this.branchTakenCurrentCycle;
+	}
+
+	public void setBranchTakenCurrentCycle(boolean b_taken) {
+		this.branchTakenCurrentCycle = b_taken;
+	}
+
+	public void afterCycleRun() {
+		EX_IF_Latch.writeBuffer();
+
+		for(boolean v : regWriteCurrentCycle)
+			v = false;
+
+		branchTakenCurrentCycle = false;
 	}
 }

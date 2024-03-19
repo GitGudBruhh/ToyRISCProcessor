@@ -32,7 +32,7 @@ public class RegisterWrite {
 				int ldResult = MA_RW_Latch.getLdResult();
 				long aluResult = MA_RW_Latch.getAluResult();
 				int instruction = MA_RW_Latch.getInstruction();
-				boolean isIgnore = mA_RW_Latch.isIgnore();
+				boolean isIgnore = MA_RW_Latch.isIgnore();
 
 				boolean isAluResOverflow = true;
 				RegisterFile regFileCopy = containingProcessor.getRegisterFile();
