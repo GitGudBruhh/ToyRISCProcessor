@@ -28,6 +28,7 @@ public class OperandFetch {
 		*/
 		int instruction = IF_OF_Latch.getInstruction();
 		ControlSignals controlSignals = controlUnit.createControlSignals(instruction);
+		boolean isIgnore = IF_OF_Latch.isIgnore();
 
 		if(IF_OF_Latch.isOF_enable()) {
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {

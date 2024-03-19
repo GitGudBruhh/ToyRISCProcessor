@@ -32,6 +32,7 @@ public class RegisterWrite {
 				int ldResult = MA_RW_Latch.getLdResult();
 				long aluResult = MA_RW_Latch.getAluResult();
 				int instruction = MA_RW_Latch.getInstruction();
+				boolean isIgnore = mA_RW_Latch.isIgnore();
 
 				boolean isAluResOverflow = true;
 				RegisterFile regFileCopy = containingProcessor.getRegisterFile();
@@ -40,32 +41,34 @@ public class RegisterWrite {
 					isAluResOverflow = false;
 				// int opcode = instruction >>> 27;
 
-				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.WB.ordinal())) {
-					if(isAluResOverflow || controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
-						regFileCopy.setValue(31, (int) (aluResult >>> 32));
-
-					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
-						int rd = (instruction << 10) >>> 27;
-						regFileCopy.setValue(rd, ldResult);
-						containingProcessor.regLockVector[rd] -= 1;
-						containingProcessor.regWriteCurrentCycle[rd] = true;
-					}
-
-					else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
-						int rd = (instruction << 10) >>> 27;
-						regFileCopy.setValue(rd, (int) aluResult);
-						containingProcessor.regLockVector[rd] -= 1;
-						containingProcessor.regWriteCurrentCycle[rd] = true;
-					}
-
-					else {
-						int rd = (instruction << 15) >>> 27;
-						regFileCopy.setValue(rd, (int) aluResult);
-						containingProcessor.regLockVector[rd] -= 1;
-						containingProcessor.regWriteCurrentCycle[rd] = true;
-						if(isAluResOverflow)
+				if(!isIgnore) {
+					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.WB.ordinal())) {
+						if(isAluResOverflow || controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
 							regFileCopy.setValue(31, (int) (aluResult >>> 32));
-						containingProcessor.setRegisterFile(regFileCopy);
+
+						if(controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
+							int rd = (instruction << 10) >>> 27;
+							regFileCopy.setValue(rd, ldResult);
+							containingProcessor.regLockVector[rd] -= 1;
+							containingProcessor.regWriteCurrentCycle[rd] = true;
+						}
+
+						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
+							int rd = (instruction << 10) >>> 27;
+							regFileCopy.setValue(rd, (int) aluResult);
+							containingProcessor.regLockVector[rd] -= 1;
+							containingProcessor.regWriteCurrentCycle[rd] = true;
+						}
+
+						else {
+							int rd = (instruction << 15) >>> 27;
+							regFileCopy.setValue(rd, (int) aluResult);
+							containingProcessor.regLockVector[rd] -= 1;
+							containingProcessor.regWriteCurrentCycle[rd] = true;
+							if(isAluResOverflow)
+								regFileCopy.setValue(31, (int) (aluResult >>> 32));
+							containingProcessor.setRegisterFile(regFileCopy);
+						}
 					}
 				}
 			}

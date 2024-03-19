@@ -22,6 +22,7 @@ public class Execute {
 	
 	public void performEX() {
 		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
+		boolean isIgnore = OF_EX_Latch.isIgnore();
 		if(OF_EX_Latch.isEX_enable()) {
             if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
@@ -201,8 +202,10 @@ public class Execute {
                 EX_MA_Latch.setOp2(0);
             }
             // EX_MA_Latch.setMA_enable(true);
+
             IF_OF_Latch.setOF_enable(true);
             EX_MA_Latch.setControlSignals(controlSignals);
+            EX_MA_Latch.setIgnore(isIgnore);
             EX_IF_Latch.setControlSignals(controlSignals);
             OF_EX_Latch.setEX_enable(false);
         }
