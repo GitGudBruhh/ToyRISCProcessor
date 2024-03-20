@@ -31,7 +31,7 @@ public class EX_IF_LatchType {
 
 	public void setNop() {
 		branchPC = 0;
-		controlSignals = new ControlSignals();
-		// cSig_buf = new ControlSignals();
+		// controlSignals = new ControlSignals();
+		cSig_buf = new ControlSignals();
 	}
 }

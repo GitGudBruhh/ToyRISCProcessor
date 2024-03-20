@@ -3,23 +3,37 @@ package processor.pipeline;
 // import java.lang.Integer;
 
 import processor.Processor;
+import processor.pipeline.IF_EnableLatchType;
+import processor.pipeline.IF_OF_LatchType;
 
 public class Execute {
 	Processor containingProcessor;
 	OF_EX_LatchType OF_EX_Latch;
 	EX_MA_LatchType EX_MA_Latch;
 	EX_IF_LatchType EX_IF_Latch;
+	IF_EnableLatchType IF_EnableLatch;
+	IF_OF_LatchType IF_OF_Latch;
 	
-	public Execute(Processor containingProcessor, OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch, EX_IF_LatchType eX_IF_Latch)
-	{
+	public Execute(Processor containingProcessor, OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch, EX_IF_LatchType eX_IF_Latch, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch) {
 		this.containingProcessor = containingProcessor;
 		this.OF_EX_Latch = oF_EX_Latch;
 		this.EX_MA_Latch = eX_MA_Latch;
 		this.EX_IF_Latch = eX_IF_Latch;
+		this.IF_EnableLatch = iF_EnableLatch;
+		this.IF_OF_Latch = iF_OF_Latch;
 	}
 	
 	public void performEX() {
 		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
+		int instruction = OF_EX_Latch.getInstruction();
+
+        if(instruction == 0)
+		{
+			EX_MA_Latch.setNop();
+			EX_IF_Latch.setNop();
+			return;
+		}
+
 		if(OF_EX_Latch.isEX_enable()) {
             if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
@@ -28,7 +42,6 @@ public class Execute {
                 int B = OF_EX_Latch.getB();
                 int A = OF_EX_Latch.getA();
                 int op2 = OF_EX_Latch.getOp2();
-                int instruction = OF_EX_Latch.getInstruction();
 
                 long remainder;
 
@@ -197,13 +210,16 @@ public class Execute {
             /*
             Emptying the latch when an end instruction passes through.
             */
-            // else {
-            //     EX_IF_Latch.setBranchPC(0);
-            //     EX_MA_Latch.setInstruction(0);
-            //     EX_MA_Latch.setPc(0);
-            //     EX_MA_Latch.setAluResult(0);
-            //     EX_MA_Latch.setOp2(0);
-            // }
+            else {
+                EX_IF_Latch.setBranchPC(0);
+                EX_MA_Latch.setInstruction(0);
+                EX_MA_Latch.setPc(0);
+                EX_MA_Latch.setAluResult(0);
+                EX_MA_Latch.setOp2(0);
+
+                IF_EnableLatch.setIF_enable(false);
+                IF_OF_Latch.setOF_enable(false);
+            }
             EX_MA_Latch.setMA_enable(true);
             EX_MA_Latch.setControlSignals(controlSignals);
             EX_IF_Latch.setControlSignals(controlSignals);

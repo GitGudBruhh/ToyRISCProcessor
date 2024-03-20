@@ -39,17 +39,24 @@ public class RegisterWrite {
 				// int opcode = instruction >>> 27;
 
 				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.WB.ordinal())) {
-					if(isAluResOverflow || controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
+					if(isAluResOverflow || controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal())) {
+						containingProcessor.regLockVector[31] -= 1;
+						containingProcessor.regWrite[31] = 1;
 						regFileCopy.setValue(31, (int) (aluResult >>> 32));
+					}
 
 					if(controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
 						int rd = (instruction << 10) >>> 27;
 						regFileCopy.setValue(rd, ldResult);
+						containingProcessor.regLockVector[rd] -= 1;
+						containingProcessor.regWrite[rd] = 1;
 					}
 
 					else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
 						int rd = (instruction << 10) >>> 27;
 						regFileCopy.setValue(rd, (int) aluResult);
+						containingProcessor.regLockVector[rd] -= 1;
+						containingProcessor.regWrite[rd] = 1;
 					}
 
 					else {
@@ -58,7 +65,12 @@ public class RegisterWrite {
 						if(isAluResOverflow)
 							regFileCopy.setValue(31, (int) (aluResult >>> 32));
 						containingProcessor.setRegisterFile(regFileCopy);
+						containingProcessor.regLockVector[rd] -= 1;
+						containingProcessor.regWrite[rd] = 1;
 					}
+				}
+				{
+					Simulator.setSimulationComplete(true);
 				}
 			}
 		}

@@ -1,19 +1,23 @@
 package processor.pipeline;
 
 import processor.Processor;
+import processor.pipeline.IF_EnableLatchType;
 // import src.generic.Simulator;
+import processor.pipeline.IF_OF_LatchType;
 
 public class OperandFetch {
 	Processor containingProcessor;
 	IF_OF_LatchType IF_OF_Latch;
 	OF_EX_LatchType OF_EX_Latch;
+	IF_EnableLatchType IF_EnableLatch;
 	ControlUnit controlUnit;
 	
-	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch)
+	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch, IF_EnableLatchType iF_EnableLatch)
 	{
 		this.containingProcessor = containingProcessor;
 		this.IF_OF_Latch = iF_OF_Latch;
 		this.OF_EX_Latch = oF_EX_Latch;
+		this.IF_EnableLatch = iF_EnableLatch;
 		this.controlUnit = new ControlUnit();
 	}
 	
@@ -93,6 +97,20 @@ public class OperandFetch {
 							// CONDITIONAL BRANCHES ARE OF IMMEDIATE TYPE (DUE TO NO SEPERATE CMP INSTRUCTION)
 							// THE VALUE OF B IS FROM RD AND NOT IMMX
 							// ALU COMPARES A AND B
+
+							if(
+							containingProcessor.regLockVector[rd] > 0 ||
+							containingProcessor.regLockVector[rs1] > 0 ||
+							containingProcessor.regWrite[rd] > 0 ||
+							containingProcessor.regWrite[rs1] > 0
+							) {
+								OF_EX_Latch.setNop();
+								IF_EnableLatch.setIF_enable(false);
+								return;
+							}
+							else{
+								IF_EnableLatch.setIF_enable(true);
+							}
 							OF_EX_Latch.setBranchTarget(branchTarget);
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
 							OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rd));
@@ -106,6 +124,18 @@ public class OperandFetch {
 							// ARE DIFFERENT
 							// rd  <- rs1 + immx
 							// Reg <- A   + B
+							if(
+							containingProcessor.regLockVector[rs1] > 0 ||
+							containingProcessor.regWrite[rs1] > 0
+							) {
+								OF_EX_Latch.setNop();
+								IF_EnableLatch.setIF_enable(false);
+								return;
+							}
+							else{
+								IF_EnableLatch.setIF_enable(true);
+							}
+
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
 							OF_EX_Latch.setB(immx);
@@ -118,6 +148,20 @@ public class OperandFetch {
 							// ARE DIFFERENT
 							// rs1 -> rd + immx
 							// Reg -> A  + B
+							if(
+							containingProcessor.regLockVector[rd] > 0 ||
+							containingProcessor.regLockVector[rs1] > 0 ||
+							containingProcessor.regWrite[rd] > 0 ||
+							containingProcessor.regWrite[rs1] > 0
+							) {
+								OF_EX_Latch.setNop();
+								IF_EnableLatch.setIF_enable(false);
+								return;
+							}
+							else{
+								IF_EnableLatch.setIF_enable(true);
+							}
+
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rd));
 							OF_EX_Latch.setB(immx);
@@ -126,6 +170,18 @@ public class OperandFetch {
 
 						//Arithmetic/Logical
 						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.ALUSIGNAL.ordinal())) {
+							if(
+							containingProcessor.regLockVector[rs1] > 0 ||
+							containingProcessor.regWrite[rs1] > 0
+							) {
+								OF_EX_Latch.setNop();
+								IF_EnableLatch.setIF_enable(false);
+								return;
+							}
+							else{
+								IF_EnableLatch.setIF_enable(false);
+							}
+
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
 							OF_EX_Latch.setB(immx);
@@ -139,6 +195,20 @@ public class OperandFetch {
 					rs1 = (instruction << 5) >>> 27;
 					rs2 = (instruction << 10) >>> 27;
 					rd = (instruction << 15) >>> 27;
+
+					if(
+					containingProcessor.regLockVector[rd] > 0 ||
+					containingProcessor.regLockVector[rs1] > 0 ||
+					containingProcessor.regWrite[rd] > 0 ||
+					containingProcessor.regWrite[rs1] > 0
+					) {
+						OF_EX_Latch.setNop();
+						IF_EnableLatch.setIF_enable(false);
+						return;
+					}
+					else{
+						IF_EnableLatch.setIF_enable(false);
+					}
 
 					OF_EX_Latch.setBranchTarget(currentPC + 1); //OF NO USE
 					OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));

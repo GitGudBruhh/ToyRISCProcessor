@@ -21,13 +21,19 @@ public class MemoryAccess {
 		ControlSignals controlSignals = EX_MA_Latch.getControlSignals();
 		// System.out.println("BEFORE MA");
 		// controlSignals.display();
+		int instruction = EX_MA_Latch.getInstruction();
+
+		if(instruction == 0)
+		{
+			MA_RW_Latch.setNop();
+			return;
+		}
 
 		if(EX_MA_Latch.isMA_enable()) {
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 				int currentPC = EX_MA_Latch.getPc();
 				long aluResult = EX_MA_Latch.getAluResult();
 				int op2 = EX_MA_Latch.getOp2();
-				int instruction = EX_MA_Latch.getInstruction();
 
 
 				int memoryAddress = (int) (aluResult & 0x00000000ffffffffL); //memoryAddressRegister
