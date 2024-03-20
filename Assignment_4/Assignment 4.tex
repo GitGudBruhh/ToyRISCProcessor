@@ -64,9 +64,10 @@ To mitigate potential hazards and ensure smooth execution, our processor employs
 \begin{itemize}
     \item \textbf{Lock Disabling for Instruction Fetch}: By disabling instruction fetching under certain conditions, such as during branch prediction or when \textbf{RAW} hazards are detected, we prevent fetching incorrect or invalid instructions.
     
-    \item \textbf{BranchTaken Addition}: BranchTaken help us accurately predict branch outcomes and adjust the instruction flow accordingly, therefore optimizing the performance of the processor.
+    \item \textbf{BranchTaken Addition}: BranchTaken help us accurately predict branch outcomes and adjust the instruction flow accordingly, therefore optimizing the performance of the processor. It add OX0000000 instead of \texttt{nop}.
     
-    \item \textbf{RegisterLockVector}: Utilizing an integer array of size 32 to manage register access and prevent hazards arising from simultaneous accesses or modifications to registers.
+    \item \textbf{RegisterLockVector}: 
+Utilizing an integer array of size 32, our system efficiently manages register access, incrementing the corresponding array element by one upon each utilization of the register. Conversely, it decrements the array element by one once the register is no longer in use. For instance, if register 22 is accessed for the first time, the array element at index 22 is incremented by one. Subsequent accesses to register 22 result in incrementing the array element further. Upon completion of the task involving register 22, the array element is decremented by one. Upon the completion of all tasks, the array element is reset to zero, effectively preventing hazards arising from simultaneous accesses or modifications to registers.
 \end{itemize}
 
 These mechanisms, coupled with the pipelined architecture and interlocks, enhance the efficiency, reliability, and accuracy of our simulated processor, aligning it closely with real-world counterparts.
