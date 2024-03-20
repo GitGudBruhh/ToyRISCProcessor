@@ -9,14 +9,10 @@ public class EX_MA_LatchType {
 	int op2;
 	int instruction;
 	ControlSignals controlSignals;
-
-	boolean isIgnore;
 	
 	public EX_MA_LatchType()
 	{
 		MA_enable = false;
-		isIgnore = true;
-		controlSignals = new ControlSignals();
 	}
 
 	public boolean isMA_enable() {
@@ -67,11 +63,10 @@ public class EX_MA_LatchType {
 		this.controlSignals = controlSignals;
 	}
 
-	public boolean isIgnore() {
-		return this.isIgnore;
-	}
-
-	public void setIgnore(boolean ignore) {
-		this.isIgnore = ignore;
+	public void setNop() {
+		instruction = 0;
+		pc = 0;
+		op2 = 0;
+		controlSignals = new ControlSignals();
 	}
 }

@@ -4,15 +4,13 @@ public class EX_IF_LatchType {
 	
 	//added branchPC, controlSignals (use only isBranchTaken)
 	int branchPC;
-	int branchPC_buf;
 	ControlSignals controlSignals;
-	ControlSignals controlSignals_buf;
-	boolean isIgnoreBT;
-	boolean isIgnoreBT_buf;
+	ControlSignals cSig_buf;
 
 	public EX_IF_LatchType()
 	{
 		this.controlSignals = new ControlSignals();
+		this.cSig_buf = new ControlSignals();
 	}
 
 	public int getBranchPC() {
@@ -31,42 +29,9 @@ public class EX_IF_LatchType {
 		this.controlSignals = controlSignals;
 	}
 
-	public boolean isIgnoreBT() {
-		return this.isIgnoreBT;
-	}
-
-	public void setIgnore(boolean ignore) {
-		this.isIgnoreBT = ignore;
-	}
-
-	public int getBranchPC_buf() {
-		return this.branchPC_buf;
-	}
-
-	public void setBranchPC_buf(int branchPC) {
-		this.branchPC_buf = branchPC;
-	}
-
-	public ControlSignals getControlSignals_buf() {
-		return this.controlSignals_buf;
-	}
-
-	public void setControlSignals_buf(ControlSignals controlSignals) {
-		this.controlSignals_buf = controlSignals;
-	}
-
-
-	public boolean isIgnoreBT_buf() {
-		return this.isIgnoreBT;
-	}
-
-	public void setIgnoreBT_buf(boolean ignore) {
-		this.isIgnoreBT = ignore;
-	}
-
-	public void writeBuffer() {
-		branchPC = branchPC_buf;
-		controlSignals = controlSignals_buf;
-		isIgnoreBT = isIgnoreBT_buf;
+	public void setNop() {
+		branchPC = 0;
+		controlSignals = new ControlSignals();
+		// cSig_buf = new ControlSignals();
 	}
 }

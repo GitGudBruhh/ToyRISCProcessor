@@ -3,7 +3,6 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 import java.util.concurrent.*;
-import java.util.Scanner;
 
 import processor.Clock;
 import processor.Processor;
@@ -81,55 +80,32 @@ public class Simulator {
 	{
 		int numberOfInstructionsExecuted = 0;
 		long numberOfCycles = 0;
-		boolean lastCycle = false;
 
 		processor.enableIFUnit();
 		while(simulationComplete == false)
 		{
-
-			System.out.println(numberOfCycles);
-			System.out.println();
+			// processor.getIFUnit().performIF();
+			// if(processor.isIdle()) {
+			// 	simulationComplete = true;
+			// 	break;
+			// }
+			// Clock.incrementClock();
+			// processor.getOFUnit().performOF();
+			// Clock.incrementClock();
+			// processor.getEXUnit().performEX();
+			// Clock.incrementClock();
+			// processor.getMAUnit().performMA();
+			// Clock.incrementClock();
+			// processor.getRWUnit().performRW();
+			// Clock.incrementClock();
+			// numberOfInstructionsExecuted += 1;
+			// System.out.println(numberOfInstructionsExecuted);
 
 			processor.getRWUnit().performRW();
 			processor.getMAUnit().performMA();
 			processor.getEXUnit().performEX();
 			processor.getOFUnit().performOF();
-
-			if(lastCycle)
-				processor.forceDisableIFUnit();
-
 			processor.getIFUnit().performIF();
-			// System.out.println("WHAT");
-
-			if(processor.isIdle()) {
-				if(!lastCycle)
-				{
-					lastCycle = true;
-					// System.out.println("WHAAAT");
-					continue;
-				}
-				else {
-					simulationComplete = true;
-					break;
-				}
-			}
-			processor.afterCycleRun();
-			Clock.incrementClock();
-			// try {
-			// TimeUnit.SECONDS.sleep(1);
-			// }
-			// catch(InterruptedException e) {
-			// 	System.out.println("BRUH");
-			// }
-
-			// processor.printState(0, 30);
-
-			// Scanner myObj = new Scanner(System.in);
-			// System.out.println("Go to next step");
-			// String userName = myObj.nextLine();
-
-			numberOfInstructionsExecuted += 1;
-			numberOfCycles += 1;
 		}
 		
 		// TODO

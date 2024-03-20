@@ -4,13 +4,11 @@ public class IF_OF_LatchType {
 	
 	boolean OF_enable;
 	int instruction;
-	boolean isIgnore;
 	//added pc
 	int pc;
 	
 	public IF_OF_LatchType() {
 		OF_enable = false;
-		isIgnore = true;
 	}
 
 	public boolean isOF_enable() {
@@ -37,11 +35,8 @@ public class IF_OF_LatchType {
 		this.pc = pc;
 	}
 
-	public boolean isIgnore() {
-		return this.isIgnore;
-	}
-
-	public void setIgnore(boolean ignore) {
-		this.isIgnore = ignore;
+	public void setNop() {
+		instruction = 0;
+		pc = 0;
 	}
 }

@@ -12,13 +12,9 @@ public class OF_EX_LatchType {
 	int instruction;
 	ControlSignals controlSignals;
 
-	boolean isIgnore;
-
 	public OF_EX_LatchType()
 	{
 		EX_enable = false;
-		isIgnore = true;
-		controlSignals = new ControlSignals();
 	}
 
 	public boolean isEX_enable() {
@@ -85,11 +81,13 @@ public class OF_EX_LatchType {
 		this.controlSignals = controlSignals;
 	}
 
-	public boolean isIgnore() {
-		return this.isIgnore;
-	}
-
-	public void setIgnore(boolean ignore) {
-		this.isIgnore = ignore;
+	public void setNop() {
+		instruction = 0;
+		pc = 0;
+		branchTarget = 0;
+		A = 0;
+		B = 0;
+		op2 = 0;
+		controlSignals = new ControlSignals();
 	}
 }

@@ -9,14 +9,10 @@ public class MA_RW_LatchType {
 	long aluResult;
 	int instruction;
 	ControlSignals controlSignals;
-
-	boolean isIgnore;
 	
 	public MA_RW_LatchType()
 	{
 		RW_enable = false;
-		isIgnore = true;
-		controlSignals = new ControlSignals();
 	}
 
 	public boolean isRW_enable() {
@@ -68,12 +64,12 @@ public class MA_RW_LatchType {
 		this.controlSignals = controlSignals;
 	}
 
-	public boolean isIgnore() {
-		return this.isIgnore;
-	}
-
-	public void setIgnore(boolean ignore) {
-		this.isIgnore = ignore;
+	public void setNop() {
+		instruction = 0;
+		pc = 0;
+		ldResult = 0;
+		aluResult = 0;
+		controlSignals = new ControlSignals();
 	}
 
 }

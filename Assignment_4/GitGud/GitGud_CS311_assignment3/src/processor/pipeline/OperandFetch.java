@@ -7,15 +7,13 @@ public class OperandFetch {
 	Processor containingProcessor;
 	IF_OF_LatchType IF_OF_Latch;
 	OF_EX_LatchType OF_EX_Latch;
-	IF_EnableLatchType IF_EnableLatch;
 	ControlUnit controlUnit;
 	
-	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch, IF_EnableLatchType iF_EnableLatch)
+	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch)
 	{
 		this.containingProcessor = containingProcessor;
 		this.IF_OF_Latch = iF_OF_Latch;
 		this.OF_EX_Latch = oF_EX_Latch;
-		this.IF_EnableLatch = iF_EnableLatch;
 		this.controlUnit = new ControlUnit();
 	}
 	
@@ -28,19 +26,25 @@ public class OperandFetch {
 		*/
 		int instruction = IF_OF_Latch.getInstruction();
 		ControlSignals controlSignals = controlUnit.createControlSignals(instruction);
-		boolean isIgnore = IF_OF_Latch.isIgnore();
 
-		if(IF_OF_Latch.isOF_enable() && !isIgnore) {
+
+		int opcode = instruction >>> 27;
+		int currentPC = IF_OF_Latch.getPc();
+
+		int branchTarget;
+		int immx;
+		int rd;
+		int rs2;
+		int rs1;
+
+		if(containingProcessor.branchTakenCurrentCycle)
+		{
+			OF_EX_Latch.setNop();
+			return;
+		}
+
+		if(IF_OF_Latch.isOF_enable()) {
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
-
-				int opcode = instruction >>> 27;
-				int currentPC = IF_OF_Latch.getPc();
-
-				int branchTarget;
-				int immx;
-				int rd;
-				int rs2;
-				int rs1;
 
 				//RI and R2I types
 				if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
@@ -60,7 +64,6 @@ public class OperandFetch {
 							OF_EX_Latch.setB(offsetFromRd); //offsetFromRd
 							OF_EX_Latch.setA(0); //OF NO USE
 							OF_EX_Latch.setOp2(0); //OF NO USE
-							OF_EX_Latch.setIgnore(false);
 						}
 
 						else {
@@ -68,7 +71,6 @@ public class OperandFetch {
 							OF_EX_Latch.setB(immx);
 							OF_EX_Latch.setA(0); //OF NO USE
 							OF_EX_Latch.setOp2(0); //OF NO USE
-							OF_EX_Latch.setIgnore(false);
 						}
 					}
 
@@ -91,23 +93,10 @@ public class OperandFetch {
 							// CONDITIONAL BRANCHES ARE OF IMMEDIATE TYPE (DUE TO NO SEPERATE CMP INSTRUCTION)
 							// THE VALUE OF B IS FROM RD AND NOT IMMX
 							// ALU COMPARES A AND B
-
-							if(
-							containingProcessor.regLockVector[rs1] > 0 ||
-							containingProcessor.regWriteCurrentCycle[rs1] == true ||
-							containingProcessor.regLockVector[rd] > 0 ||
-							containingProcessor.regWriteCurrentCycle[rd] == true) {
-								OF_EX_Latch.setIgnore(true);
-								containingProcessor.setStalled(true);
-							}
-							else {
-								OF_EX_Latch.setBranchTarget(branchTarget);
-								OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
-								OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rd));
-								OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd));
-								OF_EX_Latch.setIgnore(false);
-								containingProcessor.setStalled(false);
-							}
+							OF_EX_Latch.setBranchTarget(branchTarget);
+							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
+							OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rd));
+							OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd));
 
 						}
 
@@ -117,20 +106,10 @@ public class OperandFetch {
 							// ARE DIFFERENT
 							// rd  <- rs1 + immx
 							// Reg <- A   + B
-							if(
-							containingProcessor.regLockVector[rs1] > 0 ||
-							containingProcessor.regWriteCurrentCycle[rs1] == true) {
-								OF_EX_Latch.setIgnore(true);
-								containingProcessor.setStalled(true);
-							}
-							else {
-								OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
-								OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
-								OF_EX_Latch.setB(immx);
-								OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd)); //OF NO USE
-								OF_EX_Latch.setIgnore(false);
-								containingProcessor.setStalled(false);
-							}
+							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
+							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
+							OF_EX_Latch.setB(immx);
+							OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd)); //OF NO USE
 						}
 
 						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
@@ -139,40 +118,18 @@ public class OperandFetch {
 							// ARE DIFFERENT
 							// rs1 -> rd + immx
 							// Reg -> A  + B
-							if(
-							containingProcessor.regLockVector[rs1] > 0 ||
-							containingProcessor.regWriteCurrentCycle[rs1] == true ||
-							containingProcessor.regLockVector[rd] > 0 ||
-							containingProcessor.regWriteCurrentCycle[rd] == true) {
-								OF_EX_Latch.setIgnore(true);
-								containingProcessor.setStalled(true);
-							}
-							else {
-								OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
-								OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rd));
-								OF_EX_Latch.setB(immx);
-								OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rs1)); //USE IN MA
-								OF_EX_Latch.setIgnore(false);
-								containingProcessor.setStalled(false);
-							}
+							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
+							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rd));
+							OF_EX_Latch.setB(immx);
+							OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rs1)); //USE IN MA
 						}
 
 						//Arithmetic/Logical
 						else if (controlSignals.getControlSignal(ControlSignals.OperationSignals.ALUSIGNAL.ordinal())) {
-							if(
-							containingProcessor.regLockVector[rs1] > 0 ||
-							containingProcessor.regWriteCurrentCycle[rs1] == true) {
-								OF_EX_Latch.setIgnore(true);
-								containingProcessor.setStalled(true);
-							}
-							else {
-								OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
-								OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
-								OF_EX_Latch.setB(immx);
-								OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd)); //OF NO USE
-								OF_EX_Latch.setIgnore(false);
-								containingProcessor.setStalled(false);
-							}
+							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
+							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
+							OF_EX_Latch.setB(immx);
+							OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd)); //OF NO USE
 						}
 					}
 				}
@@ -183,22 +140,10 @@ public class OperandFetch {
 					rs2 = (instruction << 10) >>> 27;
 					rd = (instruction << 15) >>> 27;
 
-					if(
-					containingProcessor.regLockVector[rs1] > 0 ||
-					containingProcessor.regWriteCurrentCycle[rs1] == true ||
-					containingProcessor.regLockVector[rs2] > 0 ||
-					containingProcessor.regWriteCurrentCycle[rs2] == true) {
-						OF_EX_Latch.setIgnore(true);
-						containingProcessor.setStalled(true);
-					}
-					else {
-						OF_EX_Latch.setBranchTarget(currentPC + 1); //OF NO USE
-						OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
-						OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rs2));
-						OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd)); //OF NO USE
-						OF_EX_Latch.setIgnore(false);
-						containingProcessor.setStalled(false);
-					}
+					OF_EX_Latch.setBranchTarget(currentPC + 1); //OF NO USE
+					OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
+					OF_EX_Latch.setB(this.containingProcessor.getRegisterFile().getValue(rs2));
+					OF_EX_Latch.setOp2(this.containingProcessor.getRegisterFile().getValue(rd)); //OF NO USE
 				}
 				OF_EX_Latch.setPc(currentPC);
 				OF_EX_Latch.setInstruction(instruction);
@@ -206,29 +151,16 @@ public class OperandFetch {
 			/*
 			Emptying the latch when an end instruction passes through.
 			*/
-			else {
-				OF_EX_Latch.setBranchTarget(0);
-				OF_EX_Latch.setA(0);
-				OF_EX_Latch.setB(0);
-				OF_EX_Latch.setOp2(0);
-			}
-
-			if(containingProcessor.isBranchTakenCurrentCycle()) {
-				OF_EX_Latch.setIgnore(true);
-			}
-
+			// else {
+			// 	OF_EX_Latch.setBranchTarget(0);
+			// 	OF_EX_Latch.setA(0);
+			// 	OF_EX_Latch.setB(0);
+			// 	OF_EX_Latch.setOp2(0);
+			// }
 			OF_EX_Latch.setControlSignals(controlSignals);
-			// OF_EX_Latch.setEX_enable(true);
-			IF_EnableLatch.setIF_enable(true);
-			IF_OF_Latch.setOF_enable(false);
-			return;
+			OF_EX_Latch.setEX_enable(true);
+			// IF_OF_Latch.setOF_enable(false);
 		}
-
-		IF_EnableLatch.setIF_enable(true);
-		IF_OF_Latch.setOF_enable(false);
-		OF_EX_Latch.setIgnore(isIgnore);
-
-		System.out.print("OF: ");
-		System.out.println(isIgnore);
 	}
+
 }

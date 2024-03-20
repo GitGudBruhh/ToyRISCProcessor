@@ -33,13 +33,9 @@ public class Processor {
 	RegisterWrite RWUnit;
 
 	boolean isIdle = true;
-	public int[] regLockVector;
-	public boolean[] regWriteCurrentCycle;
-	boolean branchTakenCurrentCycle;
-	boolean isStalled;
-	boolean flag_IOE_clear;
 
-	boolean[] bubbles;
+	public int[] regLockVector;
+	public boolean branchTakenCurrentCycle;
 	
 	public Processor()
 	{
@@ -53,20 +49,14 @@ public class Processor {
 		EX_IF_Latch = new EX_IF_LatchType();
 		MA_RW_Latch = new MA_RW_LatchType();
 		
-		IFUnit = new InstructionFetch(this, IF_EnableLatch, IF_OF_Latch, EX_IF_Latch, MA_RW_Latch);
-		OFUnit = new OperandFetch(this, IF_OF_Latch, OF_EX_Latch, IF_EnableLatch);
-		EXUnit = new Execute(this, OF_EX_Latch, EX_MA_Latch, EX_IF_Latch, IF_OF_Latch);
-		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch, OF_EX_Latch);
-		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch, EX_MA_Latch);
+		IFUnit = new InstructionFetch(this, IF_EnableLatch, IF_OF_Latch, EX_IF_Latch);
+		OFUnit = new OperandFetch(this, IF_OF_Latch, OF_EX_Latch);
+		EXUnit = new Execute(this, OF_EX_Latch, EX_MA_Latch, EX_IF_Latch);
+		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch);
+		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch);
 
 		regLockVector = new int[32];
-		regWriteCurrentCycle = new boolean[32];
-		flag_IOE_clear = false;
-		bubbles = new boolean[5];
-
-		for (boolean v : bubbles) {
-			v = true;
-		}
+		branchTakenCurrentCycle = false;
 	}
 	
 	public void printState(int memoryStartingAddress, int memoryEndingAddress)
@@ -94,10 +84,6 @@ public class Processor {
 
 	public void enableIFUnit() {
 		this.IF_EnableLatch.setIF_enable(true);
-	}
-
-	public void forceDisableIFUnit() {
-		this.IF_EnableLatch.setIF_enable(false);
 	}
 
 	public InstructionFetch getIFUnit() {
@@ -128,48 +114,7 @@ public class Processor {
 		this.isIdle = isIdle;
 	}
 
-	public boolean isStalled() {
-		return this.isStalled;
-	}
-
-	public void setStalled(boolean stalled) {
-		this.isStalled = stalled;
-	}
-
-	public boolean isBranchTakenCurrentCycle() {
-		return this.branchTakenCurrentCycle;
-	}
-
-	public void setBranchTakenCurrentCycle(boolean b_taken) {
-		this.branchTakenCurrentCycle = b_taken;
-	}
-
-	public void afterCycleRun() {
-
-		EX_IF_Latch.writeBuffer();
-
-		for(boolean v : regWriteCurrentCycle)
-			v = false;
-
+	public void afterCycleWork() {
 		branchTakenCurrentCycle = false;
-
-		if(flag_IOE_clear) {
-			IF_OF_Latch.setIgnore(true);
-			OF_EX_Latch.setIgnore(true);
-			EX_MA_Latch.setIgnore(true);
-		}
-	}
-
-	public void setIOE_clear() {
-		flag_IOE_clear = true;
-	}
-
-	public void setBubble(int stage, int b) {
-		bubbles[stage-1] = b;
-	}
-
-
-	public boolean isBubble(int stage) {
-		return bubbles[stage-1];
 	}
 }
