@@ -3,7 +3,6 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 import java.util.concurrent.*;
-import java.util.Scanner;
 
 import processor.Clock;
 import processor.Processor;
@@ -14,9 +13,6 @@ public class Simulator {
 		
 	static Processor processor;
 	static boolean simulationComplete;
-	public static int nInst = 0;
-	public static int nStalls = 0;
-	public static int nWrong = 0;
 	
 	public static void setupSimulation(String assemblyProgramFile, Processor p)
 	{
@@ -88,38 +84,36 @@ public class Simulator {
 		processor.enableIFUnit();
 		while(simulationComplete == false)
 		{
+			// processor.getIFUnit().performIF();
+			// if(processor.isIdle()) {
+			// 	simulationComplete = true;
+			// 	break;
+			// }
+			// Clock.incrementClock();
+			// processor.getOFUnit().performOF();
+			// Clock.incrementClock();
+			// processor.getEXUnit().performEX();
+			// Clock.incrementClock();
+			// processor.getMAUnit().performMA();
+			// Clock.incrementClock();
+			// processor.getRWUnit().performRW();
+			// Clock.incrementClock();
+			// numberOfInstructionsExecuted += 1;
+			// System.out.println(numberOfInstructionsExecuted);
+
 			processor.getRWUnit().performRW();
 			processor.getMAUnit().performMA();
 			processor.getEXUnit().performEX();
 			processor.getOFUnit().performOF();
 			processor.getIFUnit().performIF();
-			processor.afterCycleWork();
-
-			// ----------------------------------------------------------------------------
-			// NOTE: DEBUG DEBUG DEBUG
-			// ----------------------------------------------------------------------------
-
-			System.out.println("======================================================");
-
-			// Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-			// // System.out.println("Enter username");
-			// String userName = myObj.nextLine();
-
-			// ----------------------------------------------------------------------------
-			// ----------------------------------------------------------------------------
-
-
-			Clock.incrementClock();
 		}
-
+		
 		// TODO
 		// set statistics
 		numberOfCycles = Clock.getCurrentTime();
 
 		Statistics.setNumberOfInstructions(numberOfInstructionsExecuted);
 		Statistics.setNumberOfCycles((int) numberOfCycles);
-		Statistics.setNumberOfStalls(nStalls);
-		Statistics.setNumberOfWrong(nWrong);
 	}
 	
 	public static void setSimulationComplete(boolean value)

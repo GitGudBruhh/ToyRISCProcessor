@@ -4,7 +4,6 @@ public class EX_IF_LatchType {
 	
 	//added branchPC, controlSignals (use only isBranchTaken)
 	int branchPC;
-	int branchPC_buf;
 	ControlSignals controlSignals;
 	ControlSignals cSig_buf;
 
@@ -31,22 +30,8 @@ public class EX_IF_LatchType {
 	}
 
 	public void setNop() {
-		branchPC_buf = 0;
+		branchPC = 0;
 		// controlSignals = new ControlSignals();
 		cSig_buf = new ControlSignals();
-	}
-
-	public void setControlSignalsBuf(ControlSignals cSig_buf)
-	{
-		this.cSig_buf = cSig_buf;
-	}
-
-	public void setBranchPCBuf(int branchPC_buf) {
-		this.branchPC_buf = branchPC_buf;
-	}
-
-	public void writeBuffer() {
-		branchPC = branchPC_buf;
-		controlSignals = cSig_buf;
 	}
 }

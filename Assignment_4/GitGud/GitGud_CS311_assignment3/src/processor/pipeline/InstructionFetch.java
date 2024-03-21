@@ -1,7 +1,6 @@
 package processor.pipeline;
 
 import processor.Processor;
-import generic.Simulator;
 
 public class InstructionFetch {
 	
@@ -20,28 +19,18 @@ public class InstructionFetch {
 	
 	public void performIF()
 	{
-		ControlSignals controlSignals = EX_IF_Latch.getControlSignals();
-		RegisterFile regFileCopy = containingProcessor.getRegisterFile();
-		int currentPC = regFileCopy.getProgramCounter();
-		int instruction = containingProcessor.getMainMemory().getWord(currentPC);
-
 		if(containingProcessor.branchTakenCurrentCycle)
 		{
-			// if(instruction == 0)
-			// 	Simulator.nWrong -= 1;
-
 			IF_OF_Latch.setNop();
 			return;
 		}
 
 		if(IF_EnableLatch.isIF_enable())
 		{
-			//========================
-			//DEBUG
-			System.out.println("I");
-			(OperandFetch.controlUnit.createControlSignals(instruction)).display();
-			System.out.println(currentPC);
-			//========================
+			ControlSignals controlSignals = EX_IF_Latch.getControlSignals();
+			RegisterFile regFileCopy = containingProcessor.getRegisterFile();
+			int currentPC = regFileCopy.getProgramCounter();
+
 
 			/*
 			===================================================================================================
@@ -70,7 +59,7 @@ public class InstructionFetch {
 			// 	containingProcessor.setIdle(true);
 			// 	return;
 			// }
-			/*else*/ {
+			else {
 				/*
 				Assume a branchPC exists.
 				*/
@@ -86,7 +75,7 @@ public class InstructionFetch {
 				=====================================================================================
 				*/
 				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
-					/*int*/ instruction = containingProcessor.getMainMemory().getWord(branchPC);
+					int instruction = containingProcessor.getMainMemory().getWord(branchPC);
 					IF_OF_Latch.setInstruction(instruction);
 					IF_OF_Latch.setPc(branchPC);
 
@@ -97,7 +86,7 @@ public class InstructionFetch {
 					// IF_EnableLatch.setIF_enable(false);
 				}
 				else {
-					/*int*/ instruction = containingProcessor.getMainMemory().getWord(currentPC);
+					int instruction = containingProcessor.getMainMemory().getWord(currentPC);
 					IF_OF_Latch.setInstruction(instruction);
 					IF_OF_Latch.setPc(currentPC);
 

@@ -24,13 +24,11 @@ public class Execute {
 	}
 	
 	public void performEX() {
-
 		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
 		int instruction = OF_EX_Latch.getInstruction();
 
         if(instruction == 0)
 		{
-            System.out.println("E");
 			EX_MA_Latch.setNop();
 			EX_IF_Latch.setNop();
 			return;
@@ -173,31 +171,27 @@ public class Execute {
                         break;
                     case 25:
                         branchPC = branchTarget;
-                        if (A == B) {
+                        if (A == B)
                             controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
                             containingProcessor.branchTakenCurrentCycle = true;
-                        }
                         break;
                     case 26:
                         branchPC = branchTarget;
-                        if (A != B) {
+                        if (A != B)
                             controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
                             containingProcessor.branchTakenCurrentCycle = true;
-                        }
                         break;
                     case 27:
                         branchPC = branchTarget;
-                        if (A < B) {
+                        if (A < B)
                             controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
                             containingProcessor.branchTakenCurrentCycle = true;
-                        }
                         break;
                     case 28:
                         branchPC = branchTarget;
-                        if (A > B) {
+                        if (A > B)
                             controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
                             containingProcessor.branchTakenCurrentCycle = true;
-                        }
                             break;
                     case 29:
                         controlSignals.setControlSignal(ControlSignals.OperationSignals.END.ordinal(), true);
@@ -207,39 +201,28 @@ public class Execute {
                         return;
                 }
 
-                EX_IF_Latch.setBranchPCBuf(branchPC);
+                EX_IF_Latch.setBranchPC(branchPC);
                 EX_MA_Latch.setInstruction(instruction);
                 EX_MA_Latch.setPc(currentPC);
                 EX_MA_Latch.setAluResult(aluResult);
                 EX_MA_Latch.setOp2(op2);
-
-                System.out.println("E");
-                controlSignals.display();
             }
             /*
             Emptying the latch when an end instruction passes through.
             */
             else {
-                EX_IF_Latch.setBranchPCBuf(0);
-                EX_MA_Latch.setInstruction(instruction);
-                EX_MA_Latch.setControlSignals(controlSignals);
-                System.out.println("E");
-                controlSignals.display();
+                EX_IF_Latch.setBranchPC(0);
+                EX_MA_Latch.setInstruction(0);
                 EX_MA_Latch.setPc(0);
                 EX_MA_Latch.setAluResult(0);
                 EX_MA_Latch.setOp2(0);
-
-                RegisterFile regFileCopy = containingProcessor.getRegisterFile();
-                int pc = regFileCopy.getProgramCounter();
-                regFileCopy.setProgramCounter(pc - 1);
-                containingProcessor.setRegisterFile(regFileCopy);
 
                 IF_EnableLatch.setIF_enable(false);
                 IF_OF_Latch.setOF_enable(false);
             }
             EX_MA_Latch.setMA_enable(true);
             EX_MA_Latch.setControlSignals(controlSignals);
-            EX_IF_Latch.setControlSignalsBuf(controlSignals);
+            EX_IF_Latch.setControlSignals(controlSignals);
             // OF_EX_Latch.setEX_enable(false);
         }
 	}

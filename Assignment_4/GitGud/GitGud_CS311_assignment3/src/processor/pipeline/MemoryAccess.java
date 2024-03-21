@@ -22,7 +22,6 @@ public class MemoryAccess {
 		// System.out.println("BEFORE MA");
 		// controlSignals.display();
 		int instruction = EX_MA_Latch.getInstruction();
-		System.out.println("M");
 
 		if(instruction == 0)
 		{
@@ -31,8 +30,6 @@ public class MemoryAccess {
 		}
 
 		if(EX_MA_Latch.isMA_enable()) {
-			// System.out.println("M");
-			controlSignals.display();
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 				int currentPC = EX_MA_Latch.getPc();
 				long aluResult = EX_MA_Latch.getAluResult();

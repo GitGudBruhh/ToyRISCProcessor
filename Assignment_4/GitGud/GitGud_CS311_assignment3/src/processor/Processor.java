@@ -13,7 +13,6 @@ import processor.pipeline.OF_EX_LatchType;
 import processor.pipeline.OperandFetch;
 import processor.pipeline.RegisterFile;
 import processor.pipeline.RegisterWrite;
-import generic.Simulator;
 
 public class Processor {
 	
@@ -118,27 +117,9 @@ public class Processor {
 	}
 
 	public void afterCycleWork() {
-
-		if(branchTakenCurrentCycle)
-			Simulator.nWrong += 2;
-
-		// ------------------------------------------
-		// NOTE: DEBUG DEBUG
-		// ------------------------------------------
-		for(int i = 0; i < 32; i++)
-			System.out.print(regLockVector[i]+" ");
-		System.out.println();
-		for(int i = 0; i < 32; i++)
-			System.out.print(regWrite[i]+" ");
-		System.out.println();
-		// ------------------------------------------
-
 		branchTakenCurrentCycle = false;
 
 		for (int i = 0; i < 32; i++)
 			regWrite[i] = 0;
-
-		EX_IF_Latch.writeBuffer();
-
 	}
 }

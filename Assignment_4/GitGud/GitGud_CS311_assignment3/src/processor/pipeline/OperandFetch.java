@@ -4,14 +4,13 @@ import processor.Processor;
 import processor.pipeline.IF_EnableLatchType;
 // import src.generic.Simulator;
 import processor.pipeline.IF_OF_LatchType;
-import generic.Simulator;
 
 public class OperandFetch {
 	Processor containingProcessor;
 	IF_OF_LatchType IF_OF_Latch;
 	OF_EX_LatchType OF_EX_Latch;
 	IF_EnableLatchType IF_EnableLatch;
-	public static ControlUnit controlUnit; //WARNING WARNING WARNING WARNING set it to private later
+	ControlUnit controlUnit;
 	
 	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch, IF_EnableLatchType iF_EnableLatch)
 	{
@@ -24,7 +23,6 @@ public class OperandFetch {
 	
 	public void performOF()
 	{
-
 		/*
 		=========================================================================================
 		Fetch the instruction from the IF_OF latch and create the corresponding control signals.
@@ -32,6 +30,7 @@ public class OperandFetch {
 		*/
 		int instruction = IF_OF_Latch.getInstruction();
 		ControlSignals controlSignals = controlUnit.createControlSignals(instruction);
+
 
 		int opcode = instruction >>> 27;
 		int currentPC = IF_OF_Latch.getPc();
@@ -42,17 +41,13 @@ public class OperandFetch {
 		int rs2;
 		int rs1;
 
-		if(containingProcessor.branchTakenCurrentCycle || instruction == 0)
+		if(containingProcessor.branchTakenCurrentCycle)
 		{
-			// if(instruction == 0)
-			// 	containingProcessor.nWrong -= 1;
 			OF_EX_Latch.setNop();
 			return;
 		}
 
 		if(IF_OF_Latch.isOF_enable()) {
-			 System.out.println("O");
-			controlSignals.display();
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
 				//RI and R2I types
@@ -111,7 +106,6 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
-								Simulator.nStalls += 1;
 								return;
 							}
 							else{
@@ -136,12 +130,10 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
-								Simulator.nStalls += 1;
 								return;
 							}
 							else{
 								IF_EnableLatch.setIF_enable(true);
-								containingProcessor.regLockVector[rd] += 1;
 							}
 
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
@@ -164,7 +156,6 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
-								Simulator.nStalls += 1;
 								return;
 							}
 							else{
@@ -185,14 +176,10 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
-								Simulator.nStalls += 1;
 								return;
 							}
 							else{
-								IF_EnableLatch.setIF_enable(true);
-								containingProcessor.regLockVector[rd] += 1;
-								if(controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
-									containingProcessor.regLockVector[31] += 1;
+								IF_EnableLatch.setIF_enable(false);
 							}
 
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
@@ -217,14 +204,10 @@ public class OperandFetch {
 					) {
 						OF_EX_Latch.setNop();
 						IF_EnableLatch.setIF_enable(false);
-						Simulator.nStalls += 1;
 						return;
 					}
 					else{
-						IF_EnableLatch.setIF_enable(true);
-						containingProcessor.regLockVector[rd] += 1;
-						if(controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
-							containingProcessor.regLockVector[31] += 1;
+						IF_EnableLatch.setIF_enable(false);
 					}
 
 					OF_EX_Latch.setBranchTarget(currentPC + 1); //OF NO USE

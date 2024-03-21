@@ -13,7 +13,6 @@ public class MA_RW_LatchType {
 	public MA_RW_LatchType()
 	{
 		RW_enable = false;
-		controlSignals = new ControlSignals();
 	}
 
 	public boolean isRW_enable() {
