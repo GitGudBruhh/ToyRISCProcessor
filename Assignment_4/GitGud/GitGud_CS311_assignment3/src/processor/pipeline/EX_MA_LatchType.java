@@ -13,6 +13,7 @@ public class EX_MA_LatchType {
 	public EX_MA_LatchType()
 	{
 		MA_enable = false;
+		controlSignals = new ControlSignals();
 	}
 
 	public boolean isMA_enable() {

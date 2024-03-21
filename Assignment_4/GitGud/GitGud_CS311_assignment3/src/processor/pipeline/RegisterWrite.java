@@ -19,17 +19,24 @@ public class RegisterWrite {
 	{
 		//TODO
 		ControlSignals controlSignals = MA_RW_Latch.getControlSignals();
+		int pc = MA_RW_Latch.getPc();
+		int ldResult = MA_RW_Latch.getLdResult();
+		long aluResult = MA_RW_Latch.getAluResult();
+		int instruction = MA_RW_Latch.getInstruction();
+					System.out.println("R");
+
 
 		// System.out.println("BEFORE RW");
 		// controlSignals.display();
 		// System.out.println("==============================================================================");
 
+		if(instruction == 0) {
+			return;
+		}
 		if(MA_RW_Latch.isRW_enable()) {
+			controlSignals.display();
+
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
-				int pc = MA_RW_Latch.getPc();
-				int ldResult = MA_RW_Latch.getLdResult();
-				long aluResult = MA_RW_Latch.getAluResult();
-				int instruction = MA_RW_Latch.getInstruction();
 
 				boolean isAluResOverflow = true;
 				RegisterFile regFileCopy = containingProcessor.getRegisterFile();
@@ -68,13 +75,16 @@ public class RegisterWrite {
 						containingProcessor.regLockVector[rd] -= 1;
 						containingProcessor.regWrite[rd] = 1;
 					}
+
+				Simulator.nInst += 1;
 				}
-				{
-					Simulator.setSimulationComplete(true);
-				}
+			}
+			else {
+				Simulator.nInst += 1;
+				Simulator.setSimulationComplete(true);
 			}
 		}
 		// MA_RW_Latch.setRW_enable(false);
-		IF_EnableLatch.setIF_enable(true);
+		// IF_EnableLatch.setIF_enable(true);
 	}
 }

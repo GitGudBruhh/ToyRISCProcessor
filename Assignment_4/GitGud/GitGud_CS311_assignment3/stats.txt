@@ -1,2 +1,3 @@
-Number of instructions executed = 6
-Number of cycles taken = 6
+Number of cycles taken = 138
+Number of wrong entries = 14
+Number of stalls = 71
