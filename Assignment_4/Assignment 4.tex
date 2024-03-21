@@ -1,0 +1,94 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{graphicx}
+% \usepackage[english]{babel}
+% \usepackage[utf8x]{inputenc}
+
+\usepackage{graphicx} % Required for inserting images.
+\usepackage[margin=25mm]{geometry}
+\parskip 4.2pt  % Sets spacing between paragraphs.
+% \renewcommand{\baselinestretch}{1.5}  % Uncomment for 1.5 spacing between lines.
+\parindent 8.4pt  % Sets leading space for paragraphs.
+\usepackage[font=sf]{caption} % Changes font of captions.
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{hyperref} % Required for inserting clickable links.
+\usepackage{natbib} % Required for APA-style citations.
+
+
+\title{\textbf{ASSIGNMENT 4}}
+\author{Sachin Kumar(220120019), Amogh R (220010005)}
+\date{}
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+In our latest assignment, we've made significant strides in refining our Java-based simulation of a 5-stage pipelined processor tailored for the ToyRISC architecture. \\
+ \quad Now the processor have interlock feature like  \textbf{lock disabling for Instruction Fetch(IF), BranchTake addition, and the utilization of a RegisterLockVector}, \texttt{represented by an integer array of size 32}. Unlike our prior iteration, where instructions progressed sequentially, our current implementation enables each stage to process one instruction per cycle. This pivotal refinement ensures the accurate sequencing of instruction execution while effectively mitigating hazards. Overall, these advancements represent a substantial leap forward in both the functionality and efficiency of our simulated processor.
+
+
+\section{Working of the processor}
+
+The simulator closely emulates the behavior of a 5-stage pipelined processor, employing several crucial mechanisms for effective operation.
+
+\subsection{Control Unit and Control Signals}
+
+A vital component of our implementation is the \texttt{ControlUnit}, an independent entity responsible for generating \texttt{ControlSignals} for each instruction. These signals, encapsulated within the \texttt{ControlSignals} object, comprise boolean arrays representing operational and miscellaneous signals necessary for instruction execution.
+
+\subsection{Processor Operation}
+
+The processor operates through the following steps:
+
+\begin{enumerate}
+    \item \textbf{Initialization}: The main function invokes the simulator, which loads the object file into memory using the \texttt{loadProgram()} function. At this stage, the processor initializes with a flag, \texttt{isIdle}, set to true, indicating that it has yet to commence program execution.
+    
+    \item \textbf{Instruction Fetch (IF) Stage}: The processor begins execution by cycling through its stages. Initially, the IF stage fetches an instruction, transitioning the processor's state from idle to active.
+    
+    \item \textbf{Pipeline Execution}: Subsequently, each instruction progresses through its respective stages, facilitated by inter-stage latches such as IF-OF, OF-EX, EX-MA, and MA-RW. These latches ensure data transfer and synchronization between stages.
+    
+    \item \textbf{Cycle Synchronization}: As the count of cycles precisely aligns with the number of instructions executed, synchronization between the progression of instructions and the cycle count is ensured..
+    
+    \item \textbf{Completion}: Upon encountering the \texttt{end} instruction, signifying the conclusion of program execution, the processor reverts to an idle state. The simulator concludes the loop, capturing relevant statistics and writing them to a file.
+\end{enumerate}
+
+\subsection{Mechanisms for Hazard Handling}
+
+To mitigate potential hazards and ensure smooth execution, our processor employs several mechanisms:
+
+\begin{itemize}
+    \item \textbf{Lock Disabling for Instruction Fetch}: By disabling instruction fetching under certain conditions, such as during branch prediction or when \textbf{RAW} hazards are detected, we prevent fetching incorrect or invalid instructions.
+    
+    \item \textbf{BranchTaken Addition}: BranchTaken help us accurately predict branch outcomes and adjust the instruction flow accordingly, therefore optimizing the performance of the processor. It add OX0000000 instead of \texttt{nop}.
+    
+    \item \textbf{RegisterLockVector}: 
+Utilizing an integer array of size 32, our system efficiently manages register access, incrementing the corresponding array element by one upon each utilization of the register. Conversely, it decrements the array element by one once the register is no longer in use. For instance, if register 22 is accessed for the first time, the array element at index 22 is incremented by one. Subsequent accesses to register 22 result in incrementing the array element further. Upon completion of the task involving register 22, the array element is decremented by one. Upon the completion of all tasks, the array element is reset to zero, effectively preventing hazards arising from simultaneous accesses or modifications to registers.
+\end{itemize}
+
+These mechanisms, coupled with the pipelined architecture and interlocks, enhance the efficiency, reliability, and accuracy of our simulated processor, aligning it closely with real-world counterparts.
+
+\section{Testing}
+The simulator was tested on the following files from assignment 1:
+\begin{enumerate}
+    \item \texttt{descending.asm}
+        \subitem Number of instructions: 288
+        \subitem Number of cycles: 288
+    \item \texttt{fibonacci.asm}
+        \subitem Number of instructions: 114
+        \subitem Number of cycles: 114
+    \item \texttt{even\_odd.asm}
+        \subitem Number of instructions: 222
+        \subitem Number of cycles: 222
+    \item \texttt{prime.asm}
+        \subitem Number of instructions: 11
+        \subitem Number of cycles: 11
+    \item \texttt{palindrome.asm}
+        \subitem Number of instructions: 31
+        \subitem Number of cycles: 31
+\end{enumerate}
+\end{document}
