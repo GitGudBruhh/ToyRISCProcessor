@@ -14,6 +14,7 @@ public class Simulator {
 		
 	static Processor processor;
 	static boolean simulationComplete;
+
 	public static int nInst = 0;
 	public static int nStalls = 0;
 	public static int nWrong = 0;
@@ -115,6 +116,7 @@ public class Simulator {
 		Statistics.setNumberOfCycles((int) nCycles);
 		Statistics.setNumberOfStalls(nStalls);
 		Statistics.setNumberOfWrong(nWrong);
+		Statistics.setCurrentTime(Clock.getCurrentTime());
 	}
 	
 	public static void setSimulationComplete(boolean value)

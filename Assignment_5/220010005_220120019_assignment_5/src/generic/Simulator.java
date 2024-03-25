@@ -14,6 +14,8 @@ public class Simulator {
 		
 	static Processor processor;
 	static boolean simulationComplete;
+	static EventQueue eventQueue = new EventQueue();
+
 	public static int nInst = 0;
 	public static int nStalls = 0;
 	public static int nWrong = 0;
@@ -89,11 +91,13 @@ public class Simulator {
 			processor.getRWUnit().performRW();
 			processor.getMAUnit().performMA();
 			processor.getEXUnit().performEX();
+			eventQueue.processEvents();
 			processor.getOFUnit().performOF();
 			processor.getIFUnit().performIF();
 			processor.afterCycleWork();
-			System.out.println("======================================================");
 
+
+			System.out.println("======================================================");
 			// Scanner myObj = new Scanner(System.in);  // Create a Scanner object
 			// // System.out.println("Enter username");
 			// String userName = myObj.nextLine();
@@ -120,5 +124,9 @@ public class Simulator {
 	public static void setSimulationComplete(boolean value)
 	{
 		simulationComplete = value;
+	}
+
+	public static EventQueue getEventQueue() {
+		return eventQueue;
 	}
 }

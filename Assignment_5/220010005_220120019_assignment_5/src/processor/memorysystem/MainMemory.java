@@ -1,6 +1,8 @@
 package processor.memorysystem;
 
-public class MainMemory {
+import generic.Element;
+
+public class MainMemory implements Element{
 	int[] memory;
 	
 	public MainMemory()

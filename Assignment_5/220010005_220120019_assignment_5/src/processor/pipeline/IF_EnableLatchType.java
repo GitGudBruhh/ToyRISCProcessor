@@ -3,6 +3,7 @@ package processor.pipeline;
 public class IF_EnableLatchType {
 	
 	boolean IF_enable;
+	boolean IF_busy;
 	
 	public IF_EnableLatchType()
 	{
@@ -15,6 +16,14 @@ public class IF_EnableLatchType {
 
 	public void setIF_enable(boolean iF_enable) {
 		IF_enable = iF_enable;
+	}
+
+	public boolean isIF_busy() {
+		return IF_busy;
+	}
+
+	public void setIF_busy(boolean iF_busy) {
+		IF_busy = iF_busy;
 	}
 
 }

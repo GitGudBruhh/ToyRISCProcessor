@@ -35,6 +35,8 @@ public class Processor {
 
 	boolean isIdle = true;
 
+	boolean isStalledPrev;
+	public boolean isStalled;
 	public int[] regLockVector;
 	public int[] regWrite;
 	public boolean branchTakenCurrentCycle;
@@ -56,6 +58,9 @@ public class Processor {
 		EXUnit = new Execute(this, OF_EX_Latch, EX_MA_Latch, EX_IF_Latch, IF_EnableLatch, IF_OF_Latch);
 		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch);
 		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch);
+
+		isStalledPrev = false;
+		isStalled = false;
 
 		regLockVector = new int[32];
 		regWrite = new int[32];
@@ -134,6 +139,14 @@ public class Processor {
 			regWrite[i] = 0;
 
 		EX_IF_Latch.writeBuffer();
+
+		if(!isStalledPrev && isStalled) {
+			Simulator.nStalls += 1;
+		}
+		// if(isStalled)
+		// 	Simulator.nStalls += 1;
+
+		isStalledPrev = isStalled;
 
 	}
 }

@@ -10,6 +10,7 @@ public class Statistics {
 	static int numberOfInst;
 	static int numberOfWrong;
 	static int numberOfStalls;
+	static long currentTime;
 	
 	public static void printStatistics(String statFile)
 	{
@@ -19,6 +20,7 @@ public class Statistics {
 			
 			writer.println("Number of instructions executed = " + numberOfInst);
 			writer.println("Number of cycles taken = " + numberOfCycles);
+			writer.println("Current Time = " + currentTime);
 			writer.println("Number of wrong entries = " + numberOfWrong);
 			writer.println("Number of stalls = " + numberOfStalls);
 			// writer.println("Number of cycles taken = " + numberOfCycles);
@@ -52,5 +54,9 @@ public class Statistics {
 
 	public static void setNumberOfStalls(int numberOfCycles) {
 		Statistics.numberOfStalls = numberOfCycles;
+	}
+
+	public static void setCurrentTime(long currentTime) {
+		Statistics.currentTime = currentTime;
 	}
 }

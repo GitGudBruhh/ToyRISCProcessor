@@ -4,7 +4,6 @@ import processor.Processor;
 // import processor.pipeline.IF_EnableLatchType;
 // import src.generic.Simulator;
 // import processor.pipeline.IF_OF_LatchType;
-import generic.Simulator;
 
 public class OperandFetch {
 	Processor containingProcessor;
@@ -109,11 +108,12 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
-								Simulator.nStalls += 1;
+								containingProcessor.isStalled = true;
 								return;
 							}
 							else{
 								IF_EnableLatch.setIF_enable(true);
+								containingProcessor.isStalled = false;
 							}
 							OF_EX_Latch.setBranchTarget(branchTarget);
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
@@ -134,12 +134,13 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
-								Simulator.nStalls += 1;
+								containingProcessor.isStalled = true;
 								return;
 							}
 							else{
 								IF_EnableLatch.setIF_enable(true);
 								containingProcessor.regLockVector[rd] += 1;
+								containingProcessor.isStalled = false;
 							}
 
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
@@ -162,10 +163,11 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
-								Simulator.nStalls += 1;
+								containingProcessor.isStalled = true;
 								return;
 							}
 							else{
+								containingProcessor.isStalled = false;
 								IF_EnableLatch.setIF_enable(true);
 							}
 
@@ -183,7 +185,7 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
-								Simulator.nStalls += 1;
+								containingProcessor.isStalled = true;
 								return;
 							}
 							else{
@@ -191,6 +193,7 @@ public class OperandFetch {
 								containingProcessor.regLockVector[rd] += 1;
 								if(controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
 									containingProcessor.regLockVector[31] += 1;
+								containingProcessor.isStalled = false;
 							}
 
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
@@ -215,7 +218,7 @@ public class OperandFetch {
 					) {
 						OF_EX_Latch.setNop();
 						IF_EnableLatch.setIF_enable(false);
-						Simulator.nStalls += 1;
+						containingProcessor.isStalled = true;
 						return;
 					}
 					else{
@@ -223,6 +226,7 @@ public class OperandFetch {
 						containingProcessor.regLockVector[rd] += 1;
 						if(controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
 							containingProcessor.regLockVector[31] += 1;
+						containingProcessor.isStalled = false;
 					}
 
 					OF_EX_Latch.setBranchTarget(currentPC + 1); //OF NO USE
