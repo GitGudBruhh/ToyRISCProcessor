@@ -17,7 +17,6 @@ public class RegisterWrite {
 	
 	public void performRW()
 	{
-		//TODO
 		ControlSignals controlSignals = MA_RW_Latch.getControlSignals();
 		// int pc = MA_RW_Latch.getPc();
 		int ldResult = MA_RW_Latch.getLdResult();

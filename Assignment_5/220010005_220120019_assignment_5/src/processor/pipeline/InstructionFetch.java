@@ -16,6 +16,7 @@ public class InstructionFetch implements Element {
 	IF_EnableLatchType IF_EnableLatch;
 	IF_OF_LatchType IF_OF_Latch;
 	EX_IF_LatchType EX_IF_Latch;
+	int currentPC;
 	
 	public InstructionFetch(Processor containingProcessor, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch, EX_IF_LatchType eX_IF_Latch)
 	{
@@ -27,6 +28,15 @@ public class InstructionFetch implements Element {
 	
 	public void performIF()
 	{
+		/*
+		===================================================================================================
+		An idle processor denotes the start of a program, and an end instruction sets the processor to idle.
+		A non idle processor continues with the instruction fetch.
+		===================================================================================================
+		*/
+
+		if(containingProcessor.isIdle())
+			containingProcessor.setIdle(false);
 
 		if(containingProcessor.branchTakenCurrentCycle) {
 			IF_OF_Latch.setNop();
@@ -35,42 +45,32 @@ public class InstructionFetch implements Element {
 
 		if(IF_EnableLatch.isIF_enable())
 		{
-
 			if(IF_EnableLatch.isIF_busy()) {
+				//TODO set NOPS????
 				return;
 			}
 
-			EventQueue e_queue = Simulator.getEventQueue();
-			MemoryReadEvent mr_event = new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
+			int programCounter = continueOrBranch();
+			this.currentPC = programCounter;
+
+			EventQueue eQueue = Simulator.getEventQueue();
+			MemoryReadEvent mReadEvent = new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
 															this,
 															containingProcessor.getMainMemory(),
-															containingProcessor.getRegisterFile().getProgramCounter());
+															programCounter);
 
-			this.fetchFromPc();
+			eQueue.addEvent(mReadEvent);
+			IF_EnableLatch.setIF_busy(true);
 		}
 	}
 
 
-	private void fetchFromPc() {
-		System.out.println("I");
+	private int continueOrBranch(){
+
+		RegisterFile regFile = containingProcessor.getRegisterFile();
+		int currentPC = regFile.getProgramCounter();
+
 		ControlSignals controlSignals = EX_IF_Latch.getControlSignals();
-		RegisterFile regFileCopy = containingProcessor.getRegisterFile();
-		int currentPC = regFileCopy.getProgramCounter();
-
-		System.out.println(currentPC);
-
-		/*
-		===================================================================================================
-		An idle processor denotes the start of a program, and an end instruction sets the processor to idle.
-		A non idle processor continues with the instruction fetch.
-		===================================================================================================
-		*/
-		if(containingProcessor.isIdle())
-			containingProcessor.setIdle(false);
-
-		/*
-		Assume a branchPC exists.
-		*/
 		int branchPC = EX_IF_Latch.getBranchPC();
 
 		/*
@@ -83,25 +83,27 @@ public class InstructionFetch implements Element {
 		=====================================================================================
 		*/
 		if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
-			int instruction = containingProcessor.getMainMemory().getWord(branchPC);
-			IF_OF_Latch.setInstruction(instruction);
-			IF_OF_Latch.setPc(branchPC);
+			return branchPC;
+			// int instruction = containingProcessor.getMainMemory().getWord(branchPC);
+			// IF_OF_Latch.setInstruction(instruction);
+			// IF_OF_Latch.setPc(branchPC);
 
-			regFileCopy.setProgramCounter(branchPC + 1);
-			containingProcessor.setRegisterFile(regFileCopy);
+			// regFileCopy.setProgramCounter(branchPC + 1);
+			// containingProcessor.setRegisterFile(regFileCopy);
 
-			IF_OF_Latch.setOF_enable(true);
+			// IF_OF_Latch.setOF_enable(true);
 			// IF_EnableLatch.setIF_enable(false);
 		}
 		else {
-			int instruction = containingProcessor.getMainMemory().getWord(currentPC);
-			IF_OF_Latch.setInstruction(instruction);
-			IF_OF_Latch.setPc(currentPC);
+			return currentPC;
+			// int instruction = containingProcessor.getMainMemory().getWord(currentPC);
+			// IF_OF_Latch.setInstruction(instruction);
+			// IF_OF_Latch.setPc(currentPC);
 
-			regFileCopy.setProgramCounter(currentPC + 1);
-			containingProcessor.setRegisterFile(regFileCopy);
+			// regFileCopy.setProgramCounter(currentPC + 1);
+			// containingProcessor.setRegisterFile(regFileCopy);
 
-			IF_OF_Latch.setOF_enable(true);
+			// IF_OF_Latch.setOF_enable(true);
 			// IF_EnableLatch.setIF_enable(false);
 		}
 	}
@@ -114,8 +116,14 @@ public class InstructionFetch implements Element {
 		}
 		else
 		{
+			RegisterFile regFileCopy = containingProcessor.getRegisterFile();
 			MemoryResponseEvent event = (MemoryResponseEvent) e;
-			this.fetchFromPc();
+			int instruction = event.getValue();
+
+			IF_OF_Latch.setInstruction(instruction);
+			IF_OF_Latch.setPc(currentPC);
+			regFileCopy.setProgramCounter(currentPC + 1);
+			containingProcessor.setRegisterFile(regFileCopy);
 
 			IF_OF_Latch.setOF_enable(true);
 			IF_EnableLatch.setIF_busy(false);

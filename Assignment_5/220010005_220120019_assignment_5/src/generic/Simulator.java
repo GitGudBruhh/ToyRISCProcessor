@@ -2,8 +2,7 @@ package generic;
 import java.io.*;
 import java.nio.ByteBuffer;
 
-// import java.util.concurrent.*;
-import java.util.Scanner;
+// import java.util.Scanner;
 
 import processor.Clock;
 import processor.Processor;
@@ -33,7 +32,6 @@ public class Simulator {
 	{
 		try (InputStream programFileInputStream = new FileInputStream(assemblyProgramFile)) {
 			/*
-			* TODO
 			* 1. load the program into memory according to the program layout described
 			*    in the ISA specification
 			*/
@@ -110,10 +108,6 @@ public class Simulator {
 			int pc = regFileCopy.getProgramCounter();
 			regFileCopy.setProgramCounter(pc - 1);
 			processor.setRegisterFile(regFileCopy);
-
-		// TODO
-		// set statistics
-		// numberOfCycles = Clock.getCurrentTime();
 
 		Statistics.setNumberOfInst(nInst);
 		Statistics.setNumberOfCycles((int) nCycles);

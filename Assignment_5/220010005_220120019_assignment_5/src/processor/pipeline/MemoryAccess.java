@@ -17,7 +17,6 @@ public class MemoryAccess {
 	
 	public void performMA()
 	{
-		//TODO
 		ControlSignals controlSignals = EX_MA_Latch.getControlSignals();
 		// System.out.println("BEFORE MA");
 		// controlSignals.display();

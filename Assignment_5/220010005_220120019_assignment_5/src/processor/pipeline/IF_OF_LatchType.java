@@ -3,6 +3,7 @@ package processor.pipeline;
 public class IF_OF_LatchType {
 	
 	boolean OF_enable;
+	boolean OF_busy;
 	int instruction;
 	//added pc
 	int pc;
@@ -38,5 +39,13 @@ public class IF_OF_LatchType {
 	public void setNop() {
 		instruction = 0;
 		pc = 0;
+	}
+
+	public boolean isOF_busy() {
+		return OF_busy;
+	}
+
+	public void setOF_busy(boolean oF_busy) {
+		OF_busy = oF_busy;
 	}
 }
