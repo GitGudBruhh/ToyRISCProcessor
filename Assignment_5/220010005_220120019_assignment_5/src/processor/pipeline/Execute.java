@@ -3,6 +3,8 @@ package processor.pipeline;
 import processor.Processor;
 import processor.Clock;
 
+import configuration.Configuration;
+
 import generic.Simulator;
 import generic.Element;
 import generic.Event;
@@ -17,14 +19,13 @@ public class Execute implements Element {
 	IF_EnableLatchType IF_EnableLatch;
 	IF_OF_LatchType IF_OF_Latch;
 
+	int branchPCStored;
 	int instructionStored;
 	int currentPCStored;
+	long aluResultStored;
 	int branchTargetStored;
-	int bStored;
-	int aStored;
 	int op2Stored;
-
-	int branchPCStored;
+	ControlSignals controlSignalsStored;
 
 	
 	public Execute(Processor containingProcessor, OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch, EX_IF_LatchType eX_IF_Latch, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch) {
@@ -220,28 +221,48 @@ public class Execute implements Element {
                             containingProcessor.branchTakenCurrentCycle = true;
                         }
                             break;
-                    case 29:
-                        controlSignals.setControlSignal(ControlSignals.OperationSignals.END.ordinal(), true);
-                        // processor.setIdle(true);
-                        break;
+                    // case 29:
+                    //     controlSignals.setControlSignal(ControlSignals.OperationSignals.END.ordinal(), true);
+                    //     break;
                     default:
                         return;
                 }
 
+                EventQueue eQueue = Simulator.getEventQueue();
+
+                int latency = 0;
+                if(opcode == 4 || opcode == 5)
+                    latency = Configuration.multiplier_latency;
+                else if(opcode == 6 || opcode == 7)
+                    latency = Configuration.divider_latency;
+                else if(opcode != 24)
+                    latency = Configuration.ALU_latency;
+
+                Event exCompEvent = new ExecutionCompleteEvent(Clock.getCurrentTime() + latency,
+                                                                this,
+                                                                this);
+
                 // System.out.println("E");
                 // controlSignals.display();
+
+                eQueue.addEvent(exCompEvent);
+                OF_EX_Latch.setEX_busy(true);
+
+                branchPCStored = branchPC;
+                instructionStored = instruction;
+                currentPCStored = currentPC;
+                aluResultStored = aluResult;
             }
             /*
             Emptying the latch when an end instruction passes through.
             */
             else {
-                EX_IF_Latch.setBranchPCBuf(0);
-                EX_MA_Latch.setInstruction(instruction);
-                EX_MA_Latch.setControlSignals(controlSignals);
-
                 // System.out.println("E");
                 // controlSignals.display();
+                EX_IF_Latch.setBranchPCBuf(0);
 
+                EX_MA_Latch.setInstruction(instruction);
+                EX_MA_Latch.setControlSignals(controlSignals);
                 EX_MA_Latch.setPc(0);
                 EX_MA_Latch.setAluResult(0);
                 EX_MA_Latch.setOp2(0);
@@ -250,18 +271,18 @@ public class Execute implements Element {
 
                 IF_EnableLatch.setIF_enable(false);
                 IF_OF_Latch.setOF_enable(false);
+                OF_EX_Latch.setEX_busy(true);
             }
         }
 	}
 
     @Override
 	public void handleEvent(Event e) {
-		if(OF_EX_Latch.isEX_busy()) {
+		if(EX_MA_Latch.isMA_busy()) {
 			e.setEventTime(Clock.getCurrentTime() + 1);
 			Simulator.getEventQueue().addEvent(e);
 		}
-		else
-		{
+		else {
 			// RegisterFile regFileCopy = containingProcessor.getRegisterFile();
 			// MemoryResponseEvent event = (MemoryResponseEvent) e;
 
@@ -274,135 +295,14 @@ public class Execute implements Element {
 			// IF_OF_Latch.setOF_enable(true);
 			// IF_EnableLatch.setIF_busy(false);
 
-			switch(opcode) {
-                case 0:
-                    aluResult = (long) A + (long) B;
-                    break;
-                case 1:
-                    aluResult = (long) A + (long) B;
-                    break;
-                case 2:
-                    aluResult = (long) A - (long) B;
-                    break;
-                case 3:
-                    aluResult = (long) A - (long) B;
-                    break;
-                case 4:
-                    aluResult = (long) A * (long) B;
-                    break;
-                case 5:
-                    aluResult = (long) A * (long) B;
-                    break;
-                case 6:
-                    aluResult = (long) A / (long) B;
-                    remainder = (long) A % (long) B;
-                    aluResult = (remainder << 32) | aluResult;
-                    break;
-                case 7:
-                    aluResult = (long) A / (long) B;
-                    remainder = (long) A % (long) B;
-                    aluResult = (remainder << 32) | aluResult;
-                    break;
-                case 8:
-                    aluResultLogical = A & B;
-                    aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
-                    break;
-                case 9:
-                    aluResultLogical = A & B;
-                    aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
-                    break;
-                case 10:
-                    aluResultLogical = A | B;
-                    aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
-                    break;
-                case 11:
-                    aluResultLogical = A | B;
-                    aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
-                    break;
-                case 12:
-                    aluResultLogical = (A & (~B)) | (B & (~A));
-                    aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
-                    break;
-                case 13:
-                    aluResultLogical = (A & (~B)) | (B & (~A));
-                    aluResult = (long) aluResultLogical & 0x00000000ffffffffL;
-                    break;
-                case 14:
-                    aluResult = (A < B) ? 1 : 0;
-                    break;
-                case 15:
-                    aluResult = (A < B) ? 1 : 0;
-                    break;
-                case 16:
-                    aluResult = ((long) A << (long) B);
-                    break;
-                case 17:
-                    aluResult = ((long) A << (long) B);
-                    break;
-                case 18:
-                    aluResult = ((long) A >>> (long) B);
-                    break;
-                case 19:
-                    aluResult = ((long) A >>> (long) B);
-                    break;
-                case 20:
-                    aluResult = ((long) A >> (long) B);
-                    break;
-                case 21:
-                    aluResult = ((long) A >> (long) B);
-                    break;
-                case 22:
-                    aluResult = ((long) A + (long) B); //load
-                    break;
-                case 23:
-                    aluResult = ((long) A + (long) B); //store
-                    break;
-                case 24:
-                    branchPC = branchTarget;
-                    controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                    containingProcessor.branchTakenCurrentCycle = true;
-                    break;
-                case 25:
-                    branchPC = branchTarget;
-                    if (A == B) {
-                        controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                        containingProcessor.branchTakenCurrentCycle = true;
-                    }
-                    break;
-                case 26:
-                    branchPC = branchTarget;
-                    if (A != B) {
-                        controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                        containingProcessor.branchTakenCurrentCycle = true;
-                    }
-                    break;
-                case 27:
-                    branchPC = branchTarget;
-                    if (A < B) {
-                        controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                        containingProcessor.branchTakenCurrentCycle = true;
-                    }
-                    break;
-                case 28:
-                    branchPC = branchTarget;
-                    if (A > B) {
-                        controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                        containingProcessor.branchTakenCurrentCycle = true;
-                    }
-                        break;
-                case 29:
-                    controlSignals.setControlSignal(ControlSignals.OperationSignals.END.ordinal(), true);
-                    // processor.setIdle(true);
-                    break;
-                default:
-                    return;
-            }
+            EX_IF_Latch.setBranchPCBuf(branchPCStored);
+            EX_MA_Latch.setInstruction(instructionStored);
+            EX_MA_Latch.setPc(currentPCStored);
+            EX_MA_Latch.setAluResult(aluResultStored);
+            EX_MA_Latch.setOp2(op2Stored);
 
-            EX_IF_Latch.setBranchPCBuf(branchPC);
-            EX_MA_Latch.setInstruction(instruction);
-            EX_MA_Latch.setPc(currentPC);
-            EX_MA_Latch.setAluResult(aluResult);
-            EX_MA_Latch.setOp2(op2);
+            EX_MA_Latch.setMA_enable(true);
+			OF_EX_Latch.setEX_busy(false);
 		}
 	}
 }

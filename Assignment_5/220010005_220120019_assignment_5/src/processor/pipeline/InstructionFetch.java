@@ -2,6 +2,7 @@ package processor.pipeline;
 
 import processor.Clock;
 import processor.Processor;
+
 import configuration.Configuration;
 
 import generic.Simulator;
