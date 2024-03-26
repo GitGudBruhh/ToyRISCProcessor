@@ -28,6 +28,11 @@ public class Execute {
 		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
 		int instruction = OF_EX_Latch.getInstruction();
 
+		if(EX_MA_Latch.isMA_busy()) {
+            //TODO SET NOPS?? (EX)
+            return;
+		}
+
         if(instruction == 0)
 		{
             System.out.println("E");

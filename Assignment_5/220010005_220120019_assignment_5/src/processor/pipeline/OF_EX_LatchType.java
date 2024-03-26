@@ -11,6 +11,7 @@ public class OF_EX_LatchType {
 	int op2;
 	int instruction;
 	ControlSignals controlSignals;
+	boolean EX_busy;
 
 	public OF_EX_LatchType()
 	{
@@ -90,5 +91,13 @@ public class OF_EX_LatchType {
 		B = 0;
 		op2 = 0;
 		controlSignals = new ControlSignals();
+	}
+
+	public boolean isEX_busy() {
+		return EX_busy;
+	}
+
+	public void setEX_busy(boolean eX_busy) {
+		EX_busy = eX_busy;
 	}
 }

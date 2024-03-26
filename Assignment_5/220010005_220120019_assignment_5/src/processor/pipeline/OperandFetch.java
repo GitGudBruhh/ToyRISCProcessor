@@ -42,6 +42,11 @@ public class OperandFetch {
 		int rs2;
 		int rs1;
 
+		if(OF_EX_Latch.isEX_busy()) {
+			//TODO SET NOPS (OF)??
+			return;
+		}
+
 		if(containingProcessor.branchTakenCurrentCycle || instruction == 0)
 		{
 			OF_EX_Latch.setNop();

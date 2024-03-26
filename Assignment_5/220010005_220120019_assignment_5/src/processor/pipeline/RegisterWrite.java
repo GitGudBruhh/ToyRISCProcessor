@@ -22,7 +22,7 @@ public class RegisterWrite {
 		int ldResult = MA_RW_Latch.getLdResult();
 		long aluResult = MA_RW_Latch.getAluResult();
 		int instruction = MA_RW_Latch.getInstruction();
-					System.out.println("R");
+		System.out.println("R");
 
 
 		// System.out.println("BEFORE RW");

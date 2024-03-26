@@ -2,6 +2,7 @@ package processor.pipeline;
 
 public class EX_MA_LatchType {
 	
+	boolean MA_busy;
 	boolean MA_enable;
 	//added pc, aluResult, op2, instruction, controlSignals
 	int pc;
@@ -69,5 +70,13 @@ public class EX_MA_LatchType {
 		pc = 0;
 		op2 = 0;
 		controlSignals = new ControlSignals();
+	}
+
+	public boolean isMA_busy() {
+		return MA_busy;
+	}
+
+	public void setMA_busy(boolean mA_busy) {
+		MA_busy = mA_busy;
 	}
 }

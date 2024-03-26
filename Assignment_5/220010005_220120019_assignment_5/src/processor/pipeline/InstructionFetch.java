@@ -1,14 +1,15 @@
 package processor.pipeline;
 
-import generic.Simulator;
 import processor.Clock;
 import processor.Processor;
 import configuration.Configuration;
+
+import generic.Simulator;
+import generic.Element;
+import generic.Event;
 import generic.EventQueue;
 import generic.MemoryReadEvent;
 import generic.MemoryResponseEvent;
-import generic.Element;
-import generic.Event;
 
 public class InstructionFetch implements Element {
 	
@@ -16,7 +17,7 @@ public class InstructionFetch implements Element {
 	IF_EnableLatchType IF_EnableLatch;
 	IF_OF_LatchType IF_OF_Latch;
 	EX_IF_LatchType EX_IF_Latch;
-	int currentPC;
+	int currentPCStored;
 	
 	public InstructionFetch(Processor containingProcessor, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch, EX_IF_LatchType eX_IF_Latch)
 	{
@@ -46,12 +47,12 @@ public class InstructionFetch implements Element {
 		if(IF_EnableLatch.isIF_enable())
 		{
 			if(IF_EnableLatch.isIF_busy()) {
-				//TODO set NOPS????
+				//TODO set NOPS (IF)????
 				return;
 			}
 
 			int programCounter = continueOrBranch();
-			this.currentPC = programCounter;
+			this.currentPCStored = programCounter;
 
 			EventQueue eQueue = Simulator.getEventQueue();
 			MemoryReadEvent mReadEvent = new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
