@@ -1,12 +1,14 @@
 package processor.pipeline;
 
-// import java.lang.Integer;
-
 import processor.Processor;
-// import processor.pipeline.IF_EnableLatchType;
-// import processor.pipeline.IF_OF_LatchType;
 
-public class Execute {
+import generic.Simulator;
+import generic.Element;
+import generic.Event;
+import generic.EventQueue;
+import generic.ExecutionCompleteEvent;
+
+public class Execute implements Element {
 	Processor containingProcessor;
 	OF_EX_LatchType OF_EX_Latch;
 	EX_MA_LatchType EX_MA_Latch;
@@ -37,7 +39,10 @@ public class Execute {
 		{
             System.out.println("E");
 			EX_MA_Latch.setNop();
-			EX_IF_Latch.setNop();
+
+			if(!IF_EnableLatch.isIF_busy())
+                EX_IF_Latch.setNop();
+
 			return;
 		}
 

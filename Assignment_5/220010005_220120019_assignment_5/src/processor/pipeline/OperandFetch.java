@@ -1,9 +1,7 @@
 package processor.pipeline;
 
 import processor.Processor;
-// import processor.pipeline.IF_EnableLatchType;
-// import src.generic.Simulator;
-// import processor.pipeline.IF_OF_LatchType;
+
 import generic.Simulator;
 
 public class OperandFetch {

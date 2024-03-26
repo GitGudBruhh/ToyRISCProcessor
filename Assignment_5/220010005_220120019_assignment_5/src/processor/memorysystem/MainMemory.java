@@ -51,6 +51,8 @@ public class MainMemory implements Element{
 															this,
 															event.getRequestingElement(),
 															getWord(event.getAddressToReadFrom()));
+
+			eQueue.addEvent(mResponseEvent);
 		}
 	}
 }
