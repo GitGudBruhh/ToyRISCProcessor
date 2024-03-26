@@ -122,8 +122,8 @@ public class InstructionFetch implements Element {
 			int instruction = event.getValue();
 
 			IF_OF_Latch.setInstruction(instruction);
-			IF_OF_Latch.setPc(currentPC);
-			regFileCopy.setProgramCounter(currentPC + 1);
+			IF_OF_Latch.setPc(currentPCStored);
+			regFileCopy.setProgramCounter(currentPCStored + 1);
 			containingProcessor.setRegisterFile(regFileCopy);
 
 			IF_OF_Latch.setOF_enable(true);
