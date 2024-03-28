@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f1a90690-4f89-429d-9c27-fc942e517f5a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/generic/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/generic/Simulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/Processor.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/Processor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/Execute.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/Execute.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/IF_EnableLatchType.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/IF_EnableLatchType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/IF_OF_LatchType.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/IF_OF_LatchType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/InstructionFetch.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/InstructionFetch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/MemoryAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/MemoryAccess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/OF_EX_LatchType.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/OF_EX_LatchType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/processor/pipeline/OperandFetch.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/processor/pipeline/OperandFetch.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../jars/simulator.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../jars/simulator.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/processor/pipeline/OperandFetch.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/OperandFetch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/RegisterWrite.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/RegisterWrite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stats.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../stats.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,5 +68,16 @@
       <updated>1711536584420</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/processor/pipeline/RegisterWrite.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

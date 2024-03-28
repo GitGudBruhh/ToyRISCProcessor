@@ -76,6 +76,11 @@ public class RegisterWrite {
 			else {
 				Simulator.nInst += 1;
 				Simulator.setSimulationComplete(true);
+
+				RegisterFile regFileCopy = containingProcessor.getRegisterFile();
+				int tmp_pc = regFileCopy.getProgramCounter();
+				regFileCopy.setProgramCounter(tmp_pc+1);
+				containingProcessor.setRegisterFile(regFileCopy);
 				// System.out.print("SIMCOMPLETE");
 			}
 

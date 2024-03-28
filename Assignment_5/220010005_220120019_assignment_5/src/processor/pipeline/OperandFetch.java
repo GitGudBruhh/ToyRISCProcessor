@@ -136,8 +136,10 @@ public class OperandFetch {
 								Simulator.nStalls += 1;
 								return;
 							}
-							else{
+							else {
 								IF_EnableLatch.setIF_enable(true);
+
+								IF_OF_Latch.setNop();
 							}
 							OF_EX_Latch.setBranchTarget(branchTarget);
 							OF_EX_Latch.setA(this.containingProcessor.getRegisterFile().getValue(rs1));
@@ -161,9 +163,11 @@ public class OperandFetch {
 								Simulator.nStalls += 1;
 								return;
 							}
-							else{
+							else {
 								IF_EnableLatch.setIF_enable(true);
 								containingProcessor.regLockVector[rd] += 1;
+
+								IF_OF_Latch.setNop();
 							}
 
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
@@ -189,8 +193,10 @@ public class OperandFetch {
 								Simulator.nStalls += 1;
 								return;
 							}
-							else{
+							else {
 								IF_EnableLatch.setIF_enable(true);
+
+								IF_OF_Latch.setNop();
 							}
 
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
@@ -210,11 +216,13 @@ public class OperandFetch {
 								Simulator.nStalls += 1;
 								return;
 							}
-							else{
+							else {
 								IF_EnableLatch.setIF_enable(true);
 								containingProcessor.regLockVector[rd] += 1;
 								if(controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
 									containingProcessor.regLockVector[31] += 1;
+
+								IF_OF_Latch.setNop();
 							}
 
 							OF_EX_Latch.setBranchTarget(branchTarget); //OF NO USE
@@ -242,11 +250,13 @@ public class OperandFetch {
 						Simulator.nStalls += 1;
 						return;
 					}
-					else{
+					else {
 						IF_EnableLatch.setIF_enable(true);
 						containingProcessor.regLockVector[rd] += 1;
 						if(controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
 							containingProcessor.regLockVector[31] += 1;
+
+						IF_OF_Latch.setNop();
 					}
 
 					OF_EX_Latch.setBranchTarget(currentPC + 1); //OF NO USE
