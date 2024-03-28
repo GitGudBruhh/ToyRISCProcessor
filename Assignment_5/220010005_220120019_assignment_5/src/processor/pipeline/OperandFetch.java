@@ -10,6 +10,8 @@ public class OperandFetch {
 	OF_EX_LatchType OF_EX_Latch;
 	IF_EnableLatchType IF_EnableLatch;
 	ControlUnit controlUnit;
+
+	boolean isBranchWhenBusy;
 	
 	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch, IF_EnableLatchType iF_EnableLatch)
 	{
@@ -40,22 +42,37 @@ public class OperandFetch {
 		int rs2;
 		int rs1;
 
+		// if(IF_OF_Latch.isOF_busy()) {
+		// 	if(!OF_EX_Latch.isEX_busy())
+		// 		OF_EX_Latch.setNop();
+		// 	return;
+		// }
+
+		// if(containingProcessor.branchTakenCurrentCycle) {
+		// 	if(!OF_EX_Latch.isEX_busy())
+		// 		OF_EX_Latch.setNop();
+		// 	return;
+		// }
+
 		if(OF_EX_Latch.isEX_busy()) {
-			//TODO SET NOPS (OF)??
+			IF_OF_Latch.setOF_busy_due_to_EX(true);
 			return;
+		}
+		else {
+			IF_OF_Latch.setOF_busy_due_to_EX(false);
 		}
 
 		if(containingProcessor.branchTakenCurrentCycle || instruction == 0)
 		{
-			OF_EX_Latch.setNop();
+			if(!OF_EX_Latch.isEX_busy())
+				OF_EX_Latch.setNop();
+				IF_OF_Latch.setNop();
 			return;
 		}
 
 		if(IF_OF_Latch.isOF_enable()) {
-			 System.out.println("O");
-			controlSignals.display();
-			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
+			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 				//RI and R2I types
 				if (controlSignals.getControlSignal(ControlSignals.OperationSignals.IMMEDIATE.ordinal())) {
 					//Unconditional Branch - RI (op2 unused)
@@ -74,6 +91,8 @@ public class OperandFetch {
 							OF_EX_Latch.setB(offsetFromRd); //offsetFromRd
 							OF_EX_Latch.setA(0); //OF NO USE
 							OF_EX_Latch.setOp2(0); //OF NO USE
+
+							IF_OF_Latch.setNop();
 						}
 
 						else {
@@ -81,6 +100,8 @@ public class OperandFetch {
 							OF_EX_Latch.setB(immx);
 							OF_EX_Latch.setA(0); //OF NO USE
 							OF_EX_Latch.setOp2(0); //OF NO USE
+
+							IF_OF_Latch.setNop();
 						}
 					}
 
@@ -239,12 +260,15 @@ public class OperandFetch {
 			/*
 			Emptying the latch when an end instruction passes through.
 			*/
-			// else {
-			// 	OF_EX_Latch.setBranchTarget(0);
-			// 	OF_EX_Latch.setA(0);
-			// 	OF_EX_Latch.setB(0);
-			// 	OF_EX_Latch.setOp2(0);
-			// }
+			else {
+				OF_EX_Latch.setBranchTarget(0);
+				OF_EX_Latch.setA(0);
+				OF_EX_Latch.setB(0);
+				OF_EX_Latch.setOp2(0);
+				OF_EX_Latch.setPc(currentPC);
+				OF_EX_Latch.setInstruction(instruction);
+			}
+
 			OF_EX_Latch.setControlSignals(controlSignals);
 			OF_EX_Latch.setEX_enable(true);
 			// IF_OF_Latch.setOF_enable(false);

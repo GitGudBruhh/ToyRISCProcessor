@@ -25,7 +25,7 @@ public class Execute implements Element {
 	long aluResultStored;
 	int branchTargetStored;
 	int op2Stored;
-	ControlSignals controlSignalsStored;
+	ControlSignals cSigStored;
 
 	
 	public Execute(Processor containingProcessor, OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch, EX_IF_LatchType eX_IF_Latch, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch) {
@@ -42,23 +42,30 @@ public class Execute implements Element {
 		ControlSignals controlSignals = OF_EX_Latch.getControlSignals();
 		int instruction = OF_EX_Latch.getInstruction();
 
-		if(EX_MA_Latch.isMA_busy()) {
-            //TODO SET NOPS?? (EX)
+		if(OF_EX_Latch.isEX_busy()) {
+            // if(!EX_MA_Latch.isMA_busy())
+            //     EX_MA_Latch.setNop();
+            // else
+            //     OF_EX_Latch.setEX_busy_due_to_MA(true);
             return;
 		}
 
-        if(instruction == 0)
-		{
-            System.out.println("E");
-			EX_MA_Latch.setNop();
-
-			if(!IF_EnableLatch.isIF_busy())
-                EX_IF_Latch.setNop();
-
-			return;
-		}
+		// if(EX_MA_Latch.isMA_busy()) {
+  //           OF_EX_Latch.setEX_busy_due_to_MA(true);
+  //           return;
+		// }
+		// else {
+  //           OF_EX_Latch.setEX_busy_due_to_MA(false);
+		// }
 
 		if(OF_EX_Latch.isEX_enable()) {
+
+            if(instruction == 0) {
+                EX_MA_Latch.setNop();
+                EX_IF_Latch.setNop();
+                return;
+            }
+
             if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
                 int currentPC = OF_EX_Latch.getPc();
@@ -191,39 +198,36 @@ public class Execute implements Element {
                     case 24:
                         branchPC = branchTarget;
                         controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                        containingProcessor.branchTakenCurrentCycle = true;
+                        // containingProcessor.branchTakenCurrentCycle = true;
                         break;
                     case 25:
                         branchPC = branchTarget;
                         if (A == B) {
                             controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                            containingProcessor.branchTakenCurrentCycle = true;
+                            // containingProcessor.branchTakenCurrentCycle = true;
                         }
                         break;
                     case 26:
                         branchPC = branchTarget;
                         if (A != B) {
                             controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                            containingProcessor.branchTakenCurrentCycle = true;
+                            // containingProcessor.branchTakenCurrentCycle = true;
                         }
                         break;
                     case 27:
                         branchPC = branchTarget;
                         if (A < B) {
                             controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                            containingProcessor.branchTakenCurrentCycle = true;
+                            // containingProcessor.branchTakenCurrentCycle = true;
                         }
                         break;
                     case 28:
                         branchPC = branchTarget;
                         if (A > B) {
                             controlSignals.setControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal(), true);
-                            containingProcessor.branchTakenCurrentCycle = true;
+                            // containingProcessor.branchTakenCurrentCycle = true;
                         }
                             break;
-                    // case 29:
-                    //     controlSignals.setControlSignal(ControlSignals.OperationSignals.END.ordinal(), true);
-                    //     break;
                     default:
                         return;
                 }
@@ -242,24 +246,22 @@ public class Execute implements Element {
                                                                 this,
                                                                 this);
 
-                // System.out.println("E");
-                // controlSignals.display();
-
                 eQueue.addEvent(exCompEvent);
+                System.out.println("Added EX event to queue "+instruction);
                 OF_EX_Latch.setEX_busy(true);
 
                 branchPCStored = branchPC;
                 instructionStored = instruction;
                 currentPCStored = currentPC;
                 aluResultStored = aluResult;
+                cSigStored = controlSignals;
             }
             /*
             Emptying the latch when an end instruction passes through.
             */
             else {
-                // System.out.println("E");
-                // controlSignals.display();
                 EX_IF_Latch.setBranchPCBuf(0);
+                EX_IF_Latch.setControlSignalsBuf(controlSignals);
 
                 EX_MA_Latch.setInstruction(instruction);
                 EX_MA_Latch.setControlSignals(controlSignals);
@@ -267,20 +269,23 @@ public class Execute implements Element {
                 EX_MA_Latch.setAluResult(0);
                 EX_MA_Latch.setOp2(0);
                 EX_MA_Latch.setMA_enable(true);
-                EX_IF_Latch.setControlSignalsBuf(controlSignals);
 
                 IF_EnableLatch.setIF_enable(false);
                 IF_OF_Latch.setOF_enable(false);
-                OF_EX_Latch.setEX_busy(true);
+
+                OF_EX_Latch.setNop();
+                OF_EX_Latch.setEX_busy(false);
             }
         }
 	}
 
     @Override
 	public void handleEvent(Event e) {
+        System.out.println("Tried handling EX event");
 		if(EX_MA_Latch.isMA_busy()) {
 			e.setEventTime(Clock.getCurrentTime() + 1);
 			Simulator.getEventQueue().addEvent(e);
+			OF_EX_Latch.setEX_busy(true);
 		}
 		else {
 			// RegisterFile regFileCopy = containingProcessor.getRegisterFile();
@@ -296,13 +301,25 @@ public class Execute implements Element {
 			// IF_EnableLatch.setIF_busy(false);
 
             EX_IF_Latch.setBranchPCBuf(branchPCStored);
+            EX_IF_Latch.setControlSignalsBuf(cSigStored);
+
             EX_MA_Latch.setInstruction(instructionStored);
+            EX_MA_Latch.setControlSignals(cSigStored);
             EX_MA_Latch.setPc(currentPCStored);
             EX_MA_Latch.setAluResult(aluResultStored);
             EX_MA_Latch.setOp2(op2Stored);
 
             EX_MA_Latch.setMA_enable(true);
 			OF_EX_Latch.setEX_busy(false);
+
+			OF_EX_Latch.setNop();
+
+			if(cSigStored.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+                containingProcessor.branchTakenCurrentCycle = true;
+			}
+
+			System.out.println("Handled EX event!");
+			// OF_EX_Latch.setEX_busy_due_to_MA(false);
 		}
 	}
 }

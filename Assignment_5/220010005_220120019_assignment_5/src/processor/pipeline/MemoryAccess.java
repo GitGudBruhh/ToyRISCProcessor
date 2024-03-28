@@ -36,7 +36,9 @@ public class MemoryAccess implements Element{
 	{
 		ControlSignals controlSignals = EX_MA_Latch.getControlSignals();
 		int instruction = EX_MA_Latch.getInstruction();
-		System.out.println("M");
+		int currentPC = EX_MA_Latch.getPc();
+		long aluResult = EX_MA_Latch.getAluResult();
+		int op2 = EX_MA_Latch.getOp2();
 
 		if(instruction == 0)
 		{
@@ -54,9 +56,6 @@ public class MemoryAccess implements Element{
 			// controlSignals.display();
 
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
-				int currentPC = EX_MA_Latch.getPc();
-				long aluResult = EX_MA_Latch.getAluResult();
-				int op2 = EX_MA_Latch.getOp2();
 
 				int memoryAddress = (int) (aluResult & 0x00000000ffffffffL); //memoryAddressRegister
 				int memoryData = op2; //memoryDataRegister
@@ -72,6 +71,7 @@ public class MemoryAccess implements Element{
 																	memoryAddress);
 
 					eQueue.addEvent(mReadEvent);
+					System.out.println("Added MA Read event to queue");
 
 					this.aluResultStored = aluResult;
 					this.mAddrStored = memoryAddress;
@@ -82,7 +82,7 @@ public class MemoryAccess implements Element{
 					EX_MA_Latch.setMA_busy(true);
 				}
 
-				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
+				else if(controlSignals.getControlSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
 					// MainMemory newMemory = containingProcessor.getMainMemory();
 					// newMemory.setWord(memoryAddress, memoryData);
 					// containingProcessor.setMainMemory(newMemory);
@@ -95,6 +95,7 @@ public class MemoryAccess implements Element{
 																	memoryData);
 
 					eQueue.addEvent(mWriteEvent);
+					System.out.println("Added MA Write event to queue");
 
 					this.aluResultStored = aluResult;
 					this.mAddrStored = memoryAddress;
@@ -107,13 +108,28 @@ public class MemoryAccess implements Element{
 
 				}
 
-				// MA_RW_Latch.setPc(currentPC);
-				// MA_RW_Latch.setLdResult(ldResult);
-				// MA_RW_Latch.setAluResult(aluResult);
-				// MA_RW_Latch.setInstruction(instruction);
+				else {
+					MA_RW_Latch.setInstruction(instruction);
+					MA_RW_Latch.setPc(currentPC);
+					MA_RW_Latch.setLdResult(0);
+					MA_RW_Latch.setAluResult(aluResult);
+					MA_RW_Latch.setControlSignals(controlSignals);
+				}
 			}
 
-			MA_RW_Latch.setControlSignals(controlSignals);
+			/*
+			Emptying the latch when an END
+			instruction passes through
+			*/
+			else {
+				MA_RW_Latch.setInstruction(instruction);
+				MA_RW_Latch.setPc(currentPC);
+				MA_RW_Latch.setLdResult(0);
+				MA_RW_Latch.setAluResult(0);
+				MA_RW_Latch.setControlSignals(controlSignals);
+			}
+
+			// MA_RW_Latch.setControlSignals(controlSignals);
 			MA_RW_Latch.setRW_enable(true);
 		}
 	}
@@ -128,6 +144,11 @@ public class MemoryAccess implements Element{
 			MA_RW_Latch.setPc(currentPCStored);
 			MA_RW_Latch.setLdResult(ldResult);
 			MA_RW_Latch.setAluResult(aluResultStored);
+			MA_RW_Latch.setControlSignals(cSigStored);
+			EX_MA_Latch.setNop();
+			System.out.println("Handled MA event!");
+
+			EX_MA_Latch.setNop();
 		}
 
 		if(cSigStored.getControlSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
@@ -139,6 +160,12 @@ public class MemoryAccess implements Element{
 			MA_RW_Latch.setPc(currentPCStored);
 			MA_RW_Latch.setLdResult(0);
 			MA_RW_Latch.setAluResult(aluResultStored);
+			MA_RW_Latch.setControlSignals(cSigStored);
+			EX_MA_Latch.setNop();
+			System.out.println("Handled MA event!");
+
+			EX_MA_Latch.setNop();
+
 		}
 
 		MA_RW_Latch.setRW_enable(true);

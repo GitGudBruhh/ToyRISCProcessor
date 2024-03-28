@@ -22,17 +22,12 @@ public class RegisterWrite {
 		int ldResult = MA_RW_Latch.getLdResult();
 		long aluResult = MA_RW_Latch.getAluResult();
 		int instruction = MA_RW_Latch.getInstruction();
-		System.out.println("R");
-
-
-		// System.out.println("BEFORE RW");
-		// controlSignals.display();
-		// System.out.println("==============================================================================");
 
 		if(instruction == 0) {
 			return;
 		}
 		if(MA_RW_Latch.isRW_enable()) {
+			System.out.println("WRITING THIS");
 			controlSignals.display();
 
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
@@ -81,8 +76,10 @@ public class RegisterWrite {
 			else {
 				Simulator.nInst += 1;
 				Simulator.setSimulationComplete(true);
-				System.out.print("SIMCOMPLETE");
+				// System.out.print("SIMCOMPLETE");
 			}
+
+			MA_RW_Latch.setNop();
 		}
 		// MA_RW_Latch.setRW_enable(false);
 		// IF_EnableLatch.setIF_enable(true);

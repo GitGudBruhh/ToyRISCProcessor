@@ -18,7 +18,10 @@ public class InstructionFetch implements Element {
 	IF_EnableLatchType IF_EnableLatch;
 	IF_OF_LatchType IF_OF_Latch;
 	EX_IF_LatchType EX_IF_Latch;
+
 	int currentPCStored;
+	boolean isBranchWhenBusy;
+	int branchPCWhenBusy;
 	
 	public InstructionFetch(Processor containingProcessor, IF_EnableLatchType iF_EnableLatch, IF_OF_LatchType iF_OF_Latch, EX_IF_LatchType eX_IF_Latch)
 	{
@@ -30,25 +33,25 @@ public class InstructionFetch implements Element {
 	
 	public void performIF()
 	{
-		/*
-		===================================================================================================
-		An idle processor denotes the start of a program, and an end instruction sets the processor to idle.
-		A non idle processor continues with the instruction fetch.
-		===================================================================================================
-		*/
-
-		if(containingProcessor.isIdle())
-			containingProcessor.setIdle(false);
-
 		if(containingProcessor.branchTakenCurrentCycle) {
-			IF_OF_Latch.setNop();
+			if(!IF_OF_Latch.isOF_busy())
+				IF_OF_Latch.setNop();
 			return;
+		}
+
+		if(EX_IF_Latch.getControlSignals().getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
+			if(IF_EnableLatch.isIF_busy()) {
+				this.isBranchWhenBusy = true;
+				this.branchPCWhenBusy = EX_IF_Latch.getBranchPC();
+				return;
+			}
 		}
 
 		if(IF_EnableLatch.isIF_enable())
 		{
 			if(IF_EnableLatch.isIF_busy()) {
-				//TODO set NOPS (IF)????
+				if(!IF_OF_Latch.isOF_busy())
+					IF_OF_Latch.setNop();
 				return;
 			}
 
@@ -62,12 +65,18 @@ public class InstructionFetch implements Element {
 															programCounter);
 
 			eQueue.addEvent(mReadEvent);
+			System.out.println("Added IF event to queue");
 			IF_EnableLatch.setIF_busy(true);
 		}
 	}
 
 
 	private int continueOrBranch(){
+
+		if(this.isBranchWhenBusy) {
+			this.isBranchWhenBusy = false;
+			return this.branchPCWhenBusy;
+		}
 
 		RegisterFile regFile = containingProcessor.getRegisterFile();
 		int currentPC = regFile.getProgramCounter();
@@ -84,37 +93,22 @@ public class InstructionFetch implements Element {
 		Set PC to currentPC + 1 for keeping IF ready for the next instruction.
 		=====================================================================================
 		*/
+
 		if(controlSignals.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
 			return branchPC;
-			// int instruction = containingProcessor.getMainMemory().getWord(branchPC);
-			// IF_OF_Latch.setInstruction(instruction);
-			// IF_OF_Latch.setPc(branchPC);
-
-			// regFileCopy.setProgramCounter(branchPC + 1);
-			// containingProcessor.setRegisterFile(regFileCopy);
-
-			// IF_OF_Latch.setOF_enable(true);
-			// IF_EnableLatch.setIF_enable(false);
 		}
 		else {
 			return currentPC;
-			// int instruction = containingProcessor.getMainMemory().getWord(currentPC);
-			// IF_OF_Latch.setInstruction(instruction);
-			// IF_OF_Latch.setPc(currentPC);
-
-			// regFileCopy.setProgramCounter(currentPC + 1);
-			// containingProcessor.setRegisterFile(regFileCopy);
-
-			// IF_OF_Latch.setOF_enable(true);
-			// IF_EnableLatch.setIF_enable(false);
 		}
 	}
 
 	@Override
 	public void handleEvent(Event e) {
-		if(IF_OF_Latch.isOF_busy()) {
+		System.out.println("Tried handling IF event");
+		if(IF_OF_Latch.isOF_busy() || !IF_EnableLatch.isIF_enable()) {
 			e.setEventTime(Clock.getCurrentTime() + 1);
 			Simulator.getEventQueue().addEvent(e);
+			// IF_EnableLatch.setIF_busy_due_to_OF(true);
 		}
 		else
 		{
@@ -129,6 +123,14 @@ public class InstructionFetch implements Element {
 
 			IF_OF_Latch.setOF_enable(true);
 			IF_EnableLatch.setIF_busy(false);
+			IF_EnableLatch.setIF_enable(true);
+			// IF_EnableLatch.setIF_busy_due_to_OF(false);
+
+			System.out.println("Handled IF event!");
+
+			if(isBranchWhenBusy) {
+				IF_OF_Latch.setNop();
+			}
 		}
 	}
 }

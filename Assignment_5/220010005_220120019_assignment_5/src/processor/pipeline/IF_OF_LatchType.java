@@ -45,7 +45,7 @@ public class IF_OF_LatchType {
 		return OF_busy;
 	}
 
-	public void setOF_busy(boolean oF_busy) {
+	public void setOF_busy_due_to_EX(boolean oF_busy) {
 		OF_busy = oF_busy;
 	}
 }
