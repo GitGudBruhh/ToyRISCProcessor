@@ -3,6 +3,11 @@ package processor.pipeline;
 import generic.Simulator;
 import processor.Processor;
 
+//DEBUG WARNING
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.*;
+
 public class RegisterWrite {
 	Processor containingProcessor;
 	MA_RW_LatchType MA_RW_Latch;
@@ -28,7 +33,7 @@ public class RegisterWrite {
 		}
 		if(MA_RW_Latch.isRW_enable()) {
 			System.out.println("WRITING THIS");
-			controlSignals.display();
+			String printStr = controlSignals.display();
 
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
 
@@ -72,6 +77,25 @@ public class RegisterWrite {
 
 				Simulator.nInst += 1;
 				}
+
+				//DEBUG WARNING
+				// String textToAppend = String.valueOf(instruction);
+				String fileName = "fromA5.txt";
+
+				try(FileWriter fw = new FileWriter(fileName, true);
+					BufferedWriter bw = new BufferedWriter(fw);
+					PrintWriter out = new PrintWriter(bw))
+				{
+					out.println(printStr);
+					//more code
+					// out.println();
+					//more code
+				} catch (IOException e) {
+					//exception handling left as an exercise for the reader
+					System.out.println("EXCEPTION");
+				}
+				//DEBUG WARNING
+
 			}
 			else {
 				Simulator.nInst += 1;

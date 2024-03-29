@@ -2,6 +2,7 @@ package processor.memorysystem;
 
 import generic.Element;
 import generic.MemoryReadEvent;
+import generic.MemoryWriteEvent;
 import generic.MemoryResponseEvent;
 import generic.Event;
 import generic.EventQueue;
@@ -51,6 +52,18 @@ public class MainMemory implements Element{
 															this,
 															event.getRequestingElement(),
 															getWord(event.getAddressToReadFrom()));
+
+			eQueue.addEvent(mResponseEvent);
+		}
+
+		if(e.getEventType() == Event.EventType.MemoryWrite) {
+			MemoryWriteEvent event = (MemoryWriteEvent) e;
+			EventQueue eQueue = Simulator.getEventQueue();
+
+			Event mResponseEvent = new MemoryResponseEvent(Clock.getCurrentTime(),
+															this,
+															event.getRequestingElement(),
+															-1);
 
 			eQueue.addEvent(mResponseEvent);
 		}

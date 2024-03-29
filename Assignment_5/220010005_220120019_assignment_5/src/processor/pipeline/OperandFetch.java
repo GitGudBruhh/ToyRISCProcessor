@@ -133,12 +133,13 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
+								IF_OF_Latch.setOF_busy_due_to_EX(true);
 								Simulator.nStalls += 1;
 								return;
 							}
 							else {
 								IF_EnableLatch.setIF_enable(true);
-
+								IF_OF_Latch.setOF_busy_due_to_EX(false);
 								IF_OF_Latch.setNop();
 							}
 							OF_EX_Latch.setBranchTarget(branchTarget);
@@ -160,13 +161,14 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
+								IF_OF_Latch.setOF_busy_due_to_EX(true);
 								Simulator.nStalls += 1;
 								return;
 							}
 							else {
 								IF_EnableLatch.setIF_enable(true);
 								containingProcessor.regLockVector[rd] += 1;
-
+								IF_OF_Latch.setOF_busy_due_to_EX(false);
 								IF_OF_Latch.setNop();
 							}
 
@@ -191,11 +193,12 @@ public class OperandFetch {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
 								Simulator.nStalls += 1;
+								IF_OF_Latch.setOF_busy_due_to_EX(true);
 								return;
 							}
 							else {
 								IF_EnableLatch.setIF_enable(true);
-
+								IF_OF_Latch.setOF_busy_due_to_EX(false);
 								IF_OF_Latch.setNop();
 							}
 
@@ -213,11 +216,13 @@ public class OperandFetch {
 							) {
 								OF_EX_Latch.setNop();
 								IF_EnableLatch.setIF_enable(false);
+								IF_OF_Latch.setOF_busy_due_to_EX(true);
 								Simulator.nStalls += 1;
 								return;
 							}
 							else {
 								IF_EnableLatch.setIF_enable(true);
+								IF_OF_Latch.setOF_busy_due_to_EX(false);
 								containingProcessor.regLockVector[rd] += 1;
 								if(controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
 									containingProcessor.regLockVector[31] += 1;
@@ -247,11 +252,13 @@ public class OperandFetch {
 					) {
 						OF_EX_Latch.setNop();
 						IF_EnableLatch.setIF_enable(false);
+						IF_OF_Latch.setOF_busy_due_to_EX(true);
 						Simulator.nStalls += 1;
 						return;
 					}
 					else {
 						IF_EnableLatch.setIF_enable(true);
+						IF_OF_Latch.setOF_busy_due_to_EX(false);
 						containingProcessor.regLockVector[rd] += 1;
 						if(controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
 							containingProcessor.regLockVector[31] += 1;
@@ -277,6 +284,7 @@ public class OperandFetch {
 				OF_EX_Latch.setOp2(0);
 				OF_EX_Latch.setPc(currentPC);
 				OF_EX_Latch.setInstruction(instruction);
+				IF_OF_Latch.setOF_busy_due_to_EX(false);
 			}
 
 			OF_EX_Latch.setControlSignals(controlSignals);

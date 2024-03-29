@@ -86,8 +86,6 @@ public class Simulator {
 		processor.enableIFUnit();
 		while(simulationComplete == false)
 		{
-			if(nCycles >= 37)
-				System.out.println();
 			processor.getRWUnit().performRW();
 			processor.getMAUnit().performMA();
 			processor.getEXUnit().performEX();
@@ -98,12 +96,15 @@ public class Simulator {
 
 
 			System.out.println("======================================================");
-			Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-			String userName = myObj.nextLine();
+			// Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+			// String userName = myObj.nextLine();
 
 			Clock.incrementClock();
 			nCycles += 1;
 			System.out.println(nCycles);
+
+			if(nCycles > 40000)
+				break;
 		}
 		
 		RegisterFile regFileCopy = processor.getRegisterFile();

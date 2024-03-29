@@ -146,7 +146,7 @@ public class MemoryAccess implements Element{
 			MA_RW_Latch.setAluResult(aluResultStored);
 			MA_RW_Latch.setControlSignals(cSigStored);
 			EX_MA_Latch.setNop();
-			System.out.println("Handled MA event!");
+			System.out.println("Handled MA read event!");
 
 			EX_MA_Latch.setNop();
 		}
@@ -162,7 +162,7 @@ public class MemoryAccess implements Element{
 			MA_RW_Latch.setAluResult(aluResultStored);
 			MA_RW_Latch.setControlSignals(cSigStored);
 			EX_MA_Latch.setNop();
-			System.out.println("Handled MA event!");
+			System.out.println("Handled MA write event!");
 
 			EX_MA_Latch.setNop();
 

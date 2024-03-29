@@ -6,9 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f1a90690-4f89-429d-9c27-fc942e517f5a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../bin/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/generic/Simulator.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/generic/Simulator.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/processor/pipeline/OperandFetch.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/processor/pipeline/OperandFetch.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/processor/pipeline/RegisterWrite.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/processor/pipeline/RegisterWrite.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../jars/simulator.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../jars/simulator.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generic/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/generic/Simulator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/processor/pipeline/OperandFetch.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/OperandFetch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/processor/pipeline/RegisterWrite.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/RegisterWrite.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../stats.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../stats.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

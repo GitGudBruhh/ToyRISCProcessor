@@ -141,7 +141,7 @@ public class Processor {
 		System.out.println();
 
 		System.out.println("OF STAGE");
-		OF_EX_Latch.getControlSignals().display();
+		String bruh = OF_EX_Latch.getControlSignals().display();
 		System.out.println();
 
 		System.out.println("EX STAGE");

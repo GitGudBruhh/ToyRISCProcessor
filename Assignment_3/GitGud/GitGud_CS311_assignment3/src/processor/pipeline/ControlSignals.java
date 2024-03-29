@@ -24,14 +24,17 @@ public class ControlSignals {
         return this.arrayOfSignals;
     }
 
-    public void display() {
+    public String display() {
+        String retString = "";
         for (OperationSignals v : OperationSignals.values()) {
             if(arrayOfSignals[v.ordinal()]) {
                 System.out.print(v);
                 System.out.print(" " + arrayOfSignals[v.ordinal()] + ", ");
+                retString += v + " " + arrayOfSignals[v.ordinal()] + ", ";
             }
         }
 
         System.out.println();
+        return retString;
     }
 }
