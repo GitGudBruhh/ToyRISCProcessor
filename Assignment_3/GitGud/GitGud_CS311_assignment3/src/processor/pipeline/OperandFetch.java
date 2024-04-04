@@ -44,7 +44,7 @@ public class OperandFetch {
 					//Unconditional Branch - RI (op2 unused)
 					if (controlSignals.getControlSignal(ControlSignals.OperationSignals.JMP.ordinal())) {
 						/*
-						PC <- PC + rd +immx
+						PC <- PC + rd + immx
 						In ToyRISC, either rd or immx is zero for a jmp
 						*/
 						immx = (instruction << 10) >> 10;

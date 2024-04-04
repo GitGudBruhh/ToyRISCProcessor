@@ -1,0 +1,100 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{graphicx}
+\usepackage{multicol}
+\setlength{\columnsep}{1cm}
+% \usepackage[english]{babel}
+% \usepackage[utf8x]{inputenc}
+
+\usepackage{graphicx} % Required for inserting images.
+\usepackage[margin=25mm]{geometry}
+\parskip 4.2pt  % Sets spacing between paragraphs.
+% \renewcommand{\baselinestretch}{1.5}  % Uncomment for 1.5 spacing between lines.
+\parindent 8.4pt  % Sets leading space for paragraphs.
+\usepackage[font=sf]{caption} % Changes font of captions.
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{hyperref} % Required for inserting clickable links.
+\usepackage{natbib} % Required for APA-style citations.
+
+
+\title{\textbf{ASSIGNMENT 5}}
+\author{Sachin Kumar(220120019), Amogh R (220010005)}
+\date{}
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+In this assignment, we have modified the 5-stage pipelined processor to model the delays of the Main Memory unit and Execute unit using discrete event simulation. 
+
+\section{Discrete Event Simulation}
+The simulator uses events and event handling to simulate delays in the processor and memory.
+The delays are modeled in the Instruction Fetch and the Memory Access stages for memory delays, and Execute stage for Arithmetic/Logical operation delays.
+
+Four kinds of events are defined in the program:
+\begin{enumerate}
+	\item \texttt{MemoryReadEvent}: Used in IF and MA
+	\item \texttt{MemoryWriteEvent}: Used in MA
+	\item \texttt{MemoryResponseEvent}: Used in IF and MA
+	\item \texttt{ExecutionCompleteEvent}: Used in EX
+\end{enumerate}
+The discrete event simulation works as follows:
+\begin{itemize}
+	\item An event is added to the \texttt{EventQueue} by a stage in the pipeline. The event fire delay is used as priority. Higher priority imply lower delays.
+	
+	\item The stage after enqueueing an event sets itself to busy until a response event is recieved. For handling the response events, \texttt{handleEvent()} functions are defined in the stages where required.
+	
+	\item Each cycle, the queue polls and fires the event which is polled. The \texttt{handleEvent()} function defined in the IF, EX or MA stages work on this event (depending on the processing element for the event).
+	
+	\item Once an event is handled, the processing element sets itself to not busy and waits for the next instruction to appear in its input latch.
+	
+	\item A stage when busy cannot accept new instructions in the input latch. This causes the pipeline to stall until the event is handled.
+\end{itemize}
+
+The individual stages handle events as follows:
+\begin{enumerate}
+    \item The IF stage, when \texttt{performIF()} is called, checks whether the pipeline is stalled by the OF stage or if there is a pending fetch event (\texttt{MemoryReadEvent}). If not, it procceds to enqueue a \texttt{MemoryReadEvent} into the \texttt{EventQueue}. After the specified latency, it handles a \texttt{MemoryResponseEvent} by pushing the instruction recieved into the \texttt{IF\_OF\_Latch}.
+    	
+   \item The EX stage, when \texttt{performEX()} is called, checks whether the pipeline is stalled by the MA stage or if there is a pending execute event (\texttt{ExecutionCompleteEvent}). If not, it procceds to enqueue a \texttt{ExecutionCompleteEvent} into the \texttt{EventQueue}. After the specified latency, it handles a \texttt{ExecutionCompleteEvent} by pushing the ALUResult recieved into the \texttt{EX\_MA\_Latch}.
+   
+    \item The MA stage, when \texttt{performMA()} is called, checks whether the pipeline has a pending read event (\texttt{MemoryReadEvent}) or a pending write event (\texttt{MemoryWriteEvent}) at the MA stage . If not, it procceds to enqueue a \texttt{MemoryReadEvent} or a \texttt{MemoryWriteEvent} into the \texttt{EventQueue} for \texttt{load} and \texttt{store} instructions respectively. After the specified latency, it handles a \texttt{MemoryResponseEvent} by pushing the data recieved into the \texttt{MA\_RW\_Latch}.
+    
+    \item Branching when the IF stage is busy are handled by having the IF stage set the \texttt{isBranchWhenBusy} signal. However, the branch is not handled until the current instruction fetch does not finish, i.e., it does not switch to the new \texttt{branchPC} immediately after recieving the branch signal. Rather, it waits for the current instruction to be fetched, and sets it to a \texttt{nop} immediately.
+    
+\end{enumerate}
+
+%\pagebreak
+
+\section{Testing}
+The simulator was tested on the following files using default configuration:
+
+\texttt{MainMemoryLatency} : 40 cycles
+
+\texttt{DividerLatency} : 10 cycles 
+
+\texttt{MultiplierLatency} : 4 cycles 
+
+\texttt{ALULatency} : 1 cycle
+
+\begin{table}[!ht]
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\textbf{Program file} & \textbf{No. instructions executed} & \textbf{No. cycles taken} & \textbf{Inst. per cycle} \\
+		\hline
+		\textbf{evenorodd.out} & 5 & 249 & 0.02008 \\
+		\textbf{prime.out} & 16 & 1364 & 0.01173 \\
+		\textbf{palindrome.out} & 41 & 2249 & 0.01823 \\
+		\textbf{fibonacci.out} & 51 & 3764 & 0.01355 \\
+		\textbf{descending.out} & 136 & 14805 & 0.00918 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\section{Conclusion}
+The IPC is hugely affected when there is a main memory latency of 40 cycles. The EX stage ALU Latency minimally affects the IPC. Programs with lots of loads and stores, and divisions/multiplications take a huge hit in performance (e.g. descending.out).
+\end{document}

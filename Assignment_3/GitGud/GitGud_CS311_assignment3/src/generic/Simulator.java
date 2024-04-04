@@ -85,10 +85,12 @@ public class Simulator {
 		while(simulationComplete == false)
 		{
 			processor.getIFUnit().performIF();
+
 			if(processor.isIdle()) {
 				simulationComplete = true;
 				break;
 			}
+
 			// Clock.incrementClock();
 			processor.getOFUnit().performOF();
 			// Clock.incrementClock();
@@ -106,7 +108,7 @@ public class Simulator {
 		// set statistics
 		numberOfCycles = Clock.getCurrentTime();
 
-		Statistics.setNumberOfInstructions(numberOfInstructionsExecuted);
+		Statistics.setNumberOfInst(numberOfInstructionsExecuted);
 		Statistics.setNumberOfCycles((int) numberOfCycles);
 	}
 	

@@ -29,7 +29,7 @@ public class RegisterWrite {
 		// controlSignals.display();
 		// System.out.println("==============================================================================");
 
-		String printStr = controlSignals.display();
+		// String printStr = controlSignals.display();
 
 		if(MA_RW_Latch.isRW_enable()) {
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
@@ -43,7 +43,6 @@ public class RegisterWrite {
 
 				if((aluResult >>> 32) == 0 || (aluResult >>> 32) == 0x00000000ffffffffL)
 					isAluResOverflow = false;
-				// int opcode = instruction >>> 27;
 
 				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.WB.ordinal())) {
 					if(isAluResOverflow || controlSignals.getControlSignal(ControlSignals.OperationSignals.DIV.ordinal()))
@@ -67,24 +66,23 @@ public class RegisterWrite {
 						containingProcessor.setRegisterFile(regFileCopy);
 					}
 				}
-				//DEBUG WARNING
-				// String textToAppend = String.valueOf(instruction);
-				String fileName = "fromA3.txt";
-
-				try(FileWriter fw = new FileWriter(fileName, true);
-					BufferedWriter bw = new BufferedWriter(fw);
-					PrintWriter out = new PrintWriter(bw))
-				{
-					out.println(printStr);
-					//more code
-					// out.println();
-					//more code
-					out.close();
-				} catch (IOException e) {
-					//exception handling left as an exercise for the reader
-					System.out.println("EXCEPTION");
-				}
-				//DEBUG WARNING
+				// //DEBUG WARNING
+				// // String textToAppend = String.valueOf(instruction);
+				// String fileName = "fromA3.txt";
+				// try(FileWriter fw = new FileWriter(fileName, true);
+				// 	BufferedWriter bw = new BufferedWriter(fw);
+				// 	PrintWriter out = new PrintWriter(bw))
+				// {
+				// 	out.println(printStr);
+				// 	//more code
+				// 	// out.println();
+				// 	//more code
+				// 	out.close();
+				// } catch (IOException e) {
+				// 	//exception handling left as an exercise for the reader
+				// 	System.out.println("EXCEPTION");
+				// }
+				// //DEBUG WARNING
 			}
 		}
 		MA_RW_Latch.setRW_enable(false);

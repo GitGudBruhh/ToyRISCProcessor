@@ -1,0 +1,5 @@
+Number of instructions executed = 51
+Number of cycles taken = 3764
+Number of wrong entries = 32
+Number of stalls = 0
+IPC: 0.01355
