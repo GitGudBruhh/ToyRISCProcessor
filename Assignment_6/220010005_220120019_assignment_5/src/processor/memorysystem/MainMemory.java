@@ -7,6 +7,7 @@ import generic.MemoryResponseEvent;
 import generic.Event;
 import generic.EventQueue;
 import generic.Simulator;
+import processor.memorysystem.CacheLine;
 import processor.Clock;
 
 public class MainMemory implements Element {
@@ -25,6 +26,22 @@ public class MainMemory implements Element {
 	public void setWord(int address, int value)
 	{
 		memory[address] = value;
+	}
+
+	public CacheLine getLine(int address, int nWordsPerLine) {
+
+		int startIdx = nWordsPerLine * (int) (address/nWordsPerLine);
+		int endIdx = startIdx + nWordsPerLine - 1;
+
+		CacheLine cacheLine = new CacheLine(nWordsPerLine*4);
+		int[] d_line = new int[nWordsPerLine];
+
+		for(int i = 0; i < nWordsPerLine; i++) {
+			d_line[i] = getWord(startIdx + i);
+		}
+
+		cacheLine.setDataLine(d_line);
+		return cacheLine;
 	}
 	
 	public String getContentsAsString(int startingAddress, int endingAddress)
@@ -47,11 +64,13 @@ public class MainMemory implements Element {
 		if(e.getEventType() == Event.EventType.MemoryRead) {
 			MemoryReadEvent event = (MemoryReadEvent) e;
 			EventQueue eQueue = Simulator.getEventQueue();
+			int nWordsPerLine = event.getNoWordsPerLine();
 
 			Event mResponseEvent = new MemoryResponseEvent(Clock.getCurrentTime(),
+															event.getRequestingStage(),
 															this,
 															event.getRequestingElement(),
-															getWord(event.getAddressToReadFrom()));
+															getLine(event.getAddressToReadFrom(), nWordsPerLine));
 
 			eQueue.addEvent(mResponseEvent);
 		}
@@ -66,6 +85,7 @@ public class MainMemory implements Element {
 			setWord(mAddr, value);
 
 			Event mResponseEvent = new MemoryResponseEvent(Clock.getCurrentTime(),
+															event.getRequestingStage(),
 															this,
 															event.getRequestingElement(),
 															-1);

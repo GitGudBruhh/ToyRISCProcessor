@@ -9,8 +9,8 @@ import generic.Simulator;
 import generic.Element;
 import generic.Event;
 import generic.EventQueue;
-import generic.MemoryReadEvent;
-import generic.MemoryResponseEvent;
+import generic.CacheReadEvent;
+import generic.CacheResponseEvent;
 
 public class InstructionFetch implements Element {
 	
@@ -59,12 +59,12 @@ public class InstructionFetch implements Element {
 			this.currentPCStored = programCounter;
 
 			EventQueue eQueue = Simulator.getEventQueue();
-			MemoryReadEvent mReadEvent = new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
+			CacheReadEvent cReadEvent = new CacheReadEvent(Clock.getCurrentTime() + Configuration.L1i_latency,
 															this,
-															containingProcessor.getMainMemory(),
+															containingProcessor.getL1i_Cache(),
 															programCounter);
 
-			eQueue.addEvent(mReadEvent);
+			eQueue.addEvent(cReadEvent);
 			System.out.println("Added IF event to queue");
 			IF_EnableLatch.setIF_busy(true);
 		}
@@ -113,7 +113,7 @@ public class InstructionFetch implements Element {
 		else
 		{
 			RegisterFile regFileCopy = containingProcessor.getRegisterFile();
-			MemoryResponseEvent event = (MemoryResponseEvent) e;
+			CacheResponseEvent event = (CacheResponseEvent) e;
 			int instruction = event.getValue();
 
 			IF_OF_Latch.setInstruction(instruction);

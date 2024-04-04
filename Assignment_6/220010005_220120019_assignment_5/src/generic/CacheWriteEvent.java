@@ -1,12 +1,12 @@
 package generic;
 
-public class MemoryWriteEvent extends Event {
+public class CacheWriteEvent extends Event {
 
 	int addressToWriteTo;
 	int value;
 	
-	public MemoryWriteEvent(long eventTime, Element requestingElement, Element processingElement, int address, int value) {
-		super(eventTime, EventType.MemoryWrite, requestingElement, processingElement);
+	public CacheWriteEvent(long eventTime, Element requestingElement, Element processingElement, int address, int value) {
+		super(eventTime, EventType.CacheWrite, requestingElement, requestingElement, processingElement);
 		this.addressToWriteTo = address;
 		this.value = value;
 	}

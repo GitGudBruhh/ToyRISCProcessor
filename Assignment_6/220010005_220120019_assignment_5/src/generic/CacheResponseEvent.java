@@ -1,11 +1,11 @@
 package generic;
 
-public class MemoryResponseEvent extends Event {
+public class CacheResponseEvent extends Event {
 
 	int value;
 	
-	public MemoryResponseEvent(long eventTime, Element requestingElement, Element processingElement, int value) {
-		super(eventTime, EventType.MemoryResponse, requestingElement, processingElement);
+	public CacheResponseEvent(long eventTime, Element requestingElement, Element processingElement, int value) {
+		super(eventTime, EventType.CacheResponse, requestingElement, requestingElement, processingElement);
 		this.value = value;
 	}
 

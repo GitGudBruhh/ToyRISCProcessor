@@ -36,7 +36,7 @@ public class CacheLine {
         this.tag = t;
     }
 
-    public boolean getModified() {
+    public boolean isModified() {
         return this.modified;
     }
 
@@ -50,5 +50,13 @@ public class CacheLine {
 
     public void setValueAtOffset(int offset, int value) {
         this.dataLine[offset] = value;
+    }
+
+    public int[] getDataLine() {
+        return this.dataLine;
+    }
+
+    public void setDataLine(int[] d_line) {
+        this.dataLine = d_line;
     }
 }

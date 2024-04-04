@@ -10,9 +10,9 @@ import generic.Simulator;
 import generic.Element;
 import generic.Event;
 import generic.EventQueue;
-import generic.MemoryReadEvent;
-import generic.MemoryResponseEvent;
-import generic.MemoryWriteEvent;
+import generic.CacheReadEvent;
+import generic.CacheResponseEvent;
+import generic.CacheWriteEvent;
 
 public class MemoryAccess implements Element{
 	Processor containingProcessor;
@@ -65,13 +65,13 @@ public class MemoryAccess implements Element{
 					// ldResult = containingProcessor.getMainMemory().getWord(memoryAddress);
 
 					EventQueue eQueue = Simulator.getEventQueue();
-					MemoryReadEvent mReadEvent = new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
+					CacheReadEvent cReadEvent = new CacheReadEvent(Clock.getCurrentTime() + Configuration.L1d_latency,
 																	this,
-																	containingProcessor.getMainMemory(),
+																	containingProcessor.getL1d_Cache(),
 																	memoryAddress);
 
-					eQueue.addEvent(mReadEvent);
-					System.out.println("Added MA Read event to queue");
+					eQueue.addEvent(cReadEvent);
+					System.out.println("Added CacheRead event to queue (MA)");
 
 					this.aluResultStored = aluResult;
 					this.mAddrStored = memoryAddress;
@@ -88,14 +88,14 @@ public class MemoryAccess implements Element{
 					// containingProcessor.setMainMemory(newMemory);
 
 					EventQueue eQueue = Simulator.getEventQueue();
-					MemoryWriteEvent mWriteEvent = new MemoryWriteEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
+					CacheWriteEvent cWriteEvent = new CacheWriteEvent(Clock.getCurrentTime() + Configuration.L1d_latency,
 																	this,
-																	containingProcessor.getMainMemory(),
+																	containingProcessor.getL1d_Cache(),
 																	memoryAddress,
 																	memoryData);
 
-					eQueue.addEvent(mWriteEvent);
-					System.out.println("Added MA Write event to queue");
+					eQueue.addEvent(cWriteEvent);
+					System.out.println("Added CacheWrite event to queue (MA)");
 
 					this.aluResultStored = aluResult;
 					this.mAddrStored = memoryAddress;
@@ -136,7 +136,7 @@ public class MemoryAccess implements Element{
 
 	@Override
 	public void handleEvent(Event e) {
-		MemoryResponseEvent event = (MemoryResponseEvent) e;
+		CacheResponseEvent event = (CacheResponseEvent) e;
 
 		int ldResult = event.getValue();
 

@@ -1,7 +1,7 @@
 package processor;
 
 import processor.memorysystem.MainMemory;
-import processor.pipeline.Cache;
+import processor.memorysystem.Cache;
 import processor.pipeline.EX_IF_LatchType;
 import processor.pipeline.EX_MA_LatchType;
 import processor.pipeline.Execute;
@@ -15,6 +15,7 @@ import processor.pipeline.OperandFetch;
 import processor.pipeline.RegisterFile;
 import processor.pipeline.RegisterWrite;
 import generic.Simulator;
+import configuration.Configuration;
 
 public class Processor {
 	
@@ -33,6 +34,9 @@ public class Processor {
 	Execute EXUnit;
 	MemoryAccess MAUnit;
 	RegisterWrite RWUnit;
+
+	Cache L1i_Cache;
+	Cache L1d_Cache;
 
 	// boolean isIdle = true;
 
@@ -58,6 +62,9 @@ public class Processor {
 		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch);
 		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch);
 
+		L1i_Cache = new Cache(this, 4, Configuration.L1i_numberOfLines);
+		L1d_Cache = new Cache(this, 4, Configuration.L1d_numberOfLines);
+
 		regLockVector = new int[32];
 		regWrite = new int[32];
 		branchTakenCurrentCycle = false;
@@ -80,6 +87,14 @@ public class Processor {
 
 	public MainMemory getMainMemory() {
 		return mainMemory;
+	}
+
+	public Cache getL1i_Cache() {
+		return L1i_Cache;
+	}
+
+	public Cache getL1d_Cache() {
+		return L1d_Cache;
 	}
 
 	public void setMainMemory(MainMemory mainMemory) {
@@ -142,7 +157,8 @@ public class Processor {
 		System.out.println();
 
 		System.out.println("OF STAGE");
-		String bruh = OF_EX_Latch.getControlSignals().display();
+		/*String bruh = */
+		OF_EX_Latch.getControlSignals().display();
 		System.out.println();
 
 		System.out.println("EX STAGE");

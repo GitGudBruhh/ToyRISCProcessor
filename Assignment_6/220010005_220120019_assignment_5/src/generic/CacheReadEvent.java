@@ -5,7 +5,7 @@ public class CacheReadEvent extends Event {
 	int addressToReadFrom;
 	
 	public CacheReadEvent(long eventTime, Element requestingElement, Element processingElement, int address) {
-		super(eventTime, EventType.CacheRead, requestingElement, processingElement);
+		super(eventTime, EventType.CacheRead, requestingElement, requestingElement, processingElement);
 		this.addressToReadFrom = address;
 	}
 

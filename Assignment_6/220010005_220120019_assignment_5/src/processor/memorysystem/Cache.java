@@ -4,6 +4,9 @@ import generic.Element;
 import generic.MemoryReadEvent;
 import generic.MemoryWriteEvent;
 import generic.MemoryResponseEvent;
+import generic.CacheReadEvent;
+import generic.CacheWriteEvent;
+import generic.CacheResponseEvent;
 import generic.Event;
 import generic.EventQueue;
 import generic.Simulator;
@@ -13,7 +16,6 @@ import configuration.Configuration;
 
 public class Cache implements Element {
     Processor containingProcessor;
-    int INT_MAX = ~(1 << 31);
     int lineSize;
     int nLines;
     int nWordsPerLine;
@@ -28,7 +30,7 @@ public class Cache implements Element {
         this.lineSize = lineSize;
         this.nLines = nLines;
         this.nWordsPerLine = lineSize/4;
-        this.nOffsetBits = (int) (Math.log(nWordsPerLine) / Math.log(2));
+        this.nOffsetBits =  (int) Math.ceil((Math.log(nWordsPerLine) / Math.log(2)));
         this.nTagBits = 32 - this.nOffsetBits;
 
         this.cacheArray = new CacheLine[nLines];
@@ -37,12 +39,16 @@ public class Cache implements Element {
             this.cacheArray[i] = new CacheLine(this.lineSize);
     }
 
-    public boolean isBusy(boolean b) {
-        return this.isBusy;
-    }
+    // public boolean isBusy(boolean b) {
+    //     return this.isBusy;
+    // }
+    //
+    // public void setBusy(boolean b) {
+    //     this.isBusy = b;
+    // }
 
-    public void setBusy(boolean b) {
-        this.isBusy = b;
+    public int getWordsPerLine() {
+        return nWordsPerLine;
     }
 
     public void setLine(CacheLine c_Line, int idx) {
@@ -60,61 +66,83 @@ public class Cache implements Element {
         return min_idx;
     }
 
-    // public int readFromAddress(int address) {
-    //     if(foundIdx != -1) {
-    //         int value = this.cacheArray[foundIdx].getValueAtOffset(offset);
-    //         return value;
-    //     }
-    //     // else {
-    //     //
-    //     // }
-    // }
-
     @Override
-    public void handleEvent() {
+    public void handleEvent(Event e) {
         if(e.getEventType() == Event.EventType.CacheRead) {
 			CacheReadEvent event = (CacheReadEvent) e;
 
+			int address = event.getAddressToReadFrom();
 			int tag = address >> nOffsetBits;
             int offset = (address << nTagBits) >>> nTagBits;
 
             int foundIdx = -1;
+
+            EventQueue eQueue = Simulator.getEventQueue();
+
             for(int idx = 0; idx < nLines; idx ++) {
-                if(this.cacheArray[idx].getTag() == tag) {
+                if(this.cacheArray[idx].getTag() == tag && this.cacheArray[idx].isModified()) {
                     foundIdx = idx;
                     break;
                 }
             }
 
             if(foundIdx == -1) {
-                EventQueue eQueue = Simulator.getEventQueue();
-
-                EventQueue eQueue = Simulator.getEventQueue();
                 MemoryReadEvent mReadEvent = new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
+                                                                event.getRequestingElement(),
                                                                 this,
                                                                 containingProcessor.getMainMemory(),
-                                                                programCounter);
+                                                                address,
+                                                                nWordsPerLine);
 
                 eQueue.addEvent(mReadEvent);
-                System.out.println("Added MemoryRead event to queue");
+                System.out.println("Cache Miss. Added MemoryRead event to queue");
+            }
+            else {
+                Event cResponseEvent = new CacheResponseEvent(Clock.getCurrentTime(),
+															this,
+															event.getRequestingElement(),
+															-1);
+                eQueue.addEvent(cResponseEvent);
             }
 		}
 
-            if(e.getEventType() == Event.EventType.MemoryWrite) {
-                MemoryWriteEvent event = (MemoryWriteEvent) e;
-                EventQueue eQueue = Simulator.getEventQueue();
+        if(e.getEventType() == Event.EventType.CacheWrite) {
+            CacheWriteEvent event = (CacheWriteEvent) e;
+            EventQueue eQueue = Simulator.getEventQueue();
 
-                int mAddr = event.getAddressToWriteTo();
-                int value = event.getValue();
+            int mAddr = event.getAddressToWriteTo();
+            int value = event.getValue();
 
-                setWord(mAddr, value);
+            // setWord(mAddr, value);
+            //
+            // Event mResponseEvent = new MemoryResponseEvent(Clock.getCurrentTime(),
+            //                                                 this,
+            //                                                 event.getRequestingElement(),
+            //                                                 -1);
 
-                Event mResponseEvent = new MemoryResponseEvent(Clock.getCurrentTime(),
-                                                                this,
-                                                                event.getRequestingElement(),
-                                                                -1);
+            eQueue = Simulator.getEventQueue();
+            MemoryWriteEvent mWriteEvent = new MemoryWriteEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
+                                                            event.getRequestingElement(),
+                                                            this,
+                                                            containingProcessor.getMainMemory(),
+                                                            mAddr,
+                                                            value,
+                                                            nWordsPerLine);
 
-                eQueue.addEvent(mResponseEvent);
+			eQueue.addEvent(mWriteEvent);
+			System.out.println("Added IF event to queue");
+        }
+
+        if(e.getEventType() == Event.EventType.MemoryResponse) {
+            MemoryResponseEvent event = (MemoryResponseEvent) e;
+            EventQueue eQueue = Simulator.getEventQueue();
+
+            for(int idx = 0; idx < nLines; idx ++) {
+                if(this.cacheArray[idx].getTag() == tag && this.cacheArray[idx].isModified()) {
+                    foundIdx = idx;
+                    break;
+                }
             }
+        }
     }
 }
