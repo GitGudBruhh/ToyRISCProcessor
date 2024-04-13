@@ -108,7 +108,7 @@ public class Simulator {
 		// set statistics
 		numberOfCycles = Clock.getCurrentTime();
 
-		Statistics.setNumberOfInst(numberOfInstructionsExecuted);
+		Statistics.setNumberOfInstructions(numberOfInstructionsExecuted);
 		Statistics.setNumberOfCycles((int) numberOfCycles);
 	}
 	
