@@ -5,12 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f1a90690-4f89-429d-9c27-fc942e517f5a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../bin/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/generic/Simulator.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/generic/Simulator.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/processor/pipeline/Execute.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/processor/pipeline/Execute.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/processor/pipeline/OperandFetch.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/processor/pipeline/OperandFetch.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/processor/pipeline/RegisterWrite.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/processor/pipeline/RegisterWrite.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../jars/simulator.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../jars/simulator.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generic/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/generic/Simulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/processor/memorysystem/MainMemory.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/memorysystem/MainMemory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/processor/pipeline/Execute.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/Execute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/processor/pipeline/MemoryAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/MemoryAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/processor/pipeline/OperandFetch.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/OperandFetch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/processor/pipeline/RegisterWrite.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/RegisterWrite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stats.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +27,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -28,21 +38,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/archuser1/WorkspaceArch/shared/Course/Sem4/Computer Architecture/Assignments_Projects/COA_IITDH_Spring23/Assignment_5/220010005_220120019_assignment_5/src&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Debug",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/archuser1/WorkspaceArch/shared/Course/Sem4/Computer Architecture/Assignments_Projects/COA_IITDH_Spring23/Assignment_5/220010005_220120019_assignment_5/src"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="main.Main" />
       <module name="220010005_220120019_assignment_5" />
-      <option name="PROGRAM_PARAMETERS" value="configuration/config.xml stats.txt ../supporting_files/test_cases/evenorodd.out" />
+      <option name="PROGRAM_PARAMETERS" value="configuration/config.xml stats.txt ../supporting_files/test_cases/descending.out" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="main.*" />
@@ -76,5 +86,51 @@
       <updated>1711536584420</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/processor/pipeline/MemoryAccess.java</url>
+          <line>154</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/processor/pipeline/MemoryAccess.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/processor/pipeline/MemoryAccess.java</url>
+          <line>89</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/processor/pipeline/Execute.java</url>
+          <line>195</line>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/processor/pipeline/OperandFetch.java</url>
+          <line>36</line>
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/processor/pipeline/RegisterWrite.java</url>
+          <line>31</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/generic/EventQueue.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/generic/Simulator.java</url>
+          <line>89</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

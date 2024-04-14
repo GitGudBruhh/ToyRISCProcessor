@@ -5,15 +5,84 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f1a90690-4f89-429d-9c27-fc942e517f5a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../bin/processor/pipeline/Execute.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/processor/pipeline/Execute.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bin/processor/pipeline/OperandFetch.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/processor/pipeline/OperandFetch.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../jars/simulator.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../jars/simulator.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generic/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/generic/Simulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/memorysystem/MainMemory.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/memorysystem/MainMemory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/Execute.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/Execute.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/MemoryAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/MemoryAccess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/OperandFetch.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/OperandFetch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/processor/pipeline/RegisterWrite.java" beforeDir="false" afterPath="$PROJECT_DIR$/processor/pipeline/RegisterWrite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/bin/generic/Simulator.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/bin/generic/Simulator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/bin/main/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/bin/main/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/bin/processor/pipeline/RegisterWrite.class" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/bin/processor/pipeline/RegisterWrite.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/jars/simulator.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/jars/simulator.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/src/generic/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/src/generic/Simulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/src/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Assignment_3/GitGud/GitGud_CS311_assignment3/src/main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/fromA5.txt" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/fromA5.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/processor/pipeline/Execute.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/processor/pipeline/Execute.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/processor/pipeline/MemoryAccess.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/processor/pipeline/MemoryAccess.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/processor/pipeline/OperandFetch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/processor/pipeline/OperandFetch.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/processor/pipeline/RegisterWrite.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/220010005_220120019_assignment_5/processor/pipeline/RegisterWrite.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stats.txt" beforeDir="false" afterPath="$PROJECT_DIR$/stats.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/build.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/descending.stats" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/evenorodd.stats" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/fibonacci.stats" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/palindrome.stats" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/prime.stats" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/configuration/Configuration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/configuration/config.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/CacheReadEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/CacheResponseEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/CacheWriteEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/Element.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/Event.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/EventQueue.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/ExecutionCompleteEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/Instruction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/MemoryReadEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/MemoryResponseEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/MemoryWriteEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/Misc.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/Operand.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/Simulator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/generic/Statistics.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/main/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/Clock.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/Processor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/memorysystem/Cache.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/memorysystem/CacheLine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/memorysystem/MainMemory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/ControlSignals.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/ControlUnit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/EX_IF_LatchType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/EX_MA_LatchType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/Execute.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/IF_EnableLatchType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/IF_OF_LatchType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/InstructionFetch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/MA_RW_LatchType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/MemoryAccess.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/OF_EX_LatchType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/OperandFetch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/RegisterFile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/src/processor/pipeline/RegisterWrite.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/220010005_2200120019_assignment5.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/build.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/descending.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/descending.endsystemstate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/descending.expected" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/descending.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/evenorodd.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/evenorodd.endsystemstate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/evenorodd.expected" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/evenorodd.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/fibonacci.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/fibonacci.endsystemstate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/fibonacci.expected" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/fibonacci.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/palindrome.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/palindrome.endsystemstate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/palindrome.expected" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/palindrome.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/prime.asm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/prime.endsystemstate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/prime.expected" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_cases/prime.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Assignment_6/220010005_220120019_assignment_5/supporting_files/test_zip.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +110,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/archuser1/WorkspaceArch/shared/Course/Sem4/Computer Architecture/Assignments_Projects/COA_IITDH_Spring23/Assignment_5/220010005_220120019_assignment_5/src"
+    "last_opened_file_path": "/home/archuser1/WorkspaceArch/shared/Course/Sem4/Computer Architecture/Assignments_Projects/COA_IITDH_Spring23/Assignment_6"
   }
 }]]></component>
   <component name="RunManager">
@@ -88,7 +157,7 @@
       <breakpoints>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/processor/pipeline/MemoryAccess.java</url>
-          <line>154</line>
+          <line>155</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
@@ -121,10 +190,15 @@
           <line>25</line>
           <option name="timeStamp" value="50" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/generic/Simulator.java</url>
           <line>89</line>
           <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/processor/memorysystem/MainMemory.java</url>
+          <line>65</line>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

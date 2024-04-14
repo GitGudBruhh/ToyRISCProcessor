@@ -289,17 +289,6 @@ public class Execute implements Element {
 			OF_EX_Latch.setEX_busy(true);
 		}
 		else {
-			// RegisterFile regFileCopy = containingProcessor.getRegisterFile();
-			// MemoryResponseEvent event = (MemoryResponseEvent) e;
-
-			// int instruction = event.getValue();
-			// IF_OF_Latch.setInstruction(instruction);
-			// IF_OF_Latch.setPc(currentPCStored);
-			// regFileCopy.setProgramCounter(currentPCStored + 1);
-			// containingProcessor.setRegisterFile(regFileCopy);
-
-			// IF_OF_Latch.setOF_enable(true);
-			// IF_EnableLatch.setIF_busy(false);
 
             EX_IF_Latch.setBranchPCBuf(branchPCStored);
             EX_IF_Latch.setControlSignalsBuf(cSigStored);
@@ -314,11 +303,6 @@ public class Execute implements Element {
 			OF_EX_Latch.setEX_busy(false);
 
 			OF_EX_Latch.setNop();
-			System.out.println("WRITING THIS TO EX_MA:");
-			System.out.println("----");
-            cSigStored.display();
-            System.out.println("ALURES: "+aluResultStored+", OP2: "+op2Stored);
-            System.out.println("----");
 
 			if(cSigStored.getControlSignal(ControlSignals.OperationSignals.BRANCHTAKEN.ordinal())) {
                 containingProcessor.branchTakenCurrentCycle = true;
@@ -328,7 +312,6 @@ public class Execute implements Element {
 			}
 
 			System.out.println("Handled EX event!");
-			// OF_EX_Latch.setEX_busy_due_to_MA(false);
 		}
 	}
 }

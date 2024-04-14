@@ -7,6 +7,7 @@ import processor.Processor;
 import java.io.PrintWriter;
 import java.io.FileWriter;
 import java.io.*;
+//DEBUG WARNING
 
 public class RegisterWrite {
 	Processor containingProcessor;
@@ -28,18 +29,14 @@ public class RegisterWrite {
 		long aluResult = MA_RW_Latch.getAluResult();
 		int instruction = MA_RW_Latch.getInstruction();
 
-		if(instruction == 147193857) // add x3, 1 -> x3
-			System.out.print("");
-
 		if(instruction == 0) {
 			return;
 		}
 		if(MA_RW_Latch.isRW_enable()) {
-			System.out.println("WRITING THIS");
-			String printStr = controlSignals.display();
-			System.out.print("");
 
 			if(!controlSignals.getControlSignal(ControlSignals.OperationSignals.END.ordinal())) {
+
+				String printStr = controlSignals.display();
 
 				boolean isAluResOverflow = true;
 				RegisterFile regFileCopy = containingProcessor.getRegisterFile();
@@ -83,21 +80,21 @@ public class RegisterWrite {
 				}
 
 				//DEBUG WARNING
-				// String textToAppend = String.valueOf(instruction);
-				// String fileName = "fromA5.txt";
+				String textToAppend = String.valueOf(instruction);
+				String fileName = "A6_trace.txt";
 
-				// try(FileWriter fw = new FileWriter(fileName, true);
-				// 	BufferedWriter bw = new BufferedWriter(fw);
-				// 	PrintWriter out = new PrintWriter(bw))
-				// {
-				// 	out.println(printStr);
-				// 	//more code
-				// 	// out.println();
-				// 	//more code
-				// } catch (IOException e) {
-				// 	//exception handling left as an exercise for the reader
-				// 	System.out.println("EXCEPTION");
-				// }
+				try(FileWriter fw = new FileWriter(fileName, true);
+					BufferedWriter bw = new BufferedWriter(fw);
+					PrintWriter out = new PrintWriter(bw))
+				{
+					out.println(Simulator.nInst + " " + printStr);
+					//more code
+					// out.println();
+					//more code
+				} catch (IOException e) {
+					//exception handling left as an exercise for the reader
+					System.out.println("EXCEPTION");
+				}
 				// //DEBUG WARNING
 
 			}

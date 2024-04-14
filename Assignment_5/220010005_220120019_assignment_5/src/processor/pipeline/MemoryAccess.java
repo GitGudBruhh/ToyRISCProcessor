@@ -49,7 +49,6 @@ public class MemoryAccess implements Element{
 		if(EX_MA_Latch.isMA_enable()) {
 
 			if(EX_MA_Latch.isMA_busy()) {
-				//TODO SET NOPS?? (MA)
 				return;
 			}
 

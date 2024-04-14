@@ -110,6 +110,7 @@ public class InstructionFetch implements Element {
 
 			if(containingProcessor.branchTakenCurrentCycle) {
 				isBranchWhenBusy = true;
+				branchPCWhenBusy = EX_IF_Latch.getBranchPCBuf();
 			}
 		}
 		else
@@ -117,8 +118,6 @@ public class InstructionFetch implements Element {
 			RegisterFile regFileCopy = containingProcessor.getRegisterFile();
 			CacheResponseEvent event = (CacheResponseEvent) e;
 			int instruction = event.getValue();
-
-			System.out.println(event.getRequestType());
 
 			IF_OF_Latch.setInstruction(instruction);
 			IF_OF_Latch.setPc(currentPCStored);
@@ -133,12 +132,12 @@ public class InstructionFetch implements Element {
 
 			if(isBranchWhenBusy) {
 				IF_OF_Latch.setNop();
-				System.out.println("Unfortunately, IF event turned into a NOP because branch");
+				System.out.println("Unfortunately, IF event turned into a NOP because branch when busy");
 			}
 
 			if(containingProcessor.branchTakenCurrentCycle) {
 				IF_OF_Latch.setNop();
-				System.out.println("Unfortunately, IF event turned into a NOP because branch");
+				System.out.println("Unfortunately, IF event turned into a NOP because branch taken current cycle");
 			}
 		}
 	}

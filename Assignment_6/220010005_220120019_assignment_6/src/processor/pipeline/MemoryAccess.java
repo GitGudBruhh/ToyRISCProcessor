@@ -55,10 +55,8 @@ public class MemoryAccess implements Element{
 
 				int memoryAddress = (int) (aluResult & 0x00000000ffffffffL); //memoryAddressRegister
 				int memoryData = op2; //memoryDataRegister
-				// int ldResult = 0;
 
 				if(controlSignals.getControlSignal(ControlSignals.OperationSignals.LOAD.ordinal())) {
-					// ldResult = containingProcessor.getMainMemory().getWord(memoryAddress);
 
 					EventQueue eQueue = Simulator.getEventQueue();
 					CacheReadEvent cReadEvent = new CacheReadEvent(Clock.getCurrentTime() + Configuration.L1d_latency,
@@ -79,9 +77,6 @@ public class MemoryAccess implements Element{
 				}
 
 				else if(controlSignals.getControlSignal(ControlSignals.OperationSignals.STORE.ordinal())) {
-					// MainMemory newMemory = containingProcessor.getMainMemory();
-					// newMemory.setWord(memoryAddress, memoryData);
-					// containingProcessor.setMainMemory(newMemory);
 
 					EventQueue eQueue = Simulator.getEventQueue();
 					CacheWriteEvent cWriteEvent = new CacheWriteEvent(Clock.getCurrentTime() + Configuration.L1d_latency,
@@ -99,7 +94,6 @@ public class MemoryAccess implements Element{
 					this.currentPCStored = currentPC;
 					this.instructionStored = instruction;
 					this.cSigStored = controlSignals;
-					// controlSignals.display();
 
 					EX_MA_Latch.setMA_busy(true);
 
@@ -111,7 +105,6 @@ public class MemoryAccess implements Element{
 					MA_RW_Latch.setLdResult(0);
 					MA_RW_Latch.setAluResult(aluResult);
 					MA_RW_Latch.setControlSignals(controlSignals);
-					System.out.println("WRITING THIS TO MA_RW:");
 					controlSignals.display();
 				}
 			}
@@ -127,8 +120,6 @@ public class MemoryAccess implements Element{
 				MA_RW_Latch.setAluResult(0);
 				MA_RW_Latch.setControlSignals(controlSignals);
 			}
-
-			// MA_RW_Latch.setControlSignals(controlSignals);
 			MA_RW_Latch.setRW_enable(true);
 		}
 	}
@@ -150,12 +141,6 @@ public class MemoryAccess implements Element{
 			EX_MA_Latch.setNop();
 			System.out.println("Handled MA read event!");
 
-			System.out.println("WRITING THIS TO MA_RW:");
-			System.out.println("----");
-			cSigStored.display();
-			System.out.println("LDRES: "+ldResult);
-			System.out.println("----");
-
 			EX_MA_Latch.setNop();
 		}
 
@@ -169,12 +154,6 @@ public class MemoryAccess implements Element{
 			MA_RW_Latch.setControlSignals(cSigStored);
 			EX_MA_Latch.setNop();
 			System.out.println("Handled MA write event!");
-
-			System.out.println("WRITING THIS TO MA_RW:");
-			System.out.println("----");
-			cSigStored.display();
-			System.out.println("LDRES: 0");
-			System.out.println("----");
 
 			EX_MA_Latch.setNop();
 

@@ -18,6 +18,10 @@ public class EX_IF_LatchType {
 		return this.branchPC;
 	}
 
+	public int getBranchPCBuf() {
+		return this.branchPC_buf;
+	}
+
 	public void setBranchPC(int branchPC) {
 		this.branchPC = branchPC;
 	}

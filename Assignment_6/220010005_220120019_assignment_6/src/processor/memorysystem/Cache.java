@@ -66,12 +66,34 @@ public class Cache implements Element {
         return min_idx;
     }
 
-    public void placeLine(CacheLine c_line) {
-        int LRU_idx = findLeastRecentlyUsedIdx();
-        c_line.setModified(true);
-        c_line.setTimeOfLastAccess(Clock.getCurrentTime());
+    public int findIdxIfPresent(int tag) {
+        int foundIdx = -1;
+        for (int idx = 0; idx < nLines; idx++) {
+            if(tag == cacheArray[idx].getTag() && cacheArray[idx].isModified()) {
+                foundIdx = idx;
+                break;
+            }
+        }
+        return foundIdx;
+    }
 
-        this.cacheArray[LRU_idx] = c_line;
+    public void placeLine(CacheLine c_line) {
+        int foundIdx = findIdxIfPresent(c_line.getTag());
+
+        if(foundIdx == -1) {
+            int LRU_idx = findLeastRecentlyUsedIdx();
+            c_line.setModified(true);
+            c_line.setTimeOfLastAccess(Clock.getCurrentTime());
+
+            cacheArray[LRU_idx] = c_line;
+        }
+        else {
+            c_line.setModified(true);
+            c_line.setTimeOfLastAccess(Clock.getCurrentTime());
+
+            cacheArray[foundIdx] = c_line;
+        }
+
         return;
     }
 
@@ -83,7 +105,8 @@ public class Cache implements Element {
             Element requestingStage = event.getRequestingStage();
             CacheLine returnedLine = event.getCacheLine();
 
-            placeLine(returnedLine);
+            if(returnedLine.getDataLine()[0] != 0)
+                placeLine(returnedLine);
 
             if(event.getRequestType() == MemoryResponseEvent.RequestType.READ) {
                 Event cResponseEvent = new CacheResponseEvent(Clock.getCurrentTime(),
@@ -124,14 +147,7 @@ public class Cache implements Element {
                 // int offset = (int) (((long) address << nTagBits) >>> nTagBits);
                 int offset = 0;
 
-                int foundIdx = -1;
-
-                for(int idx = 0; idx < nLines; idx++) {
-                    if(this.cacheArray[idx].getTag() == tag && this.cacheArray[idx].isModified()) {
-                        foundIdx = idx;
-                        break;
-                    }
-                }
+                int foundIdx = findIdxIfPresent(tag);
 
                 if(foundIdx == -1) {
                     MemoryReadEvent mReadEvent = new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
@@ -147,7 +163,6 @@ public class Cache implements Element {
                 }
                 else {
                     CacheLine hitCacheLine = this.cacheArray[foundIdx];
-                    System.out.println("WHATT " + offset + " " + nTagBits + " " + nOffsetBits + " " + address + " EEE " + (address << 32));
                     int value = hitCacheLine.getValueAtOffset(offset);
                     Event cResponseEvent = new CacheResponseEvent(Clock.getCurrentTime(),
                                                                 this,
@@ -167,6 +182,9 @@ public class Cache implements Element {
                 EventQueue eQueue = Simulator.getEventQueue();
 
                 int mAddr = event.getAddressToWriteTo();
+                int tag = mAddr >> nOffsetBits;
+                // int offset = (int) (((long) address << nTagBits) >>> nTagBits);
+                int offset = 0;
                 int value = event.getValue();
 
                 MemoryWriteEvent mWriteEvent = new MemoryWriteEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,

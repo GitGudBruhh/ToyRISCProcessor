@@ -130,13 +130,6 @@ public class Processor {
 		if(branchTakenCurrentCycle)
 			Simulator.nWrong += 2;
 
-		// for(int i = 0; i < 32; i++)
-		// 	System.out.print(regLockVector[i]+" ");
-		// System.out.println();
-		// for(int i = 0; i < 32; i++)
-		// 	System.out.print(regWrite[i]+" ");
-		// System.out.println();
-
 		branchTakenCurrentCycle = false;
 
 		for (int i = 0; i < 32; i++)
@@ -144,27 +137,8 @@ public class Processor {
 
 		EX_IF_Latch.writeBuffer();
 
-		// System.out.println("IF STAGE");
-		// System.out.println(IF_OF_Latch.getInstruction());
-		// System.out.println();
-
-		// System.out.println("OF STAGE");
-		// OF_EX_Latch.getControlSignals().display();
-		// System.out.println();
-
-		// System.out.println("EX STAGE");
-		// EX_IF_Latch.getControlSignals().display();
-		// EX_MA_Latch.getControlSignals().display();
-		// System.out.println();
-
-		// System.out.println("MA STAGE");
-		// MA_RW_Latch.getControlSignals().display();
-		// System.out.println();
-
-		// System.out.println(IF_EnableLatch.isIF_busy() + " " + IF_OF_Latch.isOF_busy() + " " + OF_EX_Latch.isEX_busy() + " " + EX_MA_Latch.isMA_busy());
-		// System.out.println();
-		// System.out.println(IF_EnableLatch.isIF_enable() + " " + IF_OF_Latch.isOF_enable() + " " + OF_EX_Latch.isEX_enable() + " " + EX_MA_Latch.isMA_enable());
-
+		System.out.println(Simulator.nInst);
+		System.out.println(Simulator.nCycles);
 		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 		IF_OF_Latch.display();
 		OF_EX_Latch.display();
