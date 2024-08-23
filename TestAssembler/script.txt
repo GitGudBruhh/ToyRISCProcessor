@@ -1,0 +1,1 @@
+ant && for i in {1..220}; do printf =; done && echo = && ant make-jar && for i in {1..220}; do printf =; done && echo = && java -Xmx1g -jar jars/assembler.jar ../supporting_files/test_cases/3.asm 3.obj

@@ -1,5 +1,0 @@
-Number of instructions executed = 136
-Number of cycles taken = 648
-Current Time = 648
-Number of wrong entries = 176
-Number of stalls = 69

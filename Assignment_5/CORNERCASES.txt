@@ -1,3 +1,0 @@
-branch taken when if is busy
-soln: add variable to ignore the instruction which will come from memory next
-

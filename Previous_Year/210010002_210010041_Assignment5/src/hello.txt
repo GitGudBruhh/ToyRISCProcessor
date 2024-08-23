@@ -1,4 +1,0 @@
-Number of instructions executed = 263
-Number of cycles taken = 13761
-Number of data hazards = 203
-Number of control hazards = 164

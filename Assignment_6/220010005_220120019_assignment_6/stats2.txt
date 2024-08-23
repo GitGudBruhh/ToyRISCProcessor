@@ -1,4 +1,0 @@
-Number of instructions executed = 155
-Number of cycles taken = 4086
-Number of wrong entries = 176
-Number of stalls = 404
